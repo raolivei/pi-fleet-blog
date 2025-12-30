@@ -1475,6 +1475,229 @@ Vault in production mode requires manual unsealing after each restart for securi
 - Monitoring should include Vault seal status
 - Backup unseal keys securely (they can't be recovered)
 
+---
+
+#### Challenge 5: A Night of Pi-hole Troubleshooting - December 30, 2025
+
+**Date:** December 30, 2025  
+**Duration:** ~4 hours  
+**Commits:** `77fcebc`, `c3bfadf`, `ebf4bbb`, `cb6f73b`, `4ff8f10`
+
+**Context:**
+What started as a simple request to "enable Pi-hole ad blocking" turned into a comprehensive troubleshooting session that touched on DNS configuration, network routing, certificate management, and frontend development. This session exemplifies how one issue can reveal multiple interconnected problems in a complex infrastructure.
+
+**The Journey:**
+
+**1. Enabling Ad Blocking (The Starting Point)**
+
+**Problem:** Pi-hole ad blocking wasn't explicitly enabled, even though it should work by default.
+
+**Solution:**
+- Added `FTLCONF_blocking_enabled=true` environment variable to Pi-hole deployment
+- Updated gravity (block lists) to ensure 86,832 domains were being blocked
+- Verified blocking status: `pihole status` confirmed "Pi-hole blocking is enabled"
+
+**2. Port Conflicts and Pod Scheduling Issues**
+
+**Problem:** After enabling ad blocking, Pi-hole pods started crashing or getting stuck in `Pending` state with errors: "0/2 nodes are available: 2 node(s) didn't have free ports for the requested pod ports."
+
+**Root Cause:**
+- The deployment had `hostNetwork: true` set (likely from an older version)
+- This caused port 53 conflicts on the host
+- K3s ServiceLB was also trying to create conflicting DaemonSet pods
+
+**Investigation:**
+```bash
+# Checked pod status
+kubectl get pods -n pihole
+# Result: Pods stuck in Pending
+
+# Checked deployment configuration
+kubectl get deployment pi-hole -n pihole -o yaml | grep hostNetwork
+# Result: hostNetwork: true (the problem!)
+
+# Checked for ServiceLB conflicts
+kubectl get daemonset -n kube-system | grep svclb-pi-hole
+# Result: Conflicting DaemonSet pods
+```
+
+**Solution:**
+1. **Explicitly set `hostNetwork: false`** in the deployment template:
+   ```yaml
+   spec:
+     hostNetwork: false  # Explicitly disable to prevent port conflicts
+   ```
+
+2. **Deleted conflicting ServiceLB DaemonSet:**
+   ```bash
+   kubectl delete daemonset svclb-pi-hole-f1e8c4f1 -n kube-system
+   ```
+
+3. **Enhanced service annotation documentation** to prevent future issues
+
+4. **Created comprehensive README** with troubleshooting guide
+
+**3. DNS Routing Failures**
+
+**Problem:** Even after fixing port conflicts, DNS queries were timing out from external clients, though they worked from within the cluster.
+
+**Symptoms:**
+- `dig @192.168.2.201 google.com` → connection timeout
+- DNS worked from test pods inside the cluster
+- Pi-hole status showed everything was running correctly
+
+**Root Cause:**
+The service had `externalTrafficPolicy: Cluster`, which caused DNS responses to not route correctly back to external clients when using MetalLB LoadBalancer.
+
+**Solution:**
+Changed `externalTrafficPolicy` from `Cluster` to `Local`:
+```yaml
+spec:
+  externalTrafficPolicy: Local  # Required for proper DNS response routing
+```
+
+**Why Local Works:**
+- `Local` policy routes traffic directly to the node hosting the pod
+- This ensures DNS responses route correctly back to clients
+- Critical for DNS services using MetalLB LoadBalancer
+
+**4. Switching to Cloudflare DNS**
+
+**Problem:** Upstream DNS was configured to use Google DNS (8.8.8.8, 8.8.4.4), but we wanted to use Cloudflare DNS for better privacy.
+
+**Solution:**
+- Updated `values.yaml` to use Cloudflare DNS:
+  ```yaml
+  config:
+    dns1: 1.1.1.1  # Cloudflare
+    dns2: 1.0.0.1  # Cloudflare
+  ```
+- Removed hardcoded `8.8.4.4` from ConfigMap template
+- Updated environment variables in deployment
+
+**Benefits:**
+- Better privacy (Cloudflare doesn't log user data)
+- Faster response times
+- Malware blocking by default
+- DNSSEC support
+
+**5. Pi-hole UI Access Issues**
+
+**Problem:** Pi-hole admin interface showed "This host is not allowed" error, and browser showed "Not Secure" warning.
+
+**Root Causes:**
+- Pi-hole was blocking its own domain (`pihole.eldertree.local`)
+- Ingress was only configured for HTTPS, missing HTTP support
+- CA certificate wasn't trusted by the browser
+
+**Solutions:**
+1. **Added domain to allowlist:**
+   ```bash
+   kubectl exec -n pihole <pod> -c pihole -- pihole allow pihole.eldertree.local
+   ```
+
+2. **Improved ingress configuration:**
+   - Added HTTP and HTTPS support with automatic redirect
+   - Added TLS configuration with cert-manager
+   - Enabled access via both `web` and `websecure` entrypoints
+
+3. **Created CA certificate installation script:**
+   - Extracted CA certificate from Kubernetes secret
+   - Created `install-ca-cert.sh` script for macOS
+   - Saved certificate to `scripts/certificates/eldertree-ca.crt`
+
+**6. Frontend Development Configuration**
+
+**Problem:** Vite development servers were blocking requests from infrastructure services, showing "Blocked request. This host is not allowed."
+
+**Solution:**
+Added all infrastructure services to Vite `allowedHosts` configuration:
+- `pihole.eldertree.local`
+- `grafana.eldertree.local`
+- `prometheus.eldertree.local`
+- `vault.eldertree.local`
+- `flux-ui.eldertree.local`
+
+**Affected Projects:**
+- swimTO (`apps/web/vite.config.ts`)
+- canopy (`frontend/vite.config.js`)
+- nima (`frontend/vite.config.js`)
+- journey (`frontend/vite.config.ts`)
+- ollie (`frontend/vite.config.js`)
+
+**7. Preventing Future Conflicts**
+
+**Problem:** How to ensure these issues don't happen again?
+
+**Solutions Implemented:**
+1. **Explicit configuration** - Set `hostNetwork: false` explicitly instead of relying on defaults
+2. **Enhanced documentation** - Added comprehensive README with troubleshooting guide
+3. **Inline comments** - Explained why each critical configuration is important
+4. **Git protection** - Added `vault-backup-*.json` to `.gitignore` to prevent secret leaks
+
+**The Complete Fix Chain:**
+
+```
+Enable ad blocking
+  ↓
+Port conflicts discovered
+  ↓
+Fix hostNetwork configuration
+  ↓
+DNS routing issues discovered
+  ↓
+Fix externalTrafficPolicy
+  ↓
+Switch to Cloudflare DNS
+  ↓
+UI access issues discovered
+  ↓
+Fix allowlist and ingress
+  ↓
+Certificate trust issues
+  ↓
+Create CA installation script
+  ↓
+Frontend development issues
+  ↓
+Update Vite configurations
+```
+
+**Key Commits:**
+- `77fcebc` - Enable Pi-hole ad blocking explicitly
+- `c3bfadf` - Prevent Pi-hole port conflicts and add documentation
+- `ebf4bbb` - Switch Pi-hole upstream DNS to Cloudflare
+- `cb6f73b` - Fix DNS routing by using Local externalTrafficPolicy
+- `4ff8f10` - Add CA certificate installation script
+
+**Lessons Learned:**
+1. **One issue reveals many** - Fixing ad blocking exposed 6+ related issues
+2. **Explicit > Implicit** - Always explicitly set critical configurations
+3. **Documentation prevents repetition** - Comprehensive README helps future troubleshooting
+4. **Test from multiple angles** - Internal cluster tests passed, but external tests failed
+5. **Network policies matter** - `externalTrafficPolicy` has real impact on DNS routing
+6. **Development environment matters** - Frontend dev servers need infrastructure service access
+7. **Certificate trust is manual** - Self-signed CAs require manual installation on each device
+
+**Prevention Strategies:**
+- Always explicitly set `hostNetwork: false` for services using LoadBalancer
+- Use `Local` externalTrafficPolicy for DNS services
+- Document why each configuration is critical
+- Add infrastructure services to development tool configurations
+- Create automation scripts for repetitive tasks (CA installation)
+- Use `.gitignore` to prevent secret leaks
+
+**Time Investment:**
+- **Total time:** ~4 hours
+- **Problems solved:** 7 interconnected issues
+- **Files modified:** 10+ across multiple repositories
+- **Documentation created:** 1 comprehensive README, 1 installation script
+- **Value:** Prevented future issues, improved reliability, better developer experience
+
+This session perfectly illustrates the interconnected nature of infrastructure troubleshooting - what starts as a simple configuration change can reveal multiple underlying issues that need systematic resolution.
+
+---
+
 ### Common Issues
 
 Based on analysis of 92 problems identified in the Git history, here are the most common categories:
