@@ -1,0 +1,29 @@
+{
+  "name": "pi-fleet-blog",
+  "version": "0.1.0",
+  "description": "Blog documenting the eldertree Kubernetes cluster journey",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "serve": "vite preview"
+  },
+  "keywords": [
+    "kubernetes",
+    "k3s",
+    "raspberry-pi",
+    "self-hosting",
+    "blog"
+  ],
+  "author": "Rafael Oliveira",
+  "license": "MIT",
+  "devDependencies": {
+    "vite": "^5.0.0"
+  },
+  "dependencies": {
+    "marked": "^11.0.0",
+    "highlight.js": "^11.9.0"
+  }
+}
+
