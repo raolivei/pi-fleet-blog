@@ -33,6 +33,7 @@
 **Cluster Name:** The name "eldertree" reflects the wisdom and stability I hoped to build into this infrastructure - a foundational system that grows and supports other projects. Like an elder tree that has weathered storms and provided shelter for generations, this cluster is designed to be resilient, learn from challenges, and support future growth.
 
 **Current Status:**
+
 - **Control Plane:** eldertree (192.168.2.83)
 - **Hardware:** Raspberry Pi 5 (8GB, ARM64)
 - **OS:** Debian 12 Bookworm
@@ -40,6 +41,7 @@
 - **Status:** ✅ Production-ready, hosting multiple services
 
 **The Journey in Numbers:**
+
 - **212 commits** documenting every decision, problem, and solution
 - **45 pull requests** with detailed discussions and reviews
 - **92 problems solved** - each one a learning opportunity
@@ -49,6 +51,7 @@
 - **22 documentation updates** (10.3% of commits) - knowledge preservation
 
 **What You'll Learn:**
+
 - How to build a production-ready Kubernetes cluster on Raspberry Pi
 - ARM64 compatibility challenges and solutions
 - Secrets management with Vault in production
@@ -69,21 +72,25 @@ The eldertree cluster didn't start as a grand plan—it began with a simple need
 The decision to self-host came from several motivations:
 
 **Privacy and Data Ownership**
+
 - My personal finance data (Canopy) shouldn't live on someone else's servers
 - User data for commercial projects (SwimTO) requires full control
 - Learning projects (NIMA, Journey) generate data I want to own completely
 
 **Learning Kubernetes Hands-On**
+
 - Reading about Kubernetes isn't the same as running it
 - Production experience teaches lessons you can't learn from tutorials
 - Understanding the full stack from hardware to applications
 
 **Cost-Effective Infrastructure**
+
 - Raspberry Pi 5 costs less than a month of cloud hosting
 - No ongoing monthly fees
 - Power consumption is minimal (~5-10W)
 
 **Full Control Over the Stack**
+
 - Choose my own tools and versions
 - No vendor lock-in
 - Customize everything to my needs
@@ -94,6 +101,7 @@ The decision to self-host came from several motivations:
 When I started, I had a clear set of goals:
 
 ✅ **Run Personal Applications**
+
 - **Canopy** - Personal finance dashboard (private financial data)
 - **SwimTO** - Toronto pool schedules (commercial project)
 - **Journey** - AI-powered career pathfinder (learning project)
@@ -101,29 +109,34 @@ When I started, I had a clear set of goals:
 - **US Law Severity Map** - Data visualization project
 
 ✅ **Learn Kubernetes in Production**
+
 - Not just tutorials—real production workloads
 - Understand the full lifecycle: deployment, scaling, troubleshooting
 - Learn from real problems, not contrived examples
 
 ✅ **Build a Resilient, Maintainable Infrastructure**
+
 - Infrastructure as Code (GitOps with FluxCD)
 - Automated deployments
 - Proper monitoring and alerting
 - Documentation for future reference
 
 ✅ **Implement Proper Secrets Management**
+
 - No secrets in Git
 - Policy-based access control
 - Integration with Kubernetes (External Secrets Operator)
 - Production-grade security
 
 ✅ **Set Up Monitoring and Observability**
+
 - Know what's happening in the cluster
 - Catch problems before they become critical
 - Understand resource usage
 - Raspberry Pi-specific metrics
 
 ✅ **Enable GitOps Workflows**
+
 - All infrastructure in Git
 - Automated synchronization
 - Easy rollbacks
@@ -134,24 +147,28 @@ When I started, I had a clear set of goals:
 Every project has constraints, and eldertree was no exception:
 
 **ARM64 Hardware (Raspberry Pi)**
+
 - Not all container images support ARM64
 - Some tools don't have ARM64 builds
 - Performance characteristics differ from x86_64
 - Learning opportunity, but also a constraint
 
 **Limited Resources (8GB RAM)**
+
 - Can't run everything at once
 - Need to optimize resource usage
 - Careful resource limit configuration
 - Prioritize what's actually needed
 
 **Home Network Environment**
+
 - No static public IP (initially)
 - Need secure remote access solution
 - DNS resolution for local services
 - Network-wide DNS with Pi-hole
 
 **Budget Considerations**
+
 - Single Raspberry Pi 5 (not a multi-node cluster initially)
 - No expensive hardware
 - Use what's available
@@ -171,6 +188,7 @@ Each phase taught new lessons and revealed new requirements. The cluster evolved
 ### What I Learned About Planning
 
 Looking back, I realize that:
+
 - **Starting simple was the right choice** - Single node, basic setup, then grow
 - **Problems are learning opportunities** - Each of the 92 problems taught something valuable
 - **Documentation is critical** - Without it, you repeat the same mistakes
@@ -180,6 +198,7 @@ Looking back, I realize that:
 ### The Name: Eldertree
 
 Why "eldertree"? The name came from wanting something that represented:
+
 - **Wisdom** - Learning from experience and mistakes
 - **Stability** - A foundation that supports other projects
 - **Growth** - Starting small but designed to expand
@@ -196,6 +215,7 @@ Like an elder tree in a forest, this cluster is meant to be a foundational piece
 **Decision:** Raspberry Pi 5 (8GB RAM, ARM64)
 
 **Rationale:**
+
 - [ ] Cost-effective compared to cloud hosting
 - [ ] Low power consumption
 - [ ] ARM64 architecture (learning opportunity)
@@ -203,6 +223,7 @@ Like an elder tree in a forest, this cluster is meant to be a foundational piece
 - [ ] Active community and support
 
 **Specifications:**
+
 - **Model:** Raspberry Pi 5
 - **RAM:** 8GB
 - **Architecture:** ARM64
@@ -213,6 +234,7 @@ Like an elder tree in a forest, this cluster is meant to be a foundational piece
 ### Storage Decisions
 
 **Initial Setup:** [SD Card / NVMe]
+
 - **Why:** [Document your reasoning]
 - **Performance considerations:** [I/O performance, reliability]
 - **Migration path:** [If you migrated from SD to NVMe, document the process]
@@ -244,6 +266,7 @@ Like an elder tree in a forest, this cluster is meant to be a foundational piece
 **Decision:** Debian 12 Bookworm
 
 **Rationale:**
+
 - [ ] Stability and reliability
 - [ ] Excellent ARM64 support
 - [ ] Long-term support
@@ -253,11 +276,13 @@ Like an elder tree in a forest, this cluster is meant to be a foundational piece
 ### Initial Setup Process
 
 1. **OS Installation**
+
    - [ ] Method used (Raspberry Pi Imager, manual, etc.)
    - [ ] Initial configuration steps
    - [ ] User setup and SSH configuration
 
 2. **System Configuration**
+
    - [ ] Hostname: `eldertree`
    - [ ] Static IP configuration
    - [ ] SSH key setup
@@ -274,12 +299,14 @@ Like an elder tree in a forest, this cluster is meant to be a foundational piece
 **Tool Choice:** Ansible for system configuration
 
 **Benefits:**
+
 - Idempotent configuration
 - Version-controlled setup
 - Reproducible deployments
 - Clear separation of concerns
 
 **Key Playbooks:**
+
 - `setup-system.yml` - Base system configuration
 - `install-k3s.yml` - K3s installation
 - `bootstrap-flux.yml` - GitOps bootstrap
@@ -299,6 +326,7 @@ Like an elder tree in a forest, this cluster is meant to be a foundational piece
 **Decision:** K3s (lightweight Kubernetes distribution)
 
 **Rationale:**
+
 - [ ] **Resource Efficiency:** Designed for edge/IoT, minimal overhead
 - [ ] **ARM64 Support:** Excellent support for Raspberry Pi
 - [ ] **Simplified Setup:** Single binary, no complex dependencies
@@ -322,12 +350,14 @@ Like an elder tree in a forest, this cluster is meant to be a foundational piece
 ### Trade-offs
 
 **Pros:**
+
 - ✅ Low resource usage
 - ✅ Easy installation
 - ✅ Built-in components reduce complexity
 - ✅ Active development and support
 
 **Cons:**
+
 - ⚠️ Some advanced features may differ from full Kubernetes
 - ⚠️ Community smaller than full Kubernetes
 - ⚠️ Some third-party tools may need adaptation
@@ -361,14 +391,17 @@ This established the pattern that would define the entire project: **everything 
 This was a busy day with multiple foundational pieces:
 
 1. **Git Workflow Established**
+
    - Added git branching strategy and contributing guidelines
    - Set up the workflow that would support 45 pull requests
 
 2. **K9s Installation**
+
    - Added k9s (Kubernetes CLI) to the control plane
    - Essential tool for cluster management and troubleshooting
 
 3. **Network Documentation**
+
    - Created NETWORK.md with IP configuration and service domains
    - Documented the `.eldertree.local` domain strategy
    - Set up FluxCD GitOps foundation
@@ -382,29 +415,35 @@ This was a busy day with multiple foundational pieces:
 **Method:** Automated via Ansible playbook
 
 The actual K3s installation was handled by Ansible, ensuring:
+
 - Idempotent configuration (can run multiple times safely)
 - Version-controlled setup
 - Reproducible deployments
 - Clear separation of concerns
 
 **Steps:**
+
 1. **System Preparation**
+
    - Base system configuration via Ansible
    - User setup, hostname, network configuration
    - Required packages installation
 
 2. **K3s Binary Installation**
+
    - Automated via `ansible/playbooks/install-k3s.yml`
    - Single binary installation (no complex dependencies)
    - ARM64 compatible out of the box
 
 3. **Cluster Initialization**
+
    - Embedded etcd (no external etcd needed)
    - Traefik ingress controller (pre-installed)
    - local-path storage provisioner (pre-installed)
    - CoreDNS for service discovery (pre-installed)
 
 4. **Kubeconfig Setup**
+
    - Ansible playbook configured kubeconfig
    - Cluster and context renamed to "eldertree"
    - Stored at `~/.kube/config-eldertree`
@@ -431,6 +470,7 @@ Service Load Balancer: Klipper (built-in)
 ```
 
 **Key Decisions:**
+
 - Single-node cluster initially (sufficient for learning and small workloads)
 - Embedded etcd (simpler than external etcd for single node)
 - Built-in components (Traefik, local-path) reduce complexity
@@ -441,6 +481,7 @@ Service Load Balancer: Klipper (built-in)
 After installation, the cluster automatically started these system pods:
 
 **kube-system namespace:**
+
 - `traefik` - Ingress controller (pre-installed with K3s)
 - `local-path-provisioner` - Storage provisioner
 - `coredns` - DNS server for service discovery
@@ -463,6 +504,7 @@ feat: add cert-manager and monitoring stack
 This established the pattern of **adding infrastructure incrementally** rather than all at once.
 
 **Initial Challenges:**
+
 - Had to add `open-iscsi` for Longhorn (later removed)
 - Fixed cert-manager dependencies
 - Configured storage classes for Prometheus and Grafana
@@ -470,6 +512,7 @@ This established the pattern of **adding infrastructure incrementally** rather t
 ### Verification and Testing
 
 **Basic Cluster Health:**
+
 ```bash
 # Check nodes
 kubectl get nodes
@@ -485,6 +528,7 @@ kubectl cluster-info
 ```
 
 **First Application Test:**
+
 - Deployed a simple nginx pod to verify everything worked
 - Created a service and ingress to test Traefik
 - Verified DNS resolution with CoreDNS
@@ -492,21 +536,25 @@ kubectl cluster-info
 ### Challenges Encountered
 
 **1. Resource Limits on Raspberry Pi**
+
 - **Problem:** Some default resource limits were too high for 8GB RAM
 - **Solution:** Adjusted limits for K3s components and applications
 - **Lesson:** Always set appropriate resource limits from the start
 
 **2. Storage Configuration**
+
 - **Problem:** PVCs not binding, data not persisting
 - **Solution:** Explicitly specified `storageClassName: local-path`
 - **Lesson:** Don't rely on default storage classes
 
 **3. Network Setup**
+
 - **Problem:** Services not accessible, DNS not resolving
 - **Solution:** Configured static IP, set up Pi-hole for DNS
 - **Lesson:** Network configuration is critical for service discovery
 
 **4. Initial Troubleshooting**
+
 - **Problem:** Learning curve for Kubernetes debugging
 - **Solution:** Used k9s, kubectl, and documentation
 - **Lesson:** Good tools (k9s) make troubleshooting much easier
@@ -514,6 +562,7 @@ kubectl cluster-info
 ### The First Week
 
 By the end of the first week (November 13, 2025), the cluster had:
+
 - ✅ Working K3s cluster
 - ✅ Cert-manager with self-signed certificates
 - ✅ Monitoring stack (Prometheus + Grafana)
@@ -522,6 +571,7 @@ By the end of the first week (November 13, 2025), the cluster had:
 - ✅ Basic troubleshooting experience
 
 **Key Milestones:**
+
 - November 6: Infrastructure as code setup
 - November 7: Cluster installation and initial services
 - November 13: First major troubleshooting session (multiple fixes)
@@ -529,18 +579,21 @@ By the end of the first week (November 13, 2025), the cluster had:
 ### Lessons Learned
 
 **What Worked Well:**
+
 - ✅ **Ansible automation** - Made setup reproducible and documented
 - ✅ **K3s simplicity** - Built-in components saved time
 - ✅ **Incremental approach** - Adding services one at a time was manageable
 - ✅ **GitOps from the start** - All configuration in Git from day one
 
 **What Would I Do Differently:**
+
 - 🔄 **Set resource limits earlier** - Would have avoided some debugging
 - 🔄 **Document as you go** - Some early decisions weren't documented
 - 🔄 **Test storage earlier** - Storage issues appeared later
 - 🔄 **Set up monitoring immediately** - Would have caught issues faster
 
 **Key Takeaways:**
+
 - 📝 **Automation is essential** - Ansible playbooks made everything reproducible
 - 📝 **Start simple** - Single node, basic setup, then grow
 - 📝 **Document decisions** - Git commits document the journey
@@ -568,14 +621,16 @@ The journey from "let's set up Kubernetes" to "production-ready cluster" had beg
 **Approach:** Pi-hole as network-wide DNS server
 
 **Benefits:**
+
 - Ad-blocking for entire network
-- Local service resolution (*.eldertree.local)
+- Local service resolution (\*.eldertree.local)
 - Centralized DNS management
 - Performance improvement
 
 ### Service Discovery
 
 **Local Domains:** `*.eldertree.local`
+
 - `grafana.eldertree.local`
 - `prometheus.eldertree.local`
 - `vault.eldertree.local`
@@ -598,7 +653,8 @@ The journey from "let's set up Kubernetes" to "production-ready cluster" had beg
 ### External DNS
 
 **Tool:** ExternalDNS
-**Providers:** 
+**Providers:**
+
 - Cloudflare (for public domains)
 - RFC2136 (for local DNS via Pi-hole BIND)
 
@@ -618,6 +674,7 @@ The journey from "let's set up Kubernetes" to "production-ready cluster" had beg
 **Decision:** HashiCorp Vault for secrets management
 
 **Rationale:**
+
 - [ ] Industry-standard secrets management
 - [ ] Policy-based access control
 - [ ] Integration with Kubernetes
@@ -630,6 +687,7 @@ The journey from "let's set up Kubernetes" to "production-ready cluster" had beg
 **Migration:** Production mode with persistent storage
 
 **Key Dates:**
+
 - November 17, 2025: Initial deployment
 - November 23, 2025: Migration to production mode with policies
 
@@ -646,6 +704,7 @@ The journey from "let's set up Kubernetes" to "production-ready cluster" had beg
 **Approach:** Per-project policies for isolation
 
 **Policies Created:**
+
 - `canopy-policy` - Access to `secret/canopy/*`
 - `swimto-policy` - Access to `secret/swimto/*`
 - `journey-policy` - Access to `secret/journey/*`
@@ -656,6 +715,7 @@ The journey from "let's set up Kubernetes" to "production-ready cluster" had beg
 - `eso-readonly-policy` - Read-only for External Secrets Operator
 
 **Benefits:**
+
 - Least-privilege access
 - Project isolation
 - Prevents accidental cross-project access
@@ -711,10 +771,12 @@ See: `docs/VAULT_MIGRATION.md` for complete migration guide
 
 **Tool:** ExternalDNS
 **Providers:**
+
 - **Cloudflare:** For public domain management
 - **RFC2136:** For local DNS updates via Pi-hole BIND
 
 **Benefits:**
+
 - Automatic DNS record creation
 - Ingress-based service discovery
 - Reduced manual DNS management
@@ -733,12 +795,14 @@ See: `docs/VAULT_MIGRATION.md` for complete migration guide
 ### Troubleshooting DNS
 
 **Common Issues:**
+
 - DNS not resolving after deployment
 - Pi-hole pod not ready
 - BIND service unavailable
 - TSIG secret missing
 
 **Solutions:**
+
 - Check Pi-hole pod status
 - Verify BIND sidecar logs
 - Ensure TSIG secret exists in Vault
@@ -761,6 +825,7 @@ Before diving into the troubleshooting, it's important to understand the setup:
 - **Network**: Local network (192.168.2.0/24) with router DNS pointing to Pi-hole
 
 The Pi-hole deployment is a multi-container pod:
+
 - **pihole container**: Main DNS server (port 53)
 - **bind container**: BIND DNS server (port 5353) for custom zone resolution
 - **bind-init container**: Init container that sets up BIND configuration
@@ -849,6 +914,7 @@ kubectl describe pod -n pihole pi-hole-58d9d66bd5-sxdw8 | grep -A 5 "Readiness:"
 ```
 
 **Finding**: The readiness probe was a TCP socket check on port 53 with:
+
 - `initialDelaySeconds: 60`
 - `periodSeconds: 10`
 - `timeoutSeconds: 5`
@@ -863,6 +929,7 @@ After investigation, I identified three interconnected issues:
 **1. Pod Not Fully Ready**
 
 The Pi-hole pod had two containers, but only one was ready:
+
 - ✅ `pihole` container: Ready (port 53 listening)
 - ❌ `bind` container: Not ready (BIND zone not configured)
 
@@ -871,6 +938,7 @@ Kubernetes only considers a pod "ready" when **all** containers pass their readi
 **2. Service Had No Endpoints**
 
 Because the pod wasn't ready, Kubernetes didn't add it to the service endpoints. This meant:
+
 - The LoadBalancer IP (192.168.2.201) had no backend
 - DNS queries to the LoadBalancer IP timed out
 - The service was effectively unreachable
@@ -925,6 +993,7 @@ When a pod has multiple containers, **all** containers must be ready for the pod
 **2. Readiness Probes Matter**
 
 Readiness probes determine when a pod is ready to receive traffic. If a probe fails:
+
 - The pod won't be added to service endpoints
 - LoadBalancer IPs won't route to the pod
 - Services appear "broken" even though containers are running
@@ -971,6 +1040,7 @@ For future DNS issues, I now use this checklist:
 #### Reflection
 
 Debugging DNS in Kubernetes requires understanding multiple layers:
+
 - Pod lifecycle (init containers, readiness probes)
 - Service discovery (endpoints, LoadBalancer)
 - DNS server configuration (BIND zones, Pi-hole)
@@ -999,6 +1069,7 @@ For self-hosted Kubernetes clusters, DNS is critical infrastructure. When it bre
 ### Monitoring Stack
 
 **Components:**
+
 - **Prometheus:** Metrics collection and storage
 - **Grafana:** Visualization and dashboards
 - **kube-state-metrics:** Kubernetes object metrics
@@ -1013,6 +1084,7 @@ For self-hosted Kubernetes clusters, DNS is critical infrastructure. When it bre
 ### Grafana Dashboards
 
 **Dashboards Created:**
+
 - Pi Fleet Overview
 - Hardware Health (Raspberry Pi specific)
 - Kubernetes Cluster Overview
@@ -1021,6 +1093,7 @@ For self-hosted Kubernetes clusters, DNS is critical infrastructure. When it bre
 ### Metrics Collection
 
 **Sources:**
+
 - Kubernetes API (via kube-state-metrics)
 - Node metrics (via node-exporter)
 - Application metrics (if exposed)
@@ -1052,6 +1125,7 @@ For self-hosted Kubernetes clusters, DNS is critical infrastructure. When it bre
 **Decision:** FluxCD for GitOps workflows
 
 **Rationale:**
+
 - [ ] Infrastructure as Code
 - [ ] Version-controlled deployments
 - [ ] Automated synchronization
@@ -1117,6 +1191,7 @@ clusters/eldertree/
 ### Application Portfolio
 
 **Deployed Applications:**
+
 1. **Canopy** - Personal finance dashboard
 2. **SwimTO** - Toronto pool schedules
 3. **Journey** - AI-powered career pathfinder
@@ -1127,6 +1202,7 @@ clusters/eldertree/
 ### Deployment Patterns
 
 **Common Pattern:**
+
 - Helm charts for each application
 - External Secrets for credentials
 - Ingress resources for external access
@@ -1135,12 +1211,14 @@ clusters/eldertree/
 ### Application-Specific Notes
 
 #### Canopy
+
 - **Database:** PostgreSQL
 - **Storage:** Persistent volume for database
 - **Secrets:** Database password, app secret key
 - **Access:** https://canopy.eldertree.local
 
 #### SwimTO
+
 - **Database:** PostgreSQL
 - **Cache:** Redis
 - **API Keys:** OpenAI, Leonardo.ai
@@ -1148,10 +1226,12 @@ clusters/eldertree/
 - **Access:** https://swimto.eldertree.local
 
 #### Journey
+
 - **Database:** PostgreSQL
 - **Access:** [Document access URL]
 
 #### NIMA
+
 - **Status:** [Document status]
 - **Access:** [Document access URL]
 
@@ -1181,6 +1261,7 @@ clusters/eldertree/
 ### Persistent Volumes
 
 **Applications Using PVs:**
+
 - Prometheus (8Gi)
 - Vault (10Gi)
 - [Add other applications]
@@ -1188,6 +1269,7 @@ clusters/eldertree/
 ### Backup Strategy
 
 **Current Approach:** [Document your backup strategy]
+
 - [ ] Vault secrets backup
 - [ ] Database backups
 - [ ] Configuration backups
@@ -1212,6 +1294,7 @@ clusters/eldertree/
 ### Remote Access Options
 
 **Options Considered:**
+
 1. **WireGuard VPN** - [Status: Disabled / Enabled]
 2. **Cloudflare Tunnel** - [Status: Configured / Planned]
 
@@ -1220,6 +1303,7 @@ clusters/eldertree/
 **Purpose:** Secure remote access without opening ports
 **Configuration:** Terraform-managed
 **Benefits:**
+
 - No port forwarding required
 - HTTPS by default
 - Access control via Cloudflare
@@ -1258,10 +1342,11 @@ clusters/eldertree/
 **Date:** December 28-30, 2025  
 **Commit:** `c3bfadf` (PR #50, #56)
 
-**Problem:** 
+**Problem:**
 Pi-hole pod couldn't bind to port 53 (DNS) because K3s ServiceLB was conflicting with the pod's network configuration. The pod would fail to start or DNS resolution would break.
 
 **Symptoms:**
+
 - Pi-hole pod in `CrashLoopBackOff` or `Pending` state
 - DNS queries failing
 - Port 53 already in use errors
@@ -1271,19 +1356,23 @@ Pi-hole pod couldn't bind to port 53 (DNS) because K3s ServiceLB was conflicting
 K3s includes a built-in ServiceLB (Klipper) that automatically creates LoadBalancer services. When Pi-hole was configured with `hostNetwork: true` or when ServiceLB tried to bind to port 53, conflicts occurred. Additionally, the deployment template didn't explicitly disable `hostNetwork`, leading to unpredictable behavior.
 
 **Investigation:**
+
 1. Checked pod logs: `kubectl logs -n pihole deployment/pi-hole`
 2. Verified port binding: `netstat -tuln | grep 53`
 3. Examined ServiceLB configuration
 4. Reviewed Pi-hole Helm chart deployment template
 
 **Solution:**
+
 1. **Disabled K3s ServiceLB for Pi-hole service:**
+
    ```yaml
    annotations:
      service.beta.kubernetes.io/k3s-lb: "false"
    ```
 
 2. **Explicitly set `hostNetwork: false` in deployment:**
+
    ```yaml
    spec:
      hostNetwork: false
@@ -1294,12 +1383,14 @@ K3s includes a built-in ServiceLB (Klipper) that automatically creates LoadBalan
 4. **Added comprehensive documentation** in Pi-hole README with troubleshooting guide
 
 **Prevention:**
+
 - Always explicitly set `hostNetwork` in deployment templates (don't rely on defaults)
 - Document network requirements for services using privileged ports
 - Use MetalLB for LoadBalancer services on bare metal instead of ServiceLB when conflicts occur
 - Add health checks and readiness probes to detect port conflicts early
 
 **Lessons Learned:**
+
 - K3s ServiceLB can conflict with pods using privileged ports
 - Explicit configuration is better than implicit defaults
 - MetalLB provides more control for bare-metal Kubernetes
@@ -1312,10 +1403,11 @@ K3s includes a built-in ServiceLB (Klipper) that automatically creates LoadBalan
 **Date:** November 13, 2025  
 **Commit:** `1b41a1c`
 
-**Problem:** 
+**Problem:**
 ExternalDNS couldn't connect to BIND service because the BIND container image wasn't ARM64 compatible. The pod would crash or fail to start on Raspberry Pi.
 
 **Symptoms:**
+
 - BIND pod in `ImagePullBackOff` or `CrashLoopBackOff`
 - Error: "no matching manifest for linux/arm64"
 - ExternalDNS failing to connect to BIND
@@ -1325,19 +1417,22 @@ The default BIND image in the Helm chart was built for AMD64/x86_64 architecture
 
 **Solution:**
 Switched to an ARM64-compatible BIND image:
+
 ```yaml
 image:
   repository: internetsystemsconsortium/bind9
-  tag: "9.18"  # ARM64 compatible version
+  tag: "9.18" # ARM64 compatible version
 ```
 
 **Prevention:**
+
 - Always verify image architecture compatibility for ARM64 deployments
 - Use multi-arch images when available
 - Test image pulls before deploying to production
 - Document architecture requirements in deployment manifests
 
 **Lessons Learned:**
+
 - ARM64 compatibility is critical for Raspberry Pi deployments
 - Not all container images support ARM64
 - Always check image architecture before deployment
@@ -1350,10 +1445,11 @@ image:
 **Date:** November 7, 2025  
 **Commits:** `3e8c1ef`, `18872b7`
 
-**Problem:** 
+**Problem:**
 Prometheus and Grafana pods couldn't create persistent volumes because the storage class wasn't specified. Pods would start but lose all data on restart.
 
 **Symptoms:**
+
 - Prometheus/Grafana pods starting but data not persisting
 - PVCs in `Pending` state
 - No storage class assigned to volumes
@@ -1363,21 +1459,24 @@ The monitoring stack Helm chart didn't specify `storageClassName: local-path`, w
 
 **Solution:**
 Added explicit storage class configuration:
+
 ```yaml
 persistence:
   enabled: true
   storageClass: "local-path"
-  size: 8Gi  # Prometheus
+  size: 8Gi # Prometheus
   # size: 2Gi  # Grafana
 ```
 
 **Prevention:**
+
 - Always specify storage class explicitly in Helm values
 - Document storage requirements for stateful applications
 - Verify PVC status after deployment: `kubectl get pvc -A`
 - Use appropriate storage class for single-node vs multi-node clusters
 
 **Lessons Learned:**
+
 - Explicit storage class configuration prevents binding issues
 - `local-path` is perfect for single-node K3s clusters
 - Stateful applications require persistent storage planning
@@ -1390,22 +1489,27 @@ persistence:
 **Date:** November 13, 2025  
 **Commits:** `50a6ce8`, `1713866`
 
-**Problem:** 
+**Problem:**
 ExternalDNS couldn't update DNS records via BIND because:
+
 1. BIND couldn't resolve upstream DNS queries
 2. ExternalDNS was pointing to node IP instead of BIND service
 
 **Symptoms:**
+
 - ExternalDNS pod in `CrashLoopBackOff`
 - DNS record updates failing
 - BIND logs showing DNS resolution errors
 
 **Root Cause:**
+
 1. BIND was configured to use itself for DNS resolution (circular dependency)
 2. ExternalDNS RFC2136 provider was configured with node IP instead of BIND ClusterIP service
 
 **Solution:**
+
 1. **Configured BIND to use CoreDNS for upstream resolution:**
+
    ```yaml
    environment:
      - name: RESOLVER
@@ -1415,16 +1519,18 @@ ExternalDNS couldn't update DNS records via BIND because:
 2. **Updated ExternalDNS to use BIND ClusterIP:**
    ```yaml
    rfc2136:
-     host: "bind.pihole.svc.cluster.local"  # Instead of node IP
+     host: "bind.pihole.svc.cluster.local" # Instead of node IP
    ```
 
 **Prevention:**
+
 - Always use Kubernetes service DNS names instead of node IPs
 - Configure proper DNS resolution chains (avoid circular dependencies)
 - Test DNS updates after ExternalDNS configuration
 - Monitor ExternalDNS logs for connection errors
 
 **Lessons Learned:**
+
 - Kubernetes service discovery is more reliable than node IPs
 - DNS resolution chains must be properly configured
 - ExternalDNS requires proper BIND/RFC2136 configuration
@@ -1437,10 +1543,11 @@ ExternalDNS couldn't update DNS records via BIND because:
 **Date:** November 17-23, 2025  
 **Related:** Migration from dev mode to production mode
 
-**Problem:** 
+**Problem:**
 After each Raspberry Pi restart, Vault would start in a sealed state, requiring manual unsealing with 3 of 5 keys. This broke all applications depending on secrets from Vault.
 
 **Symptoms:**
+
 - Vault pod running but sealed
 - External Secrets Operator failing to sync
 - Applications unable to start (missing secrets)
@@ -1450,7 +1557,9 @@ After each Raspberry Pi restart, Vault would start in a sealed state, requiring 
 Vault in production mode requires manual unsealing after each restart for security. This is expected behavior but wasn't initially documented or automated.
 
 **Solution:**
+
 1. **Created automated unsealing script:**
+
    ```bash
    ./scripts/operations/unseal-vault.sh
    ```
@@ -1462,6 +1571,7 @@ Vault in production mode requires manual unsealing after each restart for securi
 4. **Created backup/restore scripts** for unseal keys
 
 **Prevention:**
+
 - Document manual steps required after restarts
 - Create automation scripts for repetitive tasks
 - Store unseal keys securely (password manager)
@@ -1469,245 +1579,25 @@ Vault in production mode requires manual unsealing after each restart for securi
 - Consider auto-unseal with cloud KMS for production (future)
 
 **Lessons Learned:**
+
 - Production Vault requires manual unsealing (security feature)
 - Automation scripts save time for repetitive tasks
 - Documentation is critical for operational procedures
 - Monitoring should include Vault seal status
 - Backup unseal keys securely (they can't be recovered)
 
----
-
-#### Challenge 5: A Night of Pi-hole Troubleshooting - December 30, 2025
-
-**Date:** December 30, 2025  
-**Duration:** ~4 hours  
-**Commits:** `77fcebc`, `c3bfadf`, `ebf4bbb`, `cb6f73b`, `4ff8f10`
-
-**Context:**
-What started as a simple request to "enable Pi-hole ad blocking" turned into a comprehensive troubleshooting session that touched on DNS configuration, network routing, certificate management, and frontend development. This session exemplifies how one issue can reveal multiple interconnected problems in a complex infrastructure.
-
-**The Journey:**
-
-**1. Enabling Ad Blocking (The Starting Point)**
-
-**Problem:** Pi-hole ad blocking wasn't explicitly enabled, even though it should work by default.
-
-**Solution:**
-- Added `FTLCONF_blocking_enabled=true` environment variable to Pi-hole deployment
-- Updated gravity (block lists) to ensure 86,832 domains were being blocked
-- Verified blocking status: `pihole status` confirmed "Pi-hole blocking is enabled"
-
-**2. Port Conflicts and Pod Scheduling Issues**
-
-**Problem:** After enabling ad blocking, Pi-hole pods started crashing or getting stuck in `Pending` state with errors: "0/2 nodes are available: 2 node(s) didn't have free ports for the requested pod ports."
-
-**Root Cause:**
-- The deployment had `hostNetwork: true` set (likely from an older version)
-- This caused port 53 conflicts on the host
-- K3s ServiceLB was also trying to create conflicting DaemonSet pods
-
-**Investigation:**
-```bash
-# Checked pod status
-kubectl get pods -n pihole
-# Result: Pods stuck in Pending
-
-# Checked deployment configuration
-kubectl get deployment pi-hole -n pihole -o yaml | grep hostNetwork
-# Result: hostNetwork: true (the problem!)
-
-# Checked for ServiceLB conflicts
-kubectl get daemonset -n kube-system | grep svclb-pi-hole
-# Result: Conflicting DaemonSet pods
-```
-
-**Solution:**
-1. **Explicitly set `hostNetwork: false`** in the deployment template:
-   ```yaml
-   spec:
-     hostNetwork: false  # Explicitly disable to prevent port conflicts
-   ```
-
-2. **Deleted conflicting ServiceLB DaemonSet:**
-   ```bash
-   kubectl delete daemonset svclb-pi-hole-f1e8c4f1 -n kube-system
-   ```
-
-3. **Enhanced service annotation documentation** to prevent future issues
-
-4. **Created comprehensive README** with troubleshooting guide
-
-**3. DNS Routing Failures**
-
-**Problem:** Even after fixing port conflicts, DNS queries were timing out from external clients, though they worked from within the cluster.
-
-**Symptoms:**
-- `dig @192.168.2.201 google.com` → connection timeout
-- DNS worked from test pods inside the cluster
-- Pi-hole status showed everything was running correctly
-
-**Root Cause:**
-The service had `externalTrafficPolicy: Cluster`, which caused DNS responses to not route correctly back to external clients when using MetalLB LoadBalancer.
-
-**Solution:**
-Changed `externalTrafficPolicy` from `Cluster` to `Local`:
-```yaml
-spec:
-  externalTrafficPolicy: Local  # Required for proper DNS response routing
-```
-
-**Why Local Works:**
-- `Local` policy routes traffic directly to the node hosting the pod
-- This ensures DNS responses route correctly back to clients
-- Critical for DNS services using MetalLB LoadBalancer
-
-**4. Switching to Cloudflare DNS**
-
-**Problem:** Upstream DNS was configured to use Google DNS (8.8.8.8, 8.8.4.4), but we wanted to use Cloudflare DNS for better privacy.
-
-**Solution:**
-- Updated `values.yaml` to use Cloudflare DNS:
-  ```yaml
-  config:
-    dns1: 1.1.1.1  # Cloudflare
-    dns2: 1.0.0.1  # Cloudflare
-  ```
-- Removed hardcoded `8.8.4.4` from ConfigMap template
-- Updated environment variables in deployment
-
-**Benefits:**
-- Better privacy (Cloudflare doesn't log user data)
-- Faster response times
-- Malware blocking by default
-- DNSSEC support
-
-**5. Pi-hole UI Access Issues**
-
-**Problem:** Pi-hole admin interface showed "This host is not allowed" error, and browser showed "Not Secure" warning.
-
-**Root Causes:**
-- Pi-hole was blocking its own domain (`pihole.eldertree.local`)
-- Ingress was only configured for HTTPS, missing HTTP support
-- CA certificate wasn't trusted by the browser
-
-**Solutions:**
-1. **Added domain to allowlist:**
-   ```bash
-   kubectl exec -n pihole <pod> -c pihole -- pihole allow pihole.eldertree.local
-   ```
-
-2. **Improved ingress configuration:**
-   - Added HTTP and HTTPS support with automatic redirect
-   - Added TLS configuration with cert-manager
-   - Enabled access via both `web` and `websecure` entrypoints
-
-3. **Created CA certificate installation script:**
-   - Extracted CA certificate from Kubernetes secret
-   - Created `install-ca-cert.sh` script for macOS
-   - Saved certificate to `scripts/certificates/eldertree-ca.crt`
-
-**6. Frontend Development Configuration**
-
-**Problem:** Vite development servers were blocking requests from infrastructure services, showing "Blocked request. This host is not allowed."
-
-**Solution:**
-Added all infrastructure services to Vite `allowedHosts` configuration:
-- `pihole.eldertree.local`
-- `grafana.eldertree.local`
-- `prometheus.eldertree.local`
-- `vault.eldertree.local`
-- `flux-ui.eldertree.local`
-
-**Affected Projects:**
-- swimTO (`apps/web/vite.config.ts`)
-- canopy (`frontend/vite.config.js`)
-- nima (`frontend/vite.config.js`)
-- journey (`frontend/vite.config.ts`)
-- ollie (`frontend/vite.config.js`)
-
-**7. Preventing Future Conflicts**
-
-**Problem:** How to ensure these issues don't happen again?
-
-**Solutions Implemented:**
-1. **Explicit configuration** - Set `hostNetwork: false` explicitly instead of relying on defaults
-2. **Enhanced documentation** - Added comprehensive README with troubleshooting guide
-3. **Inline comments** - Explained why each critical configuration is important
-4. **Git protection** - Added `vault-backup-*.json` to `.gitignore` to prevent secret leaks
-
-**The Complete Fix Chain:**
-
-```
-Enable ad blocking
-  ↓
-Port conflicts discovered
-  ↓
-Fix hostNetwork configuration
-  ↓
-DNS routing issues discovered
-  ↓
-Fix externalTrafficPolicy
-  ↓
-Switch to Cloudflare DNS
-  ↓
-UI access issues discovered
-  ↓
-Fix allowlist and ingress
-  ↓
-Certificate trust issues
-  ↓
-Create CA installation script
-  ↓
-Frontend development issues
-  ↓
-Update Vite configurations
-```
-
-**Key Commits:**
-- `77fcebc` - Enable Pi-hole ad blocking explicitly
-- `c3bfadf` - Prevent Pi-hole port conflicts and add documentation
-- `ebf4bbb` - Switch Pi-hole upstream DNS to Cloudflare
-- `cb6f73b` - Fix DNS routing by using Local externalTrafficPolicy
-- `4ff8f10` - Add CA certificate installation script
-
-**Lessons Learned:**
-1. **One issue reveals many** - Fixing ad blocking exposed 6+ related issues
-2. **Explicit > Implicit** - Always explicitly set critical configurations
-3. **Documentation prevents repetition** - Comprehensive README helps future troubleshooting
-4. **Test from multiple angles** - Internal cluster tests passed, but external tests failed
-5. **Network policies matter** - `externalTrafficPolicy` has real impact on DNS routing
-6. **Development environment matters** - Frontend dev servers need infrastructure service access
-7. **Certificate trust is manual** - Self-signed CAs require manual installation on each device
-
-**Prevention Strategies:**
-- Always explicitly set `hostNetwork: false` for services using LoadBalancer
-- Use `Local` externalTrafficPolicy for DNS services
-- Document why each configuration is critical
-- Add infrastructure services to development tool configurations
-- Create automation scripts for repetitive tasks (CA installation)
-- Use `.gitignore` to prevent secret leaks
-
-**Time Investment:**
-- **Total time:** ~4 hours
-- **Problems solved:** 7 interconnected issues
-- **Files modified:** 10+ across multiple repositories
-- **Documentation created:** 1 comprehensive README, 1 installation script
-- **Value:** Prevented future issues, improved reliability, better developer experience
-
-This session perfectly illustrates the interconnected nature of infrastructure troubleshooting - what starts as a simple configuration change can reveal multiple underlying issues that need systematic resolution.
-
----
-
 ### Common Issues
 
 Based on analysis of 92 problems identified in the Git history, here are the most common categories:
 
 1. **Vault Sealing After Restart** (Multiple occurrences)
+
    - **Solution:** Automated unsealing script (`./scripts/operations/unseal-vault.sh`)
    - **Prevention:** Document unsealing process, add to monitoring
    - **Frequency:** Every restart (expected behavior in production mode)
 
 2. **DNS Resolution Issues** (15+ related commits)
+
    - **Common causes:** Pi-hole not ready, BIND service unavailable, ExternalDNS misconfiguration, multi-container pod readiness
    - **Solution:** Verify Pi-hole and BIND status, check ExternalDNS logs, wait for all containers to be ready
    - **Prevention:** Health checks, proper service DNS configuration, monitoring, understand readiness probes
@@ -1715,18 +1605,21 @@ Based on analysis of 92 problems identified in the Git history, here are the mos
    - **Detailed case study:** See Chapter 8 for a complete troubleshooting story of a DNS outage caused by multi-container pod readiness issues
 
 3. **Resource Limits on Raspberry Pi** (Multiple occurrences)
+
    - **Common issue:** "Specified limits are higher than node capacity!"
    - **Solution:** Optimize resource requests/limits for ARM64/Raspberry Pi constraints
    - **Prevention:** Monitor resource usage, set appropriate limits from start
    - **Example fixes:** Reduced FluxCD, KEDA, Journey API limits from 1000m/1Gi to 500m/512Mi
 
 4. **Storage Class Configuration** (Multiple occurrences)
+
    - **Common issue:** PVCs in Pending state, data not persisting
    - **Solution:** Explicitly specify `storageClassName: local-path` in Helm values
    - **Prevention:** Always configure storage class for stateful applications
    - **Affected services:** Prometheus, Grafana, Vault
 
 5. **Image Pull Issues** (Multiple occurrences)
+
    - **Common causes:** ARM64 incompatibility, missing GHCR secrets, wrong image tags
    - **Solution:** Verify image architecture, configure imagePullSecrets, use versioned tags
    - **Prevention:** Test image pulls, use ARM64-compatible images, pin image versions
@@ -1751,6 +1644,7 @@ Based on analysis of 92 problems identified in the Git history, here are the mos
 Based on 212 commits, 45 pull requests, and 92 problems solved:
 
 **What Worked Well:**
+
 - ✅ **K3s was the right choice** - Lightweight, ARM64 support, built-in components (Traefik, local-path)
 - ✅ **Ansible for automation** - Idempotent configuration, reproducible deployments
 - ✅ **GitOps with FluxCD** - All infrastructure as code, easy rollbacks, version control
@@ -1760,6 +1654,7 @@ Based on 212 commits, 45 pull requests, and 92 problems solved:
 - ✅ **Git history analysis** - Commits document the journey, problems, and solutions
 
 **What Would I Do Differently:**
+
 - 🔄 **Start with explicit resource limits** - Would have saved time debugging "limits higher than capacity" errors
 - 🔄 **Document ARM64 requirements earlier** - Would have avoided image compatibility issues
 - 🔄 **Set up monitoring from day one** - Would have caught issues faster
@@ -1767,6 +1662,7 @@ Based on 212 commits, 45 pull requests, and 92 problems solved:
 - 🔄 **Automate Vault unsealing earlier** - Would have reduced manual steps after restarts
 
 **Key Takeaways:**
+
 - 📝 **Automation from the start** - Scripts and Ansible playbooks save time and prevent errors
 - 📝 **Documentation is critical** - Every problem solved should be documented to avoid repetition
 - 📝 **Monitoring is essential** - Grafana dashboards help identify issues before they become critical
@@ -1778,6 +1674,7 @@ Based on 212 commits, 45 pull requests, and 92 problems solved:
 - 📝 **PRs provide context** - Pull requests document why changes were made, not just what changed
 
 **Statistics from the Journey:**
+
 - **Total Commits:** 212
 - **Pull Requests:** 45
 - **Problems Solved:** 92
@@ -1812,11 +1709,13 @@ This blog represents months of learning, troubleshooting, and iteration. Each co
 ### Scaling Considerations
 
 **Horizontal Scaling:**
+
 - Adding worker nodes
 - Load distribution
 - Resource planning
 
 **Vertical Scaling:**
+
 - Hardware upgrades
 - Resource optimization
 - Performance tuning
@@ -1896,6 +1795,7 @@ flux reconcile kustomization infrastructure
 ### Publishing
 
 When ready to publish:
+
 1. Review and edit for clarity
 2. Add diagrams and screenshots
 3. Remove sensitive information
@@ -1910,5 +1810,4 @@ When ready to publish:
 
 ---
 
-*This blog is a living document. As the eldertree cluster evolves, so will this documentation.*
-
+_This blog is a living document. As the eldertree cluster evolves, so will this documentation._
