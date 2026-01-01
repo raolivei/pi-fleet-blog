@@ -2024,19 +2024,27 @@ ansible-playbook playbooks/setup-new-node.yml --limit localhost,node-0,node-2
 
 **The Master Playbook:**
 
-The `setup-new-node.yml` playbook now handles:
-- Automatic IP calculation from inventory
-- DNS configuration for all cluster nodes
-- System configuration (hostname, user, SSH, firewall)
-- NVMe boot setup (if NVMe detected)
-- Gigabit network configuration (eth0)
-- k3s worker installation with automatic token retrieval
-- k3s gigabit network configuration
-- SSH keys setup (node-to-node and local key)
-- Terminal monitoring tools (btop, tmux, neofetch)
-- Longhorn prerequisites (open-iscsi)
-- K3s ServiceLB disabling (for MetalLB compatibility)
-- Idempotency verification (optional)
+The `setup-new-node.yml` playbook orchestrates the complete setup process:
+
+1. **IP Calculation** - Automatically calculates next available wlan0 and eth0 IPs from inventory
+2. **DNS Configuration** - Adds `/etc/hosts` entries for all cluster nodes (including node's own hostname)
+3. **System Configuration** - Hostname, user setup, SSH, firewall, cgroups, timezone, NTP
+4. **NVMe Boot Setup** - Partitions, clones OS from SD card, fixes emergency mode prevention (fstab, cmdline.txt, root account)
+5. **Gigabit Network (eth0)** - Configures NetworkManager connection with calculated IP
+6. **k3s Token Retrieval** - Automatically retrieves token from control plane (node-0)
+7. **k3s Worker Installation** - Installs k3s agent with proper cgroup configuration
+8. **k3s Gigabit Network** - Configures k3s to use eth0 for cluster communication
+9. **SSH Keys Setup** - Node-to-node communication and optional local key addition
+10. **Terminal Monitoring** - Installs btop, tmux, and neofetch
+11. **Longhorn Prerequisites** - Installs and loads open-iscsi, creates mount point
+12. **K3s ServiceLB Disable** - Disables ServiceLB for MetalLB compatibility
+13. **Idempotency Verification** - Optional verification play (enable with `-e verify_idempotency=true`)
+
+**Key Features:**
+- **Fully automated** - No manual IP or token input required
+- **Idempotent** - Safe to rerun multiple times
+- **Comprehensive** - Handles all prerequisites and configuration
+- **Error handling** - Includes timeouts, retries, and cleanup tasks
 
 **Future Nodes:**
 
