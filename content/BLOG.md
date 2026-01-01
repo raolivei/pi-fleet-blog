@@ -2049,10 +2049,23 @@ The `setup-new-node.yml` playbook orchestrates the complete setup process:
 **Future Nodes:**
 
 Adding new nodes is now as simple as:
-1. Boot node from SD card with generic hostname
-2. Add node to `ansible/inventory/hosts.yml`
-3. Run: `ansible-playbook playbooks/setup-new-node.yml --limit localhost,node-0,node-N`
-4. All configuration is automated
+
+1. **Boot node from SD card** with generic hostname (e.g., "node-x")
+2. **Add node to inventory**: `ansible/inventory/hosts.yml`
+   ```yaml
+   node-N:
+     ansible_host: 192.168.2.XX
+   ```
+3. **Run master playbook**:
+   ```bash
+   ansible-playbook playbooks/setup-new-node.yml --limit localhost,node-0,node-N
+   ```
+4. **All configuration is automated** - IPs calculated, DNS configured, k3s installed, prerequisites set up
+
+**Optional Overrides:**
+- Override IPs: `-e wlan0_ip_override=192.168.2.XX -e eth0_ip_override=10.0.0.X`
+- Override k3s token: `-e k3s_token_override=<token>`
+- Verify idempotency: `-e verify_idempotency=true`
 
 ### Long-term Vision
 
