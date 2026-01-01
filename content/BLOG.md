@@ -1633,6 +1633,223 @@ Vault in production mode requires manual unsealing after each restart for securi
 - Monitoring should include Vault seal status
 - Backup unseal keys securely (they can't be recovered)
 
+---
+
+#### Challenge 6: The Great DNS Battle - Making Pi-hole Work as Primary DNS
+
+**Date:** December 30-31, 2025  
+**Branch:** `fix/pi-hole-servicelb-annotation`  
+**Commits:** `baeb241`, `1a3834d`, `d8293ca`
+
+**Problem:**
+After setting up Pi-hole as the DNS server for the cluster, DNS resolution wasn't working when using `192.168.2.201` (Pi-hole LoadBalancer IP) as the primary DNS. Queries would timeout, requiring a fallback DNS server (1.1.1.1) to work. The goal was to use Pi-hole as the sole DNS server without any fallback.
+
+**Symptoms:**
+
+- DNS queries to `192.168.2.201` timing out from external clients (MacBook)
+- `dig @192.168.2.201 google.com` returning "connection timed out"
+- `ping 192.168.2.201` failing with "Destination Host Unreachable"
+- DNS working from within cluster pods but not from external clients
+- LoadBalancer IP not reachable despite MetalLB announcing it
+
+**Root Causes (Multiple Layers):**
+
+1. **MetalLB Layer 2 Advertisement Issue:**
+   - MetalLB was announcing the LoadBalancer IP but not on the correct network interface
+   - Nodes have InternalIPs `10.0.0.1/10.0.0.2` (K3s internal network) but physical IPs are on `192.168.2.0/24` via `wlan0`
+   - MetalLB wasn't explicitly configured to use `wlan0` interface, causing advertisement on wrong network
+
+2. **Service externalTrafficPolicy Misconfiguration:**
+   - Initially set to `Local` policy, which was too restrictive
+   - With `Local` policy, only the node hosting the pod can respond, but routing wasn't working correctly
+   - Changed to `Cluster` policy to allow traffic from any node
+
+3. **Manual DNS Entries Overriding ExternalDNS:**
+   - Manual entries in Pi-hole dnsmasq ConfigMap (`address=/grafana.eldertree.local/192.168.2.86`) were overriding ExternalDNS-managed records
+   - Wildcard entry in BIND zone (`* A 192.168.2.86`) was catching all queries before ExternalDNS records could be used
+
+4. **ExternalDNS Circular Dependency:**
+   - ExternalDNS was trying to resolve `pi-hole.pihole.svc.cluster.local` for RFC2136 connection
+   - But ExternalDNS depends on Pi-hole for DNS resolution, creating a circular dependency
+   - Fixed by using Pi-hole service ClusterIP directly (`10.43.227.7`)
+
+**Investigation Journey:**
+
+This was a multi-hour troubleshooting session that required investigating multiple layers:
+
+1. **Initial Diagnosis:**
+   ```bash
+   # DNS queries timing out
+   dig @192.168.2.201 google.com
+   # Result: connection timed out
+   
+   # LoadBalancer IP not reachable
+   ping 192.168.2.201
+   # Result: Destination Host Unreachable
+   ```
+
+2. **MetalLB Investigation:**
+   ```bash
+   # Checked MetalLB speaker logs
+   kubectl logs -n metallb-system -l app.kubernetes.io/component=speaker
+   # Found: "notOwner" errors, IP being withdrawn and re-announced
+   
+   # Checked L2Advertisement configuration
+   kubectl get l2advertisement -n metallb-system default -o yaml
+   # Found: Missing `interfaces: [wlan0]` specification
+   ```
+
+3. **Service Policy Testing:**
+   ```bash
+   # Tested with Local policy (didn't work)
+   kubectl patch svc -n pihole pi-hole -p '{"spec":{"externalTrafficPolicy":"Local"}}'
+   # Still timing out
+   
+   # Tested with Cluster policy
+   kubectl patch svc -n pihole pi-hole -p '{"spec":{"externalTrafficPolicy":"Cluster"}}'
+   # Still timing out initially
+   ```
+
+4. **DNS Record Investigation:**
+   ```bash
+   # Checked what DNS records existed
+   kubectl get configmap -n pihole pi-hole-dnsmasq -o yaml
+   # Found: Manual entries overriding ExternalDNS
+   
+   # Checked BIND zone
+   kubectl get configmap -n pihole pi-hole-bind -o yaml
+   # Found: Wildcard entry catching all queries
+   ```
+
+5. **ExternalDNS Investigation:**
+   ```bash
+   # Checked ExternalDNS logs
+   kubectl logs -n external-dns -l app.kubernetes.io/name=external-dns
+   # Found: Couldn't resolve pi-hole.pihole.svc.cluster.local
+   ```
+
+**Solution (Multi-Step Fix):**
+
+1. **Fixed MetalLB Interface Configuration:**
+   
+   Updated `clusters/eldertree/core-infrastructure/metallb/config.yaml`:
+   
+   ```yaml
+   apiVersion: metallb.io/v1beta1
+   kind: L2Advertisement
+   metadata:
+     name: default
+     namespace: metallb-system
+   spec:
+     ipAddressPools:
+       - default
+     # Specify wlan0 interface to ensure MetalLB advertises on physical network
+     interfaces:
+       - wlan0
+   ```
+   
+   Applied and restarted MetalLB speakers:
+   ```bash
+   kubectl apply -f clusters/eldertree/core-infrastructure/metallb/config.yaml
+   kubectl rollout restart daemonset -n metallb-system metallb-speaker
+   ```
+
+2. **Changed Service externalTrafficPolicy:**
+   
+   Updated `helm/pi-hole/templates/service.yaml`:
+   
+   ```yaml
+   spec:
+     # Use Cluster policy for DNS to allow traffic from any node
+     # Cluster policy allows traffic from any node, which is required for
+     # proper DNS response routing in MetalLB LoadBalancer setup with multiple nodes
+     externalTrafficPolicy: Cluster
+   ```
+   
+   This allows DNS traffic to be routed from any node, not just the node hosting the pod.
+
+3. **Removed Manual DNS Overrides:**
+   
+   Cleared manual entries from `pi-hole-dnsmasq` ConfigMap:
+   ```yaml
+   data:
+     05-custom-dns.conf: |
+       # Custom DNS rewrites moved to BIND backend for RFC2136 support
+       # Only put non-dynamic records here if needed
+       # Removed manual DNS entries that were overriding ExternalDNS
+   ```
+   
+   Removed wildcard from BIND zone in `pi-hole-bind` ConfigMap:
+   ```yaml
+   data:
+     eldertree.local.zone: |
+       # Removed wildcard entry that was overriding ExternalDNS
+       # Only keep static records that shouldn't be managed by ExternalDNS
+   ```
+
+4. **Fixed ExternalDNS Circular Dependency:**
+   
+   Updated `clusters/eldertree/dns-services/external-dns/helmrelease.yaml`:
+   ```yaml
+   env:
+     - name: EXTERNAL_DNS_RFC2136_HOST
+       # WORKAROUND: Use ClusterIP directly to avoid circular DNS dependency
+       # ExternalDNS can't resolve pi-hole.pihole.svc.cluster.local because
+       # it depends on DNS working, which creates a circular dependency.
+       value: "10.43.227.7" # Pi-hole service ClusterIP
+   ```
+
+5. **Restarted Pi-hole Pods:**
+   ```bash
+   kubectl rollout restart deployment -n pihole pi-hole
+   ```
+
+**Verification:**
+
+After all fixes were applied:
+
+```bash
+# Test external domain resolution
+dig @192.168.2.201 google.com
+# Result: ✅ Working - returns IP addresses
+
+nslookup google.com 192.168.2.201
+# Result: ✅ Working - resolves correctly
+
+# Test local domain resolution
+dig @192.168.2.201 grafana.eldertree.local
+# Result: ✅ Working - resolves to 192.168.2.200 (Traefik LoadBalancer)
+
+# Test LoadBalancer IP reachability
+ping -c 2 192.168.2.201
+# Result: ✅ Working - packets received
+```
+
+**Prevention:**
+
+- Always specify network interfaces explicitly in MetalLB L2Advertisement for multi-network nodes
+- Use `Cluster` policy for DNS services that need to be accessible from external clients
+- Never add manual DNS entries that conflict with ExternalDNS-managed records
+- Use ClusterIP directly for services that ExternalDNS depends on (avoid circular dependencies)
+- Document network architecture (internal vs physical IPs) in infrastructure docs
+- Test DNS resolution from external clients, not just from within cluster
+
+**Lessons Learned:**
+
+- **Multi-layer troubleshooting is essential:** DNS issues can span networking, service configuration, and application layers
+- **MetalLB Layer 2 mode requires interface specification:** When nodes have multiple network interfaces, explicitly specify which interface to use
+- **externalTrafficPolicy matters for LoadBalancer services:** `Cluster` policy allows traffic from any node, while `Local` is more restrictive
+- **Avoid circular dependencies in DNS:** Services that DNS depends on should use direct IPs, not DNS names
+- **Manual overrides break automation:** ExternalDNS can't work if manual entries override its records
+- **Test from external clients:** Just because DNS works from within the cluster doesn't mean it works from external clients
+- **Document network architecture:** Understanding internal vs physical IPs is critical for troubleshooting LoadBalancer issues
+
+**The Victory:**
+
+After hours of troubleshooting across multiple layers, Pi-hole now works as the primary DNS server without requiring any fallback. The MacBook can use `192.168.2.201` as the sole DNS server, and both local (`*.eldertree.local`) and external domains resolve correctly. This was a true battle that required understanding MetalLB Layer 2 mode, Kubernetes service routing, DNS resolution chains, and ExternalDNS integration.
+
+---
+
 ### Common Issues
 
 Based on analysis of 92 problems identified in the Git history, here are the most common categories:
