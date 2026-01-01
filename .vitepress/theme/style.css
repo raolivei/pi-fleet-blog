@@ -1,14 +1,31 @@
 /**
  * Custom theme styling for Building Eldertree blog
- * Based on VitePress default theme with customizations
+ * Based on VitePress default theme with customizations inspired by Doc Yard
  */
 
-:root {
-  --vp-c-brand-1: #10b981;
-  --vp-c-brand-2: #059669;
-  --vp-c-brand-3: #047857;
-  --vp-c-brand-soft: rgba(16, 185, 129, 0.14);
+@import "./var.css";
 
+/**
+ * Component: Button
+ * -------------------------------------------------------------------------- */
+
+:root {
+  --vp-button-brand-border: transparent;
+  --vp-button-brand-text: var(--vp-c-white);
+  --vp-button-brand-bg: var(--vp-c-brand-3);
+  --vp-button-brand-hover-border: transparent;
+  --vp-button-brand-hover-text: var(--vp-c-white);
+  --vp-button-brand-hover-bg: var(--vp-c-brand-2);
+  --vp-button-brand-active-border: transparent;
+  --vp-button-brand-active-text: var(--vp-c-white);
+  --vp-button-brand-active-bg: var(--vp-c-brand-1);
+}
+
+/**
+ * Component: Home
+ * -------------------------------------------------------------------------- */
+
+:root {
   --vp-home-hero-name-color: transparent;
   --vp-home-hero-name-background: -webkit-linear-gradient(120deg, #10b981 30%, #34d399);
   
@@ -28,7 +45,10 @@
   }
 }
 
-/* Custom block styling */
+/**
+ * Component: Custom Block
+ * -------------------------------------------------------------------------- */
+
 :root {
   --vp-custom-block-tip-border: transparent;
   --vp-custom-block-tip-text: var(--vp-c-text-1);
@@ -36,40 +56,232 @@
   --vp-custom-block-tip-code-bg: var(--vp-c-brand-soft);
 }
 
-/* Better code block styling */
-.vp-code-group {
-  margin: 1.5rem 0;
+/**
+ * Enhanced Typography
+ * -------------------------------------------------------------------------- */
+
+.vp-doc h1 {
+  font-weight: 700;
+  letter-spacing: -0.02em;
 }
 
-/* Improve table styling */
+.vp-doc h2 {
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.vp-doc h3 {
+  font-weight: 600;
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+}
+
+/**
+ * Better Code Block Styling
+ * -------------------------------------------------------------------------- */
+
+.vp-code-group {
+  margin: 1.5rem 0;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.vp-code-group .tabs {
+  border-radius: 8px 8px 0 0;
+}
+
+/**
+ * Improved Table Styling
+ * -------------------------------------------------------------------------- */
+
 .vp-doc table {
   display: table;
   width: 100%;
   border-collapse: collapse;
   margin: 1.5rem 0;
+  border-radius: 8px;
+  overflow: hidden;
 }
 
 .vp-doc table th {
   background-color: var(--vp-c-bg-soft);
   font-weight: 600;
+  padding: 0.75rem 1rem;
 }
 
-/* Better list spacing */
+.vp-doc table td {
+  padding: 0.75rem 1rem;
+}
+
+.vp-doc table tr {
+  border-bottom: 1px solid var(--vp-c-divider);
+}
+
+.vp-doc table tr:last-child {
+  border-bottom: none;
+}
+
+/**
+ * Better List Spacing
+ * -------------------------------------------------------------------------- */
+
 .vp-doc ul,
 .vp-doc ol {
   padding-left: 1.5rem;
+  margin: 1rem 0;
 }
 
 .vp-doc li {
   margin: 0.5rem 0;
+  line-height: 1.7;
 }
 
-/* Improve blockquote styling */
+/**
+ * Enhanced Blockquote Styling
+ * -------------------------------------------------------------------------- */
+
 .vp-doc blockquote {
   border-left: 4px solid var(--vp-c-brand-1);
   padding-left: 1rem;
   margin: 1.5rem 0;
   color: var(--vp-c-text-2);
   font-style: italic;
+  background-color: var(--vp-c-bg-soft);
+  padding: 1rem 1rem 1rem 1.5rem;
+  border-radius: 0 8px 8px 0;
 }
 
+/**
+ * Home Page Enhancements
+ * -------------------------------------------------------------------------- */
+
+.VPHero {
+  padding: 3rem 0 2rem;
+}
+
+.VPHero .main {
+  font-size: 3.5rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.VPHero .text {
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: var(--vp-c-text-2);
+  margin-top: 0.5rem;
+}
+
+.VPHero .tagline {
+  font-size: 1.1rem;
+  color: var(--vp-c-text-2);
+  margin-top: 1rem;
+}
+
+.VPHero .actions {
+  margin-top: 2rem;
+  gap: 1rem;
+}
+
+/**
+ * Stats Grid Enhancement
+ * -------------------------------------------------------------------------- */
+
+.vp-doc .stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin: 2rem 0;
+}
+
+.vp-doc .stat-card {
+  padding: 1.5rem;
+  background: var(--vp-c-bg-soft);
+  border-radius: 12px;
+  text-align: center;
+  transition: transform 0.2s, box-shadow 0.2s;
+  border: 1px solid var(--vp-c-divider);
+}
+
+.vp-doc .stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.vp-doc .stat-number {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--vp-c-brand-1);
+  line-height: 1;
+  margin-bottom: 0.5rem;
+}
+
+.vp-doc .stat-label {
+  color: var(--vp-c-text-2);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+/**
+ * Navigation Cards Enhancement
+ * -------------------------------------------------------------------------- */
+
+.vp-doc .nav-card {
+  padding: 1.5rem;
+  background: var(--vp-c-bg-soft);
+  border-radius: 12px;
+  border-left: 4px solid var(--vp-c-brand-1);
+  transition: transform 0.2s, box-shadow 0.2s;
+  border: 1px solid var(--vp-c-divider);
+  border-left: 4px solid var(--vp-c-brand-1);
+}
+
+.vp-doc .nav-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.vp-doc .nav-card h3 {
+  margin-top: 0;
+  color: var(--vp-c-text-1);
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.vp-doc .nav-card ul {
+  margin-top: 1rem;
+  margin-bottom: 0;
+}
+
+.vp-doc .nav-card a {
+  color: var(--vp-c-brand-1);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.vp-doc .nav-card a:hover {
+  color: var(--vp-c-brand-2);
+  text-decoration: underline;
+}
+
+/**
+ * Responsive Improvements
+ * -------------------------------------------------------------------------- */
+
+@media (max-width: 768px) {
+  .VPHero .main {
+    font-size: 2.5rem;
+  }
+  
+  .VPHero .text {
+    font-size: 1.25rem;
+  }
+  
+  .vp-doc .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+}

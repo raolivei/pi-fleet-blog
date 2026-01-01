@@ -25,26 +25,26 @@ hero:
 
 ## The Journey in Numbers
 
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 2rem 0;">
+<div class="stats-grid">
 
-<div style="padding: 1rem; background: var(--vp-c-bg-soft); border-radius: 8px; text-align: center;">
-  <div style="font-size: 2rem; font-weight: bold; color: var(--vp-c-brand-1);">212</div>
-  <div style="color: var(--vp-c-text-2);">Commits</div>
+<div class="stat-card">
+  <div class="stat-number">212</div>
+  <div class="stat-label">Commits</div>
 </div>
 
-<div style="padding: 1rem; background: var(--vp-c-bg-soft); border-radius: 8px; text-align: center;">
-  <div style="font-size: 2rem; font-weight: bold; color: var(--vp-c-brand-1);">45</div>
-  <div style="color: var(--vp-c-text-2);">Pull Requests</div>
+<div class="stat-card">
+  <div class="stat-number">45</div>
+  <div class="stat-label">Pull Requests</div>
 </div>
 
-<div style="padding: 1rem; background: var(--vp-c-bg-soft); border-radius: 8px; text-align: center;">
-  <div style="font-size: 2rem; font-weight: bold; color: var(--vp-c-brand-1);">92</div>
-  <div style="color: var(--vp-c-text-2);">Problems Solved</div>
+<div class="stat-card">
+  <div class="stat-number">92</div>
+  <div class="stat-label">Problems Solved</div>
 </div>
 
-<div style="padding: 1rem; background: var(--vp-c-bg-soft); border-radius: 8px; text-align: center;">
-  <div style="font-size: 2rem; font-weight: bold; color: var(--vp-c-brand-1);">91</div>
-  <div style="color: var(--vp-c-text-2);">Features Added</div>
+<div class="stat-card">
+  <div class="stat-number">91</div>
+  <div class="stat-label">Features Added</div>
 </div>
 
 </div>
@@ -70,31 +70,30 @@ hero:
 
 ## Quick Navigation
 
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin: 2rem 0;">
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin: 2rem 0;">
 
-<div style="padding: 1.5rem; background: var(--vp-c-bg-soft); border-radius: 8px; border-left: 4px solid var(--vp-c-brand-1);">
-  <h3 style="margin-top: 0;">🚀 Getting Started</h3>
+<div class="nav-card">
+  <h3>🚀 Getting Started</h3>
   <ul>
     <li><a href="/chapters/01-vision">Chapter 1: The Vision</a></li>
-    <li><a href="/chapters/02-hardware">Chapter 2: Hardware Decisions</a></li>
     <li><a href="/chapters/05-cluster-setup">Chapter 5: Initial Cluster Setup</a></li>
   </ul>
 </div>
 
-<div style="padding: 1.5rem; background: var(--vp-c-bg-soft); border-radius: 8px; border-left: 4px solid var(--vp-c-brand-1);">
-  <h3 style="margin-top: 0;">🔧 Infrastructure</h3>
+<div class="nav-card">
+  <h3>🔧 Infrastructure</h3>
   <ul>
-    <li><a href="/chapters/07-vault">Chapter 7: Secrets Management</a></li>
-    <li><a href="/chapters/08-dns">Chapter 8: DNS and Service Discovery</a></li>
-    <li><a href="/chapters/09-monitoring">Chapter 9: Monitoring</a></li>
+    <li>Chapter 7: Secrets Management <em>(Coming soon)</em></li>
+    <li>Chapter 8: DNS and Service Discovery <em>(Coming soon)</em></li>
+    <li>Chapter 9: Monitoring <em>(Coming soon)</em></li>
   </ul>
 </div>
 
-<div style="padding: 1.5rem; background: var(--vp-c-bg-soft); border-radius: 8px; border-left: 4px solid var(--vp-c-brand-1);">
-  <h3 style="margin-top: 0;">📚 Learning</h3>
+<div class="nav-card">
+  <h3>📚 Learning</h3>
   <ul>
-    <li><a href="/chapters/14-troubleshooting">Chapter 14: Troubleshooting</a></li>
-    <li><a href="/chapters/appendix">Appendix: Reference Materials</a></li>
+    <li>Chapter 14: Troubleshooting <em>(Coming soon)</em></li>
+    <li>Appendix: Reference Materials <em>(Coming soon)</em></li>
   </ul>
 </div>
 
