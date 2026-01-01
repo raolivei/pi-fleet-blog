@@ -289,7 +289,7 @@ Always run `setup-nvme-boot.yml` with emergency mode prevention enabled. Never a
 
 ### Network Setup
 
-- **IP Assignment:** Static IP via DHCP reservation (192.168.2.83)
+- **IP Assignment:** Static IP via DHCP reservation (node-0: 192.168.2.86, node-1: 192.168.2.85, node-2: 192.168.2.84)
 - **Network:** 192.168.2.0/24
 - **DNS:** Pi-hole as network-wide DNS server
 
