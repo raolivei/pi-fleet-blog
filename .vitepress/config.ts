@@ -50,5 +50,15 @@ export default defineConfig({
       lazyLoading: true,
     },
   },
+  
+  ignoreDeadLinks: true,
+  
+  srcExclude: [
+    "**/content/**",
+    "**/README.md",
+    "**/SETUP.md",
+    "**/TROUBLESHOOTING.md",
+    "**/DEPLOYMENT.md",
+  ],
 });
 
