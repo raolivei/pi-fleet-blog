@@ -34,10 +34,11 @@
 
 **Current Status:**
 
-- **Control Plane:** eldertree (192.168.2.83)
-- **Hardware:** Raspberry Pi 5 (8GB, ARM64)
-- **OS:** Debian 12 Bookworm
-- **Kubernetes:** K3s v1.33.5+k3s1
+- **Control Plane:** node-0.eldertree.local (192.168.2.86, eth0: 10.0.0.1)
+- **Worker Nodes:** node-1 (192.168.2.85, eth0: 10.0.0.2), node-2 (192.168.2.84, eth0: 10.0.0.3)
+- **Hardware:** Raspberry Pi 5 (8GB, ARM64) × 3 nodes
+- **OS:** Debian GNU/Linux 13 (Trixie)
+- **Kubernetes:** K3s v1.33.6+k3s1
 - **Status:** ✅ Production-ready, hosting multiple services
 
 **The Journey in Numbers:**
@@ -509,11 +510,12 @@ The initial cluster configuration:
 
 ```yaml
 Cluster Name: eldertree
-Control Plane: eldertree (192.168.2.83)
-Kubernetes Version: v1.33.5+k3s1
-Storage Class: local-path (built-in)
+Control Plane: node-0.eldertree.local (192.168.2.86 (wlan0), 10.0.0.1 (eth0))
+Worker Nodes: node-1 (192.168.2.85, 10.0.0.2), node-2 (192.168.2.84, 10.0.0.3)
+Kubernetes Version: v1.33.6+k3s1
+Storage Class: longhorn (distributed storage)
 Ingress Class: traefik (built-in)
-Service Load Balancer: Klipper (built-in)
+Service Load Balancer: MetalLB (Layer 2 mode)
 ```
 
 **Key Decisions:**
@@ -659,8 +661,16 @@ The journey from "let's set up Kubernetes" to "production-ready cluster" had beg
 
 ### Network Design
 
-**Subnet:** 192.168.2.0/24
-**Control Plane IP:** 192.168.2.83 (eldertree)
+**Management Network (wlan0):** 192.168.2.0/24
+- **node-0**: 192.168.2.86 (control plane)
+- **node-1**: 192.168.2.85 (worker)
+- **node-2**: 192.168.2.84 (worker)
+
+**Gigabit Network (eth0):** 10.0.0.0/24
+- **node-0**: 10.0.0.1 (control plane)
+- **node-1**: 10.0.0.2 (worker)
+- **node-2**: 10.0.0.3 (worker)
+
 **DNS Server:** 192.168.2.201 (Pi-hole via MetalLB)
 
 ### DNS Strategy
