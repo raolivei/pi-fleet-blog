@@ -103,3 +103,5 @@ hero:
 
 **Cluster Name:** The name "eldertree" reflects the wisdom and stability I hoped to build into this infrastructure - a foundational system that grows and supports other projects. Like an elder tree that has weathered storms and provided shelter for generations, this cluster is designed to be resilient, learn from challenges, and support future growth.
 
+Built with ❤️ documenting the eldertree Kubernetes cluster journey
+
