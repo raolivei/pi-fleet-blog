@@ -6,8 +6,8 @@ hero:
   text: A Journey in Self-Hosted Kubernetes
   tagline: A comprehensive diary of building a production-ready Kubernetes cluster on Raspberry Pi hardware
   image:
-    src: /logo.svg
-    alt: Eldertree
+    src: /banner.svg
+    alt: Eldertree Cluster
   actions:
     - theme: brand
       text: Start Reading
