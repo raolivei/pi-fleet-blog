@@ -1860,6 +1860,281 @@ After hours of troubleshooting across multiple layers, Pi-hole now works as the 
 
 ---
 
+#### Challenge 7: Cluster-Wide Boot Failure and SD Card Recovery
+
+**Date:** January 2-3, 2026  
+**Branch:** Recovery from maintenance shutdown  
+**Commits:** Multiple recovery commits
+
+**Problem:**
+After a maintenance shutdown of all Raspberry Pi nodes, the entire cluster failed to boot. All three nodes (node-0, node-1, node-2) were stuck in emergency mode or busybox/initramfs, making the cluster completely inaccessible. This was a critical failure that required physical recovery using SD card backups.
+
+**Symptoms:**
+
+- All nodes unreachable via SSH and ping
+- Nodes stuck in emergency mode requiring root password
+- Nodes stuck in busybox/initramfs shell
+- Root account locked (preventing console access)
+- Boot hanging waiting for unavailable mounts
+- Cluster API completely down: `Unable to connect to the server: dial tcp 192.168.2.86:6443: connect: host is down`
+
+**Root Causes (Multiple Issues):**
+
+1. **Missing `nofail` on Optional Mounts:**
+   - `/etc/fstab` had entries for optional mounts (backup drive `/dev/sdb1`, NVMe partitions) without the `nofail` flag
+   - Systemd would wait ~30 seconds for each unavailable mount before giving up
+   - This caused boot delays and timeouts, sometimes leading to emergency mode
+
+2. **Unused Backup Mount Causing Boot Delays:**
+   - An unused `/dev/sdb1 /mnt/backup` mount was configured in fstab
+   - This mount was never actually used (no scripts, no cron jobs)
+   - Even with `nofail`, systemd would wait ~30 seconds for the mount to fail
+   - This added unnecessary boot delay on every restart
+
+3. **Root Account Locked:**
+   - Root account was locked after switching boot devices (SD to NVMe)
+   - PAM faillock was enabled, locking accounts after failed login attempts
+   - Without console access (only Bluetooth keyboard available), recovery was impossible
+
+4. **Incorrect fstab Configuration:**
+   - NVMe partitions were mounted without `nofail` flag
+   - When booting from SD card, NVMe mounts would fail and cause boot issues
+   - Missing `nofail` on boot partition caused issues during recovery
+
+5. **Corrupted SD Card OS:**
+   - SD card backup OS had corrupted initramfs
+   - SD card fstab had incorrect entries
+   - SD card would get stuck in busybox/initramfs even after fixes
+
+**Investigation Journey:**
+
+This was a multi-day recovery process that required understanding boot processes, fstab configuration, and recovery procedures:
+
+1. **Initial Diagnosis:**
+   ```bash
+   # All nodes unreachable
+   ping -c 1 192.168.2.86  # node-0 - no response
+   ping -c 1 192.168.2.85  # node-1 - no response
+   ping -c 1 192.168.2.84  # node-2 - no response
+   
+   # Cluster API down
+   kubectl get nodes
+   # Error: Unable to connect to the server: dial tcp 192.168.2.86:6443: connect: host is down
+   ```
+
+2. **Physical Inspection:**
+   - Nodes were stuck during boot
+   - Some showed emergency mode requiring root password
+   - Some showed busybox/initramfs shell
+   - No USB keyboard available (only Bluetooth), making console access difficult
+
+3. **SD Card Recovery Strategy:**
+   - Decided to recover nodes one by one using SD card backups
+   - SD card has generic hostname `node-x` (from Raspberry Pi Imager)
+   - Nodes identified by IP address during recovery
+   - Boot from SD card, then fix NVMe, then boot from NVMe
+
+4. **Root Cause Analysis:**
+   ```bash
+   # When booted from SD card, checked fstab
+   cat /etc/fstab
+   # Found: Missing nofail on optional mounts
+   # Found: Unused backup mount causing delays
+   
+   # Checked root account status
+   passwd -S root
+   # Found: Root account locked (L)
+   
+   # Checked PAM configuration
+   grep pam_faillock /etc/pam.d/common-auth
+   # Found: PAM faillock enabled
+   ```
+
+**Solution (Multi-Step Recovery):**
+
+1. **Created Boot Reliability Fix Playbook:**
+
+   Created `ansible/playbooks/fix-boot-reliability.yml` to address all boot issues:
+   
+   ```yaml
+   - name: Fix Boot Reliability Issues
+     hosts: raspberry_pi
+     become: true
+     tasks:
+       # Unlock root account
+       - name: Unlock root account
+         command: passwd -u root
+       
+       # Set root password
+       - name: Set root password
+         user:
+           name: root
+           password: "{{ password_hash }}"
+       
+       # Remove unused backup mount
+       - name: Remove unused backup mount
+         replace:
+           path: /etc/fstab
+           regexp: '^/dev/sdb1.*/mnt/backup.*\n?'
+           replace: ''
+       
+       # Add nofail to optional mounts
+       - name: Add nofail to optional mounts
+         replace:
+           path: /etc/fstab
+           regexp: '^(/dev/nvme[^\s]*\s+[^\s]*\s+ext4\s+defaults)([^,]*)(\s+\d+\s+\d+)$'
+           replace: '\1,nofail\2\3'
+       
+       # Disable PAM faillock
+       - name: Disable PAM faillock
+         replace:
+           path: /etc/pam.d/common-auth
+           regexp: '^(auth.*pam_faillock)'
+           replace: '# \1'
+   ```
+
+2. **SD Card Recovery Process:**
+
+   For each node, the recovery process was:
+   
+   a. **Boot from SD Card:**
+      - Insert SD card backup into node
+      - Remove NVMe temporarily (to ensure boot from SD)
+      - Power on and wait for boot (hostname will be `node-x`)
+      - Identify node by IP address
+   
+   b. **Fix NVMe (Not SD Card):**
+      - Mount NVMe partitions: `/mnt/nvme-root` and `/mnt/nvme-boot`
+      - Apply boot reliability fixes to NVMe fstab
+      - Fix NVMe cmdline.txt
+      - Unlock root account on NVMe
+      - Disable PAM faillock on NVMe
+   
+   c. **Reboot from NVMe:**
+      - Remove SD card
+      - Ensure NVMe is connected
+      - Reboot - node should boot from NVMe correctly
+   
+   Created `scripts/recover-node-by-ip.sh` to automate this process:
+   
+   ```bash
+   # Usage: ./scripts/recover-node-by-ip.sh <IP_ADDRESS>
+   # Example: ./scripts/recover-node-by-ip.sh 192.168.2.86
+   
+   # Script automatically:
+   # - Identifies node by IP
+   # - Mounts NVMe partitions
+   # - Applies fixes to NVMe (not SD card)
+   # - Verifies fixes
+   ```
+
+3. **SD Card Fresh Setup:**
+
+   When SD card itself was corrupted (stuck in busybox/initramfs):
+   
+   a. **Format SD Card with Raspberry Pi Imager:**
+      - OS: Debian 12 Bookworm (64-bit)
+      - Hostname: `node-x` (generic, works for any node)
+      - User: `raolivei`
+      - Password: `Control01!` (different from main password to avoid mistakes)
+      - SSH: Enabled
+   
+   b. **Apply Boot Reliability Fixes:**
+      - Boot from SD card
+      - Run `./scripts/setup-sd-card-os.sh <IP>` to apply fixes
+      - Script updates initramfs, fixes fstab, removes backup mount
+   
+   c. **SD Card Ready for Recovery:**
+      - SD card can now be used to boot and fix NVMe on any node
+
+4. **Removed Unused Backup Mount:**
+
+   Updated `ansible/playbooks/setup-system.yml` to make backup mount optional:
+   
+   ```yaml
+   vars:
+     # Backup mount is now optional (default: false)
+     # Only enable if you have a permanently connected backup drive
+     enable_backup_mount: "{{ enable_backup_mount | default(false) | bool }}"
+   ```
+   
+   Created `ansible/playbooks/remove-backup-mount.yml` to remove from existing nodes.
+
+5. **Documentation Created:**
+   - `docs/RECOVERY_FROM_SD_CARD.md` - Complete recovery guide
+   - `docs/SD_CARD_FRESH_SETUP.md` - SD card setup guide
+   - `docs/BACKUP_MOUNT_DECISION.md` - Trade-off analysis for backup mount
+   - `scripts/recover-node-by-ip.sh` - Automated recovery script
+   - `scripts/setup-sd-card-os.sh` - SD card setup script
+   - `scripts/fix-sd-card-on-node2.sh` - Fix SD card while mounted
+
+**Verification:**
+
+After recovery, all nodes boot correctly:
+
+```bash
+# All nodes accessible
+ping -c 1 192.168.2.86  # node-0 - ✅ Working
+ping -c 1 192.168.2.85  # node-1 - ✅ Working
+ping -c 1 192.168.2.84  # node-2 - ✅ Working
+
+# Cluster API accessible
+kubectl get nodes
+# Result: ✅ All nodes in Ready state
+
+# Boot times improved
+# Before: ~60-90 seconds (with backup mount timeout)
+# After: ~30-40 seconds (backup mount removed)
+```
+
+**Prevention:**
+
+- **Always use `nofail` on optional mounts** - Prevents boot failures when mounts are unavailable
+- **Remove unused mounts from fstab** - Even with `nofail`, systemd waits before giving up
+- **Keep root account unlocked** - Critical for emergency mode access
+- **Disable PAM faillock** - Prevents account lockouts during recovery
+- **Test reboots after important changes** - Catch boot issues before they become critical
+- **Maintain SD card backups** - Essential for recovery when NVMe boot fails
+- **Document recovery procedures** - When disaster strikes, you need clear steps
+- **Make optional features truly optional** - Don't add features by default that cause boot delays
+
+**Lessons Learned:**
+
+- **Boot reliability is critical** - A cluster that can't boot is completely useless
+- **`nofail` is not enough** - Even with `nofail`, systemd waits before giving up, causing delays
+- **Unused mounts cause problems** - Remove mounts that aren't actually being used
+- **SD card recovery is essential** - When NVMe boot fails, SD card is your lifeline
+- **Root account must be accessible** - Locked root accounts prevent emergency mode recovery
+- **Documentation saves time** - Clear recovery procedures are critical during disasters
+- **Test assumptions** - Just because something has `nofail` doesn't mean it's harmless
+- **Default behavior matters** - Don't add optional features by default that cause boot delays
+- **Physical access limitations** - No USB keyboard (only Bluetooth) made console access difficult
+- **Recovery is iterative** - Each node recovered teaches lessons for the next one
+
+**The Recovery Process:**
+
+The recovery took several days and required:
+1. Understanding boot processes (initramfs, fstab, systemd mounts)
+2. Creating automated recovery scripts
+3. Documenting the complete process
+4. Fixing SD card OS when it was corrupted
+5. Applying fixes to NVMe (not SD card) during recovery
+6. Testing reboots after each fix
+
+**Key Insight:**
+
+The most important lesson was understanding that **optional mounts should be truly optional**. Even with `nofail`, systemd waits before giving up, causing boot delays. The unused backup mount was adding ~30 seconds to every boot, and when combined with other issues, it could cause boot failures. Removing unused mounts and ensuring all optional mounts have `nofail` is critical for boot reliability.
+
+**Trade-off Analysis:**
+
+The backup mount decision illustrates an important trade-off:
+- **ON (default):** Prepared for backup drive, but causes boot timeout if drive not connected
+- **OFF (recommended):** Faster boot, but need to configure manually when connecting drive
+
+**Decision:** Keep backup mount OFF by default. Only enable when you have a permanently connected backup drive. Boot speed is more important than the convenience of an unused feature.
+
+---
+
 ### Common Issues
 
 Based on analysis of 92 problems identified in the Git history, here are the most common categories:
