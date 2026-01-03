@@ -1,7 +1,11 @@
 import { defineConfig } from "vitepress";
 import { sidebar } from "./sidebar";
 
+// Use /pi-fleet-blog/ base path for GitHub Pages, / for local development
+const base = process.env.NODE_ENV === "production" ? "/pi-fleet-blog/" : "/";
+
 export default defineConfig({
+  base,
   title: "Building Eldertree",
   description: "A Journey in Self-Hosted Kubernetes - Comprehensive diary of building a production-ready Kubernetes cluster on Raspberry Pi hardware",
   cleanUrls: true,
