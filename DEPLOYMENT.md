@@ -51,19 +51,29 @@ The blog is configured to use `blog.eldertree.xyz` as the custom domain.
 - **Base path**: Automatically uses `/` (root) when CNAME is present
 - **GitHub Pages**: Configured to serve from custom domain
 
-### Cloudflare DNS Setup
+### Cloudflare DNS Setup (Terraform-managed)
 
-1. **Add DNS Record in Cloudflare:**
-   - Log in to [Cloudflare Dashboard](https://dash.cloudflare.com)
-   - Select `eldertree.xyz` domain
-   - Go to **DNS** → **Records**
-   - Click **Add record**
-   - Configure:
-     - **Type**: `CNAME`
-     - **Name**: `blog`
-     - **Target**: `raolivei.github.io`
-     - **Proxy status**: ✅ Proxied (orange cloud)
-     - Click **Save**
+**✅ DNS is managed by Infrastructure as Code** - The DNS record is defined in `pi-fleet/terraform/cloudflare.tf`.
+
+**To create the DNS record:**
+
+1. **Navigate to Terraform directory:**
+   ```bash
+   cd /Users/roliveira/WORKSPACE/raolivei/pi-fleet/terraform
+   ```
+
+2. **Apply Terraform changes:**
+   ```bash
+   ./run-terraform.sh plan   # Review changes
+   ./run-terraform.sh apply  # Create DNS record
+   ```
+
+The Terraform resource `cloudflare_record.blog_eldertree_xyz_github_pages` will create the CNAME record automatically.
+
+**Manual Setup (Not Recommended):**
+If you need to set up DNS manually (not recommended, will conflict with Terraform):
+- Log in to [Cloudflare Dashboard](https://dash.cloudflare.com)
+- Add CNAME: `blog` → `raolivei.github.io` (proxied)
 
 2. **Configure GitHub Pages:**
    - Go to: https://github.com/raolivei/pi-fleet-blog/settings/pages

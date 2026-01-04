@@ -43,6 +43,7 @@ npm run dev
 ```
 
 This will:
+
 - Start Vite dev server on http://localhost:3000
 - Hot reload on file changes
 - Load blog content from `public/content/BLOG.md`
@@ -72,6 +73,7 @@ The `.github/workflows/deploy.yml` workflow automatically deploys on push to mai
 3. Blog available at: `https://raolivei.github.io/pi-fleet-blog/`
 
 **Manual deployment:**
+
 ```bash
 npm run build
 npx gh-pages -d dist
@@ -111,6 +113,7 @@ npx gh-pages -d dist
 ### Styling
 
 Edit `src/styles.css` to customize:
+
 - Colors (CSS variables in `:root`)
 - Typography
 - Layout
@@ -119,6 +122,7 @@ Edit `src/styles.css` to customize:
 ### Features
 
 The blog uses:
+
 - **Vite** - Fast build tool
 - **Marked** - Markdown parser
 - **Highlight.js** - Code syntax highlighting
@@ -127,6 +131,7 @@ The blog uses:
 ### Adding Features
 
 You can easily add:
+
 - Table of contents generation
 - Search functionality
 - RSS feed
@@ -146,4 +151,3 @@ You can easily add:
 ---
 
 **Need help?** Check the main README.md for more details.
-
