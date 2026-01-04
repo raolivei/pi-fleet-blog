@@ -25,7 +25,8 @@
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
   line-height: 1.6;
   color: var(--text-color);
   background-color: var(--bg-color);
@@ -111,7 +112,8 @@ main p {
   margin-bottom: 1rem;
 }
 
-main ul, main ol {
+main ul,
+main ol {
   margin-left: 2rem;
   margin-bottom: 1rem;
 }
@@ -125,7 +127,7 @@ main code {
   padding: 0.2rem 0.4rem;
   border-radius: 0.25rem;
   font-size: 0.9em;
-  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
 }
 
 main pre {
@@ -168,7 +170,8 @@ main table {
   margin-bottom: 1rem;
 }
 
-main th, main td {
+main th,
+main td {
   padding: 0.75rem;
   text-align: left;
   border-bottom: 1px solid var(--border-color);
@@ -185,7 +188,8 @@ main hr {
   margin: 2rem 0;
 }
 
-.loading, .error {
+.loading,
+.error {
   text-align: center;
   padding: 2rem;
   color: #6b7280;
