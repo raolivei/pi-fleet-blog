@@ -41,23 +41,56 @@ npm run build
 npm run preview
 ```
 
-## Custom Domain (Optional)
+## Custom Domain Setup
 
-If you want to use a custom domain:
+The blog is configured to use `blog.eldertree.xyz` as the custom domain.
 
-1. Add a `CNAME` file in `public/`:
-   ```
-   blog.eldertree.local
-   # or
-   blog.yourdomain.com
-   ```
+### Current Configuration
 
-2. Configure DNS:
-   - Add CNAME record pointing to `raolivei.github.io`
+- **CNAME file**: `public/CNAME` contains `blog.eldertree.xyz`
+- **Base path**: Automatically uses `/` (root) when CNAME is present
+- **GitHub Pages**: Configured to serve from custom domain
 
-3. Update GitHub Pages settings:
-   - Go to repository settings → Pages
-   - Add your custom domain
+### Cloudflare DNS Setup
+
+1. **Add DNS Record in Cloudflare:**
+   - Log in to [Cloudflare Dashboard](https://dash.cloudflare.com)
+   - Select `eldertree.xyz` domain
+   - Go to **DNS** → **Records**
+   - Click **Add record**
+   - Configure:
+     - **Type**: `CNAME`
+     - **Name**: `blog`
+     - **Target**: `raolivei.github.io`
+     - **Proxy status**: ✅ Proxied (orange cloud)
+     - Click **Save**
+
+2. **Configure GitHub Pages:**
+   - Go to: https://github.com/raolivei/pi-fleet-blog/settings/pages
+   - Under **Custom domain**, enter: `blog.eldertree.xyz`
+   - Check **Enforce HTTPS** (after DNS propagates)
+   - Click **Save**
+
+3. **SSL/TLS Settings (Cloudflare):**
+   - Go to **SSL/TLS** → **Overview**
+   - Set encryption mode to: **Full (strict)** or **Full**
+   - This ensures HTTPS works correctly
+
+### Verification
+
+After DNS propagates (usually 5-15 minutes):
+
+```bash
+# Check DNS resolution
+dig blog.eldertree.xyz +short
+# Should return: raolivei.github.io
+
+# Test HTTPS
+curl -I https://blog.eldertree.xyz
+# Should return 200 OK
+```
+
+**Your blog will be available at:** https://blog.eldertree.xyz
 
 ## Troubleshooting
 

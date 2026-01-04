@@ -34,7 +34,7 @@ Meet **Eldertree**—my self-hosted Kubernetes cluster that lives in a rack of R
 
 **The Current State of Affairs:**
 
-Three Raspberry Pi 5s (8GB each) running Debian, K3s, and what's left of my sanity. They're named node-0, node-1, and node-2 because creativity was not my strong suit that day (and also because naming things is hard). Node-0 is the control plane (the boss), and the other two are workers (the minions). Together, they host everything from my personal finance app to a commercial pool schedule service. Because nothing says "production infrastructure" like a cluster named after numbers.
+Three Raspberry Pi 5s (8GB each) running Debian, K3s, and what's left of my sanity. They're named node-1, node-2, and node-3 because creativity was not my strong suit that day (and also because naming things is hard). Node-1 is the control plane (the boss), and the other two are workers (the minions). Together, they host everything from my personal finance app to a commercial pool schedule service. Because nothing says "production infrastructure" like a cluster named after numbers.
 
 **By the Numbers (The Things I Actually Tracked):**
 
@@ -236,7 +236,7 @@ Always run `setup-nvme-boot.yml` with emergency mode prevention enabled. Never a
 
 ### Network Setup
 
-- **IP Assignment:** Static IP via DHCP reservation (node-0: 192.168.2.86, node-1: 192.168.2.85, node-2: 192.168.2.84)
+- **IP Assignment:** Static IP via DHCP reservation (node-1: 192.168.2.101, node-2: 192.168.2.102, node-3: 192.168.2.103)
 - **Network:** 192.168.2.0/24
 - **DNS:** Pi-hole as network-wide DNS server
 
@@ -459,8 +459,8 @@ The initial cluster configuration:
 
 ```yaml
 Cluster Name: eldertree
-Control Plane: node-0.eldertree.local (192.168.2.86 (wlan0), 10.0.0.1 (eth0))
-Worker Nodes: node-1 (192.168.2.85, 10.0.0.2), node-2 (192.168.2.84, 10.0.0.3)
+Control Plane: node-1.eldertree.local (192.168.2.101 (wlan0), 10.0.0.1 (eth0))
+Worker Nodes: node-2 (192.168.2.102 (wlan0), 10.0.0.2 (eth0)), node-3 (192.168.2.103 (wlan0), 10.0.0.3 (eth0))
 Kubernetes Version: v1.33.6+k3s1
 Storage Class: longhorn (distributed storage)
 Ingress Class: traefik (built-in)
@@ -620,13 +620,15 @@ But hey, at least it works. Most of the time.
 
 **Management Network (wlan0):** 192.168.2.0/24
 
-- **node-0**: 192.168.2.86 (control plane)
-- **node-1**: 192.168.2.85 (worker)
-- **node-2**: 192.168.2.84 (worker)
+- **node-1**: 192.168.2.101 (control plane, wlan0)
+- **node-2**: 192.168.2.102 (worker, wlan0)
+- **node-3**: 192.168.2.103 (worker, wlan0)
 
 **Gigabit Network (eth0):** 10.0.0.0/24
 
-- **node-0**: 10.0.0.1 (control plane)
+- **node-1**: 10.0.0.1 (control plane, eth0)
+- **node-2**: 10.0.0.2 (worker, eth0)
+- **node-3**: 10.0.0.3 (worker, eth0)
 - **node-1**: 10.0.0.2 (worker)
 - **node-2**: 10.0.0.3 (worker)
 
@@ -989,7 +991,7 @@ I verified everything was working:
 ```bash
 # Test DNS resolution
 nslookup vault.eldertree.local
-# Result: 192.168.2.86 ✅
+# Result: 192.168.2.101 ✅
 
 # Test ping
 ping -c 2 vault.eldertree.local
@@ -1641,8 +1643,8 @@ After setting up Pi-hole as the DNS server for the cluster, DNS resolution wasn'
 
 3. **Manual DNS Entries Overriding ExternalDNS:**
 
-   - Manual entries in Pi-hole dnsmasq ConfigMap (`address=/grafana.eldertree.local/192.168.2.86`) were overriding ExternalDNS-managed records
-   - Wildcard entry in BIND zone (`* A 192.168.2.86`) was catching all queries before ExternalDNS records could be used
+   - Manual entries in Pi-hole dnsmasq ConfigMap (`address=/grafana.eldertree.local/192.168.2.101`) were overriding ExternalDNS-managed records
+   - Wildcard entry in BIND zone (`* A 192.168.2.101`) was catching all queries before ExternalDNS records could be used
 
 4. **ExternalDNS Circular Dependency:**
    - ExternalDNS was trying to resolve `pi-hole.pihole.svc.cluster.local` for RFC2136 connection
@@ -1841,7 +1843,7 @@ After hours of troubleshooting across multiple layers, Pi-hole now works as the 
 **Commits:** Multiple recovery commits
 
 **Problem:**
-After a maintenance shutdown of all Raspberry Pi nodes, the entire cluster failed to boot. All three nodes (node-0, node-1, node-2) were stuck in emergency mode or busybox/initramfs, making the cluster completely inaccessible. This was a critical failure that required physical recovery using SD card backups.
+After a maintenance shutdown of all Raspberry Pi nodes, the entire cluster failed to boot. All three nodes (node-1, node-2, node-3) were stuck in emergency mode or busybox/initramfs, making the cluster completely inaccessible. This was a critical failure that required physical recovery using SD card backups.
 
 **Symptoms:**
 
@@ -1850,7 +1852,7 @@ After a maintenance shutdown of all Raspberry Pi nodes, the entire cluster faile
 - Nodes stuck in busybox/initramfs shell
 - Root account locked (preventing console access)
 - Boot hanging waiting for unavailable mounts
-- Cluster API completely down: `Unable to connect to the server: dial tcp 192.168.2.86:6443: connect: host is down`
+- Cluster API completely down: `Unable to connect to the server: dial tcp 192.168.2.101:6443: connect: host is down`
 
 **Root Causes (Multiple Issues):**
 
@@ -1892,13 +1894,13 @@ This was a multi-day recovery process that required understanding boot processes
 
    ```bash
    # All nodes unreachable
-   ping -c 1 192.168.2.86  # node-0 - no response
-   ping -c 1 192.168.2.85  # node-1 - no response
-   ping -c 1 192.168.2.84  # node-2 - no response
+   ping -c 1 192.168.2.101  # node-1 - no response
+   ping -c 1 192.168.2.102  # node-2 - no response
+   ping -c 1 192.168.2.103  # node-3 - no response
 
    # Cluster API down
    kubectl get nodes
-   # Error: Unable to connect to the server: dial tcp 192.168.2.86:6443: connect: host is down
+   # Error: Unable to connect to the server: dial tcp 192.168.2.101:6443: connect: host is down
    ```
 
 2. **Physical Inspection:**
@@ -2004,7 +2006,7 @@ This was a multi-day recovery process that required understanding boot processes
 
    ```bash
    # Usage: ./scripts/recover-node-by-ip.sh <IP_ADDRESS>
-   # Example: ./scripts/recover-node-by-ip.sh 192.168.2.86
+   # Example: ./scripts/recover-node-by-ip.sh 192.168.2.101
 
    # Script automatically:
    # - Identifies node by IP
@@ -2062,9 +2064,9 @@ After recovery, all nodes boot correctly:
 
 ```bash
 # All nodes accessible
-ping -c 1 192.168.2.86  # node-0 - ✅ Working
-ping -c 1 192.168.2.85  # node-1 - ✅ Working
-ping -c 1 192.168.2.84  # node-2 - ✅ Working
+ping -c 1 192.168.2.101  # node-1 - ✅ Working
+ping -c 1 192.168.2.102  # node-2 - ✅ Working
+ping -c 1 192.168.2.103  # node-3 - ✅ Working
 
 # Cluster API accessible
 kubectl get nodes
@@ -2131,15 +2133,15 @@ With the root causes identified and tools created, it was time for the actual re
 
 Node-0 is the control plane—the brain of the operation. Without it, nothing works. So naturally, it got first priority.
 
-I formatted a fresh SD card (because the old one was also corrupted—because of course it was), booted node-0 from it, and watched it come online with the generic hostname `node-x`. It felt like meeting a stranger who happens to live at your address.
+I formatted a fresh SD card (because the old one was also corrupted—because of course it was), booted node-1 from it, and watched it come online with the generic hostname `node-x`. It felt like meeting a stranger who happens to live at your address.
 
 Then came the moment of truth: mount the NVMe, fix its fstab, unlock root, disable PAM faillock, fix cmdline.txt. All while the node is running from the SD card, like performing surgery on someone while they're walking around.
 
-I removed the SD card, crossed my fingers, and rebooted. Two minutes later: `node-0.eldertree.local` was back online, booting from NVMe, k3s running, cluster API responding. Victory! 🎉
+I removed the SD card, crossed my fingers, and rebooted. Two minutes later: `node-1.eldertree.local` was back online, booting from NVMe, k3s running, cluster API responding. Victory! 🎉
 
-**Round 2: Node-1 (The Worker)**
+**Round 2: Node-2 (The Worker)**
 
-With node-0 recovered, node-1 was next. Same SD card (why waste a good thing?), same process. By this point, I had the routine down: boot from SD, mount NVMe, apply fixes, remove SD, reboot, celebrate.
+With node-1 recovered, node-2 was next. Same SD card (why waste a good thing?), same process. By this point, I had the routine down: boot from SD, mount NVMe, apply fixes, remove SD, reboot, celebrate.
 
 Node-1 came back online without drama. Sometimes the second time is easier because you've already made all the mistakes.
 
@@ -2158,9 +2160,9 @@ After two days of investigation, tool creation, and actual recovery work, all th
 ```bash
 $ kubectl get nodes
 NAME                     STATUS   ROLES
-node-0.eldertree.local   Ready    control-plane,etcd,master
-node-1.eldertree.local   Ready    <none>
+node-1.eldertree.local   Ready    control-plane,etcd,master
 node-2.eldertree.local   Ready    <none>
+node-3.eldertree.local   Ready    <none>
 ```
 
 All pods running, all services healthy, cluster fully operational. The eldertree was back to providing shelter.
@@ -2295,9 +2297,9 @@ This blog represents months of learning, troubleshooting, and iteration. Each co
 
 **Initial Setup:**
 
-- **node-0**: Control plane (192.168.2.86, eth0: 10.0.0.1)
-- **node-1**: Worker node (192.168.2.85, eth0: 10.0.0.2) - already configured
-- **node-2**: New worker node (192.168.2.84, eth0: 10.0.0.3) - to be added
+- **node-1**: Control plane (192.168.2.101 (wlan0), eth0: 10.0.0.1)
+- **node-2**: Worker node (192.168.2.102 (wlan0), eth0: 10.0.0.2) - already configured
+- **node-3**: Worker node (192.168.2.103 (wlan0), eth0: 10.0.0.3) - already configured
 
 **The Process:**
 
@@ -2310,13 +2312,13 @@ This blog represents months of learning, troubleshooting, and iteration. Each co
 2. **Key Fixes Applied:**
 
    - **DNS Configuration**: Added `/etc/hosts` entries for all cluster nodes before k3s installation
-   - **Network Configuration**: Fixed node-0 eth0 IP to use 10.0.0.1 (was incorrectly configured)
+   - **Network Configuration**: Fixed node-1 eth0 IP to use 10.0.0.1 (was incorrectly configured)
    - **k3s-agent Cleanup**: Added automatic cleanup of stuck k3s-agent state before restart
    - **Longhorn Prerequisites**: Improved open-iscsi detection and installation
 
 3. **Challenges Encountered:**
 
-   - **DNS Resolution Failure**: node-2 couldn't resolve `node-0.eldertree.local`, causing k3s-agent to fail
+   - **DNS Resolution Failure**: node-2 couldn't resolve `node-1.eldertree.local`, causing k3s-agent to fail
      - **Solution**: Added DNS configuration play to setup-new-node.yml before k3s installation
    - **k3s-agent Stuck State**: Service stuck in "activating" state after configuration changes
      - **Solution**: Added cleanup tasks to stop service and remove `/var/lib/rancher/k3s/agent` before restart
@@ -2335,7 +2337,7 @@ This blog represents months of learning, troubleshooting, and iteration. Each co
 After running the master playbook:
 
 ```bash
-ansible-playbook playbooks/setup-new-node.yml --limit localhost,node-0,node-2
+ansible-playbook playbooks/setup-new-node.yml --limit localhost,node-1,node-3
 ```
 
 **Cluster Status:**
@@ -2363,7 +2365,7 @@ The `setup-new-node.yml` playbook orchestrates the complete setup process:
 3. **System Configuration** - Hostname, user setup, SSH, firewall, cgroups, timezone, NTP
 4. **NVMe Boot Setup** - Partitions, clones OS from SD card, fixes emergency mode prevention (fstab, cmdline.txt, root account)
 5. **Gigabit Network (eth0)** - Configures NetworkManager connection with calculated IP
-6. **k3s Token Retrieval** - Automatically retrieves token from control plane (node-0)
+6. **k3s Token Retrieval** - Automatically retrieves token from control plane (node-1)
 7. **k3s Worker Installation** - Installs k3s agent with proper cgroup configuration
 8. **k3s Gigabit Network** - Configures k3s to use eth0 for cluster communication
 9. **SSH Keys Setup** - Node-to-node communication and optional local key addition
@@ -2391,7 +2393,7 @@ Adding new nodes is now as simple as:
    ```
 3. **Run master playbook**:
    ```bash
-   ansible-playbook playbooks/setup-new-node.yml --limit localhost,node-0,node-N
+   ansible-playbook playbooks/setup-new-node.yml --limit localhost,node-1,node-N
    ```
 4. **All configuration is automated** - IPs calculated, DNS configured, k3s installed, prerequisites set up
 
