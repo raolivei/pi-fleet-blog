@@ -41,23 +41,66 @@ npm run build
 npm run preview
 ```
 
-## Custom Domain (Optional)
+## Custom Domain Setup
 
-If you want to use a custom domain:
+The blog is configured to use `blog.eldertree.xyz` as the custom domain.
 
-1. Add a `CNAME` file in `public/`:
+### Current Configuration
+
+- **CNAME file**: `public/CNAME` contains `blog.eldertree.xyz`
+- **Base path**: Automatically uses `/` (root) when CNAME is present
+- **GitHub Pages**: Configured to serve from custom domain
+
+### Cloudflare DNS Setup (Terraform-managed)
+
+**✅ DNS is managed by Infrastructure as Code** - The DNS record is defined in `pi-fleet/terraform/cloudflare.tf`.
+
+**To create the DNS record:**
+
+1. **Navigate to Terraform directory:**
+   ```bash
+   cd /Users/roliveira/WORKSPACE/raolivei/pi-fleet/terraform
    ```
-   blog.eldertree.local
-   # or
-   blog.yourdomain.com
+
+2. **Apply Terraform changes:**
+   ```bash
+   ./run-terraform.sh plan   # Review changes
+   ./run-terraform.sh apply  # Create DNS record
    ```
 
-2. Configure DNS:
-   - Add CNAME record pointing to `raolivei.github.io`
+The Terraform resource `cloudflare_record.blog_eldertree_xyz_github_pages` will create the CNAME record automatically.
 
-3. Update GitHub Pages settings:
-   - Go to repository settings → Pages
-   - Add your custom domain
+**Manual Setup (Not Recommended):**
+If you need to set up DNS manually (not recommended, will conflict with Terraform):
+- Log in to [Cloudflare Dashboard](https://dash.cloudflare.com)
+- Add CNAME: `blog` → `raolivei.github.io` (proxied)
+
+2. **Configure GitHub Pages:**
+   - Go to: https://github.com/raolivei/pi-fleet-blog/settings/pages
+   - Under **Custom domain**, enter: `blog.eldertree.xyz`
+   - Check **Enforce HTTPS** (after DNS propagates)
+   - Click **Save**
+
+3. **SSL/TLS Settings (Cloudflare):**
+   - Go to **SSL/TLS** → **Overview**
+   - Set encryption mode to: **Full (strict)** or **Full**
+   - This ensures HTTPS works correctly
+
+### Verification
+
+After DNS propagates (usually 5-15 minutes):
+
+```bash
+# Check DNS resolution
+dig blog.eldertree.xyz +short
+# Should return: raolivei.github.io
+
+# Test HTTPS
+curl -I https://blog.eldertree.xyz
+# Should return 200 OK
+```
+
+**Your blog will be available at:** https://blog.eldertree.xyz
 
 ## Troubleshooting
 

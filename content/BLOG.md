@@ -26,186 +26,133 @@
 
 ## Introduction
 
-**Eldertree** is my self-hosted Kubernetes cluster running on Raspberry Pi hardware. This blog documents the complete journey from initial concept to a production-ready infrastructure that hosts multiple applications, manages secrets securely, and provides monitoring and observability.
+Meet **Eldertree**—my self-hosted Kubernetes cluster that lives in a rack of Raspberry Pis. What started as "let's run a few containers" became a full-blown production infrastructure that hosts my apps, manages secrets, and occasionally teaches me new ways things can break.
 
-**Why this blog?** Building a Kubernetes cluster on ARM hardware comes with unique challenges and decisions. This documentation serves as both a personal record and a resource for others embarking on similar journeys. Through 212 commits, 45 pull requests, and solving 92 problems, this journey represents months of learning, troubleshooting, and iteration.
+**Why write about this?** Because building Kubernetes on ARM hardware is like assembling IKEA furniture while blindfolded—technically possible, but you'll make some interesting mistakes along the way. This is the story of those mistakes, the solutions, and the 92 problems that made me question my life choices (but also learn a lot).
 
-**Cluster Name:** The name "eldertree" reflects the wisdom and stability I hoped to build into this infrastructure - a foundational system that grows and supports other projects. Like an elder tree that has weathered storms and provided shelter for generations, this cluster is designed to be resilient, learn from challenges, and support future growth.
+**Why "Eldertree"?** I wanted a name that suggested wisdom, stability, and resilience. Like an old tree that's weathered storms, this cluster is meant to be a foundation that supports other projects. Plus, it sounds cooler than "raspberry-cluster-01."
 
-**Current Status:**
+**The Current State of Affairs:**
 
-- **Control Plane:** node-0.eldertree.local (192.168.2.86, eth0: 10.0.0.1)
-- **Worker Nodes:** node-1 (192.168.2.85, eth0: 10.0.0.2), node-2 (192.168.2.84, eth0: 10.0.0.3)
-- **Hardware:** Raspberry Pi 5 (8GB, ARM64) × 3 nodes
-- **OS:** Debian GNU/Linux 13 (Trixie)
-- **Kubernetes:** K3s v1.33.6+k3s1
-- **Status:** ✅ Production-ready, hosting multiple services
+Three Raspberry Pi 5s (8GB each) running Debian, K3s, and what's left of my sanity. They're named node-1, node-2, and node-3 because creativity was not my strong suit that day (and also because naming things is hard). Node-1 is the control plane (the boss), and the other two are workers (the minions). Together, they host everything from my personal finance app to a commercial pool schedule service. Because nothing says "production infrastructure" like a cluster named after numbers.
 
-**The Journey in Numbers:**
+**By the Numbers (The Things I Actually Tracked):**
 
-- **212 commits** documenting every decision, problem, and solution
-- **45 pull requests** with detailed discussions and reviews
-- **92 problems solved** - each one a learning opportunity
-- **91 features added** - building capabilities incrementally
-- **68 bug fixes** (32% of commits) - resilience through iteration
-- **31 new features** (14.6% of commits) - continuous improvement
-- **22 documentation updates** (10.3% of commits) - knowledge preservation
+- **212 commits** - Because I document everything, even my failures (especially my failures)
+- **45 pull requests** - Because code review is important, even when it's just me reviewing my own code (it's not weird, I swear)
+- **92 problems solved** - Each one a lesson in humility (and a reminder that I don't know as much as I think I do)
+- **68 bug fixes** - Turns out, things break. A lot. Who knew? (Everyone. Everyone knew.)
+- **31 new features** - Because "good enough" is never good enough (and also because I have a problem)
 
-**What You'll Learn:**
+**What You'll Actually Learn (Or: What I Wish I Knew):**
 
-- How to build a production-ready Kubernetes cluster on Raspberry Pi
-- ARM64 compatibility challenges and solutions
-- Secrets management with Vault in production
-- DNS architecture for local services
-- Monitoring and observability on resource-constrained hardware
-- GitOps workflows with FluxCD
-- Troubleshooting strategies that actually work
-- Lessons learned from real-world problems
+- How to build Kubernetes on Raspberry Pi (and why you might want to, or more likely, why you probably don't)
+- ARM64 compatibility: the good, the bad, and the "why doesn't this work?" (spoiler: it's usually the third one)
+- Secrets management that doesn't involve sticky notes (because apparently, that's not "production-ready")
+- DNS architecture that makes sense (eventually, after much troubleshooting and questioning your life choices)
+- Monitoring on hardware that costs less than a nice dinner (because monitoring is important, but so is not going broke)
+- GitOps workflows that actually work (most of the time, when the stars align)
+- Troubleshooting strategies from someone who's made all the mistakes (so you don't have to. You're welcome.)
 
 ---
 
 ## Chapter 1: The Vision
 
-The eldertree cluster didn't start as a grand plan—it began with a simple need: run my personal applications without depending on cloud providers. What started as a single Raspberry Pi running Docker containers evolved into a full Kubernetes cluster, teaching me more about infrastructure, resilience, and problem-solving than I ever expected.
+The eldertree cluster didn't start with a grand vision. It started with me looking at my cloud hosting bill and thinking "surely I can do this cheaper." Famous last words.
 
-### Why Self-Host?
+What began as a single Raspberry Pi running Docker containers ("how hard can it be?") evolved into a full Kubernetes cluster. Along the way, I learned that "how hard can it be?" is a question that should never be asked out loud.
 
-The decision to self-host came from several motivations:
+### Why Self-Host? (Or: How I Learned to Stop Worrying and Love the Command Line)
 
 **Privacy and Data Ownership**
 
-- My personal finance data (Canopy) shouldn't live on someone else's servers
-- User data for commercial projects (SwimTO) requires full control
-- Learning projects (NIMA, Journey) generate data I want to own completely
+My personal finance app (Canopy) contains data I'd rather not share with the cloud. My commercial project (SwimTO) needs full control. And my learning projects generate data I want to own, not rent. Plus, there's something satisfying about knowing exactly where your data lives (hint: it's in my basement).
 
-**Learning Kubernetes Hands-On**
+**Learning Kubernetes the Hard Way**
 
-- Reading about Kubernetes isn't the same as running it
-- Production experience teaches lessons you can't learn from tutorials
-- Understanding the full stack from hardware to applications
+You can read all the Kubernetes tutorials you want, but nothing teaches you like production. When your cluster is down at 2 AM and you're SSH'd into a Raspberry Pi trying to figure out why etcd won't start, that's when you really learn. The tutorials don't cover that part.
 
-**Cost-Effective Infrastructure**
+**The Economics of Stupidity**
 
-- Raspberry Pi 5 costs less than a month of cloud hosting
-- No ongoing monthly fees
-- Power consumption is minimal (~5-10W)
+A Raspberry Pi 5 costs less than a month of cloud hosting. The catch? You become the cloud provider. You become the on-call engineer. You become the person who has to explain why the cluster is down. But hey, at least you're not paying monthly fees!
 
-**Full Control Over the Stack**
+**Full Control (For Better or Worse)**
 
-- Choose my own tools and versions
-- No vendor lock-in
-- Customize everything to my needs
-- Learn how everything actually works
+Want to use a specific version? Go ahead. Want to customize everything? Be my guest. Want to break things in creative new ways? You've come to the right place. The freedom is intoxicating. The responsibility? Less so.
 
-### Goals
+### The Goals (Or: What I Thought I Wanted)
 
-When I started, I had a clear set of goals:
+**Run My Apps**
 
-✅ **Run Personal Applications**
+I had a few projects that needed homes:
 
-- **Canopy** - Personal finance dashboard (private financial data)
-- **SwimTO** - Toronto pool schedules (commercial project)
-- **Journey** - AI-powered career pathfinder (learning project)
-- **NIMA** - AI/ML learning project (experimentation)
-- **US Law Severity Map** - Data visualization project
+- **Canopy** - My personal finance dashboard (because I like to know where my money goes, even if I don't like the answer)
+- **SwimTO** - A commercial pool schedule service (because Toronto needs to know when pools are open)
+- **Journey** - An AI career pathfinder (because apparently I needed another project)
+- **NIMA** - An AI/ML learning project (because why not)
+- **US Law Severity Map** - A data visualization (because data is pretty)
 
-✅ **Learn Kubernetes in Production**
+**Learn Kubernetes Properly**
 
-- Not just tutorials—real production workloads
-- Understand the full lifecycle: deployment, scaling, troubleshooting
-- Learn from real problems, not contrived examples
+Not from tutorials. Not from courses. From the school of hard knocks. When your production workload is down and you're the only one who can fix it, you learn fast. Or you learn to write better documentation. Either way, you learn.
 
-✅ **Build a Resilient, Maintainable Infrastructure**
+**Build Something That Doesn't Break (Too Often)**
 
-- Infrastructure as Code (GitOps with FluxCD)
-- Automated deployments
-- Proper monitoring and alerting
-- Documentation for future reference
+Infrastructure as Code. GitOps. Monitoring. All the buzzwords that make you sound smart. But also, all the things that actually make infrastructure maintainable. Because maintaining infrastructure at 2 AM is not fun. Trust me.
 
-✅ **Implement Proper Secrets Management**
+**Secrets Management That Doesn't Involve Post-Its**
 
-- No secrets in Git
-- Policy-based access control
-- Integration with Kubernetes (External Secrets Operator)
-- Production-grade security
+No secrets in Git. Policy-based access. Integration with Kubernetes. All the things that make security people happy. And all the things that make me feel like I'm doing it right (even if I'm probably not).
 
-✅ **Set Up Monitoring and Observability**
+**Know What's Happening**
 
-- Know what's happening in the cluster
-- Catch problems before they become critical
-- Understand resource usage
-- Raspberry Pi-specific metrics
+Monitoring. Observability. Metrics. The things that tell you "something is wrong" before your users do. Or at least, the things that tell you "something is wrong" while you're still awake to fix it.
 
-✅ **Enable GitOps Workflows**
+### The Constraints (Or: Why This Was Harder Than It Should Be)
 
-- All infrastructure in Git
-- Automated synchronization
-- Easy rollbacks
-- Version-controlled configuration
+**ARM64: The Architecture of Pain**
 
-### Constraints
+Not everything supports ARM64. Some tools don't have ARM64 builds. Some images don't exist. Some documentation assumes x86_64. It's like trying to use a Mac in a Windows world, except worse because at least Macs are popular.
 
-Every project has constraints, and eldertree was no exception:
+**8GB RAM: The Constraint That Keeps on Giving**
 
-**ARM64 Hardware (Raspberry Pi)**
+You can't run everything. You have to choose. You have to optimize. You have to make hard decisions about what stays and what goes. It's like Tetris, but with Kubernetes pods, and losing means your cluster crashes.
 
-- Not all container images support ARM64
-- Some tools don't have ARM64 builds
-- Performance characteristics differ from x86_64
-- Learning opportunity, but also a constraint
+**Home Network: Where Nothing Works Like It Should**
 
-**Limited Resources (8GB RAM)**
+No static IP. Need secure remote access. DNS that makes sense. Network-wide DNS that actually works. It's like building a data center in your basement, except your basement doesn't have redundant power or cooling. Or a data center budget.
 
-- Can't run everything at once
-- Need to optimize resource usage
-- Careful resource limit configuration
-- Prioritize what's actually needed
+**Budget: The Ultimate Constraint**
 
-**Home Network Environment**
+Three Raspberry Pis. That's it. No expensive hardware. No fancy switches. Just three Pis, some cables, and a lot of hope. And when hope isn't enough, you learn to make do with what you have.
 
-- No static public IP (initially)
-- Need secure remote access solution
-- DNS resolution for local services
-- Network-wide DNS with Pi-hole
+### How It Evolved (Or: How I Accidentally Built a Cluster)
 
-**Budget Considerations**
+**Phase 1: The Innocent Beginning (October 2025)**
 
-- Single Raspberry Pi 5 (not a multi-node cluster initially)
-- No expensive hardware
-- Use what's available
-- Cost-effective solutions
+"I'll just run a few Docker containers." Famous last words. Started with a data visualization project. Seemed simple enough.
 
-### The Evolution
+**Phase 2: The Infrastructure Rabbit Hole (November 2025)**
 
-What started as "let's run a few Docker containers" quickly became "let's build a proper Kubernetes cluster." The journey wasn't linear:
+One day I thought "what if I used Kubernetes instead?" That was a mistake. A beautiful, educational, time-consuming mistake. K3s cluster. Terraform. FluxCD. All the infrastructure things.
 
-1. **Initial Phase (October 2025):** Started with US Law Severity Map project
-2. **Infrastructure Phase (November 2025):** Set up K3s cluster, Terraform, FluxCD
-3. **Services Phase (November-December 2025):** Added Vault, monitoring, DNS, applications
-4. **Optimization Phase (December 2025):** Fixed issues, optimized resources, improved documentation
+**Phase 3: The Services Explosion (November-December 2025)**
 
-Each phase taught new lessons and revealed new requirements. The cluster evolved organically, solving problems as they arose, rather than following a rigid plan.
+Vault. Monitoring. DNS. Applications. Everything needed everything else. It was like a house of cards, except the cards were Kubernetes pods and they all depended on each other.
 
-### What I Learned About Planning
+**Phase 4: The Optimization Phase (December 2025)**
 
-Looking back, I realize that:
+Also known as "the phase where I fixed all the things I broke in phase 3." Fixed issues. Optimized resources. Wrote documentation. Because apparently, I'm a glutton for punishment.
 
-- **Starting simple was the right choice** - Single node, basic setup, then grow
-- **Problems are learning opportunities** - Each of the 92 problems taught something valuable
-- **Documentation is critical** - Without it, you repeat the same mistakes
-- **Git history tells the story** - Commits document the journey better than memory
-- **Iteration beats perfection** - Ship, learn, improve, repeat
+**What I Learned About Planning**
 
-### The Name: Eldertree
+Planning is overrated. Starting simple? That works. Problems as learning opportunities? Sure, if you like learning the hard way. Documentation? Critical, because your future self will thank you. Git history? It tells the story better than memory ever could. Iteration? Always beats perfection.
 
-Why "eldertree"? The name came from wanting something that represented:
+### Why "Eldertree"?
 
-- **Wisdom** - Learning from experience and mistakes
-- **Stability** - A foundation that supports other projects
-- **Growth** - Starting small but designed to expand
-- **Resilience** - Weathering challenges and continuing to thrive
+I wanted a name that suggested wisdom, stability, and resilience. Like an old tree that's weathered storms. The cluster is meant to be foundational—something that supports other projects and grows stronger over time.
 
-Like an elder tree in a forest, this cluster is meant to be a foundational piece of infrastructure that supports other projects, learns from challenges, and grows stronger over time.
+Also, it sounds way cooler than "raspberry-cluster-01" or "k8s-test" or "please-work-this-time."
 
 ---
 
@@ -289,7 +236,7 @@ Always run `setup-nvme-boot.yml` with emergency mode prevention enabled. Never a
 
 ### Network Setup
 
-- **IP Assignment:** Static IP via DHCP reservation (node-0: 192.168.2.86, node-1: 192.168.2.85, node-2: 192.168.2.84)
+- **IP Assignment:** Static IP via DHCP reservation (node-1: 192.168.2.101, node-2: 192.168.2.102, node-3: 192.168.2.103)
 - **Network:** 192.168.2.0/24
 - **DNS:** Pi-hole as network-wide DNS server
 
@@ -420,43 +367,45 @@ Always run `setup-nvme-boot.yml` with emergency mode prevention enabled. Never a
 
 ## Chapter 5: Initial Cluster Setup
 
-The initial cluster setup happened in November 2025, starting with infrastructure as code and ending with a working Kubernetes cluster hosting multiple services. This chapter documents that journey, based on the actual Git commit history.
+November 2025. The month I decided that running a few Docker containers wasn't complicated enough, so I'd build a Kubernetes cluster instead. Because obviously, that's the logical next step.
+
+This chapter documents that journey—from "let's use infrastructure as code" to "why is everything broken?" to "oh wait, it actually works now." All based on real Git commits, because apparently I document my failures better than my successes.
 
 ### The Timeline: November 2025
 
-**November 6, 2025 - The Beginning**
+**November 6, 2025 - The Beginning (Or: How I Learned to Love YAML)**
 
-The journey started with infrastructure as code. The first commit set up Terraform for the eldertree control plane:
+The journey started with infrastructure as code. Because manually configuring servers is for peasants, right? The first commit set up Terraform for the eldertree control plane. Because nothing says "I know what I'm doing" like using Terraform for a cluster of Raspberry Pis.
 
-```bash
-feat: Add k3s cluster setup with Terraform for eldertree control plane
-```
+This established the pattern that would define the entire project: **everything in Git, everything automated, everything over-engineered**. But hey, at least it's reproducible. And documented. And probably more complicated than it needs to be.
 
-This established the pattern that would define the entire project: **everything in Git, everything automated**.
+**November 7, 2025 - Foundation Day (Or: The Day I Committed to This Madness)**
 
-**November 7, 2025 - Foundation Day**
-
-This was a busy day with multiple foundational pieces:
+This was a busy day. Like, "I should have taken a break but didn't" busy. Multiple foundational pieces were added, because apparently one thing at a time is for quitters.
 
 1. **Git Workflow Established**
 
    - Added git branching strategy and contributing guidelines
-   - Set up the workflow that would support 45 pull requests
+   - Set up the workflow that would support 45 pull requests (most of them from me, to me, reviewing my own code)
+   - Because nothing says "professional" like reviewing your own pull requests
 
 2. **K9s Installation**
 
    - Added k9s (Kubernetes CLI) to the control plane
    - Essential tool for cluster management and troubleshooting
+   - Also essential for making you feel like you're in The Matrix
 
 3. **Network Documentation**
 
    - Created NETWORK.md with IP configuration and service domains
    - Documented the `.eldertree.local` domain strategy
    - Set up FluxCD GitOps foundation
+   - Because if you're going to over-engineer, you might as well document it
 
 4. **Cluster Naming**
    - Standardized cluster name to 'eldertree' across all kubeconfig contexts
    - Important for consistency across tools and scripts
+   - Also important for not confusing yourself when you have multiple clusters (spoiler: I don't)
 
 ### Installation Process
 
@@ -510,8 +459,8 @@ The initial cluster configuration:
 
 ```yaml
 Cluster Name: eldertree
-Control Plane: node-0.eldertree.local (192.168.2.86 (wlan0), 10.0.0.1 (eth0))
-Worker Nodes: node-1 (192.168.2.85, 10.0.0.2), node-2 (192.168.2.84, 10.0.0.3)
+Control Plane: node-1.eldertree.local (192.168.2.101 (wlan0), 10.0.0.1 (eth0))
+Worker Nodes: node-2 (192.168.2.102 (wlan0), 10.0.0.2 (eth0)), node-3 (192.168.2.103 (wlan0), 10.0.0.3 (eth0))
 Kubernetes Version: v1.33.6+k3s1
 Storage Class: longhorn (distributed storage)
 Ingress Class: traefik (built-in)
@@ -520,8 +469,8 @@ Service Load Balancer: MetalLB (Layer 2 mode)
 
 **Key Decisions:**
 
-- Single-node cluster initially (sufficient for learning and small workloads)
-- Embedded etcd (simpler than external etcd for single node)
+- Multi-node cluster (1 control plane + 2 workers) for redundancy and resource distribution
+- Embedded etcd (simpler than external etcd for small clusters)
 - Built-in components (Traefik, local-path) reduce complexity
 - Standard Kubernetes APIs (compatible with all K8s tools)
 
@@ -582,31 +531,35 @@ kubectl cluster-info
 - Created a service and ingress to test Traefik
 - Verified DNS resolution with CoreDNS
 
-### Challenges Encountered
+### Challenges Encountered (Or: Why Nothing Ever Works the First Time)
 
 **1. Resource Limits on Raspberry Pi**
 
 - **Problem:** Some default resource limits were too high for 8GB RAM
+- **Reality:** Kubernetes tried to allocate more memory than the Pi had. Shocking, I know.
 - **Solution:** Adjusted limits for K3s components and applications
-- **Lesson:** Always set appropriate resource limits from the start
+- **Lesson:** Always set appropriate resource limits from the start. Or learn the hard way. Your choice.
 
 **2. Storage Configuration**
 
 - **Problem:** PVCs not binding, data not persisting
+- **Reality:** Because of course storage would be complicated. Why wouldn't it be?
 - **Solution:** Explicitly specified `storageClassName: local-path`
-- **Lesson:** Don't rely on default storage classes
+- **Lesson:** Don't rely on default storage classes. Or do, and then fix it later. Again, your choice.
 
 **3. Network Setup**
 
 - **Problem:** Services not accessible, DNS not resolving
+- **Reality:** Network issues? In Kubernetes? Unheard of.
 - **Solution:** Configured static IP, set up Pi-hole for DNS
-- **Lesson:** Network configuration is critical for service discovery
+- **Lesson:** Network configuration is critical for service discovery. Who knew? (Everyone. Everyone knew.)
 
 **4. Initial Troubleshooting**
 
 - **Problem:** Learning curve for Kubernetes debugging
-- **Solution:** Used k9s, kubectl, and documentation
-- **Lesson:** Good tools (k9s) make troubleshooting much easier
+- **Reality:** The learning curve is more of a learning cliff, really.
+- **Solution:** Used k9s, kubectl, and documentation (mostly Stack Overflow)
+- **Lesson:** Good tools (k9s) make troubleshooting much easier. Bad tools make you question your life choices.
 
 ### The First Week
 
@@ -625,35 +578,39 @@ By the end of the first week (November 13, 2025), the cluster had:
 - November 7: Cluster installation and initial services
 - November 13: First major troubleshooting session (multiple fixes)
 
-### Lessons Learned
+### Lessons Learned (Or: What I Wish I Knew Then)
 
-**What Worked Well:**
+**What Worked Well (Surprisingly):**
 
-- ✅ **Ansible automation** - Made setup reproducible and documented
-- ✅ **K3s simplicity** - Built-in components saved time
-- ✅ **Incremental approach** - Adding services one at a time was manageable
-- ✅ **GitOps from the start** - All configuration in Git from day one
+- ✅ **Ansible automation** - Made setup reproducible and documented (and saved me from myself)
+- ✅ **K3s simplicity** - Built-in components saved time (and my sanity)
+- ✅ **Incremental approach** - Adding services one at a time was manageable (mostly)
+- ✅ **GitOps from the start** - All configuration in Git from day one (because I'm organized like that)
 
-**What Would I Do Differently:**
+**What Would I Do Differently (Hindsight is 20/20):**
 
-- 🔄 **Set resource limits earlier** - Would have avoided some debugging
-- 🔄 **Document as you go** - Some early decisions weren't documented
-- 🔄 **Test storage earlier** - Storage issues appeared later
-- 🔄 **Set up monitoring immediately** - Would have caught issues faster
+- 🔄 **Set resource limits earlier** - Would have avoided some debugging (and some 2 AM troubleshooting sessions)
+- 🔄 **Document as you go** - Some early decisions weren't documented (because future me is a problem for future me)
+- 🔄 **Test storage earlier** - Storage issues appeared later (because of course they did)
+- 🔄 **Set up monitoring immediately** - Would have caught issues faster (but where's the fun in that?)
 
-**Key Takeaways:**
+**Key Takeaways (The Things I Actually Remember):**
 
-- 📝 **Automation is essential** - Ansible playbooks made everything reproducible
-- 📝 **Start simple** - Single node, basic setup, then grow
-- 📝 **Document decisions** - Git commits document the journey
-- 📝 **Incremental is better** - Add one service at a time, learn, then add more
-- 📝 **Built-in components help** - K3s includes what you need, reducing complexity
+- 📝 **Automation is essential** - Ansible playbooks made everything reproducible (and me less likely to break things)
+- 📝 **Start simple** - Control plane first, basic setup, then add workers (because starting complex is just asking for trouble)
+- 📝 **Document decisions** - Git commits document the journey (better than my memory does)
+- 📝 **Incremental is better** - Add one service at a time, learn, then add more (because adding everything at once is chaos)
+- 📝 **Built-in components help** - K3s includes what you need, reducing complexity (which is good, because I have enough complexity in my life)
 
-### The Foundation Was Set
+### The Foundation Was Set (Or: How I Accidentally Built a Cluster)
 
-By the end of November 2025, eldertree was a working Kubernetes cluster. It wasn't perfect—there were 92 problems to solve over the coming months—but it was functional, documented, and ready to grow. The foundation of infrastructure as code, GitOps, and automation would support all future development.
+By the end of November 2025, eldertree was a working Kubernetes cluster. It wasn't perfect—there were 92 problems to solve over the coming months, but who's counting? (Me. I'm counting.)
 
-The journey from "let's set up Kubernetes" to "production-ready cluster" had begun.
+But it was functional. And documented. And ready to grow. The foundation of infrastructure as code, GitOps, and automation would support all future development. Or at least, that's what I told myself.
+
+The journey from "let's set up Kubernetes" to "production-ready cluster" had begun. Little did I know, the journey would involve more troubleshooting, more documentation, and more questioning of my life choices than I ever expected.
+
+But hey, at least it works. Most of the time.
 
 ---
 
@@ -662,27 +619,33 @@ The journey from "let's set up Kubernetes" to "production-ready cluster" had beg
 ### Network Design
 
 **Management Network (wlan0):** 192.168.2.0/24
-- **node-0**: 192.168.2.86 (control plane)
-- **node-1**: 192.168.2.85 (worker)
-- **node-2**: 192.168.2.84 (worker)
+
+- **node-1**: 192.168.2.101 (control plane, wlan0)
+- **node-2**: 192.168.2.102 (worker, wlan0)
+- **node-3**: 192.168.2.103 (worker, wlan0)
 
 **Gigabit Network (eth0):** 10.0.0.0/24
-- **node-0**: 10.0.0.1 (control plane)
+
+- **node-1**: 10.0.0.1 (control plane, eth0)
+- **node-2**: 10.0.0.2 (worker, eth0)
+- **node-3**: 10.0.0.3 (worker, eth0)
 - **node-1**: 10.0.0.2 (worker)
 - **node-2**: 10.0.0.3 (worker)
 
 **DNS Server:** 192.168.2.201 (Pi-hole via MetalLB)
 
-### DNS Strategy
+### DNS Strategy (Or: How DNS Became My Nemesis)
 
 **Approach:** Pi-hole as network-wide DNS server
 
-**Benefits:**
+Because nothing says "I know what I'm doing" like running your own DNS server. And nothing says "I'm in over my head" like DNS issues at 2 AM.
 
-- Ad-blocking for entire network
-- Local service resolution (\*.eldertree.local)
-- Centralized DNS management
-- Performance improvement
+**Benefits (The Things That Actually Worked):**
+
+- Ad-blocking for entire network (because ads are the enemy)
+- Local service resolution (\*.eldertree.local) (because typing IPs is for peasants)
+- Centralized DNS management (because managing DNS in 47 different places is fun)
+- Performance improvement (in theory, anyway)
 
 ### Service Discovery
 
@@ -715,12 +678,12 @@ The journey from "let's set up Kubernetes" to "production-ready cluster" had beg
 - Cloudflare (for public domains)
 - RFC2136 (for local DNS via Pi-hole BIND)
 
-### Lessons Learned
+### Lessons Learned (The Hard Way)
 
-- [ ] DNS is critical for service discovery
-- [ ] Pi-hole integration simplified local DNS
-- [ ] MetalLB essential for LoadBalancer services
-- [ ] ExternalDNS automation saves time
+- DNS is critical for service discovery (who knew? Everyone. Everyone knew.)
+- Pi-hole integration simplified local DNS (eventually, after much troubleshooting)
+- MetalLB essential for LoadBalancer services (because bare metal doesn't have cloud magic)
+- ExternalDNS automation saves time (when it works, which is most of the time, but not always)
 
 ---
 
@@ -784,11 +747,13 @@ The journey from "let's set up Kubernetes" to "production-ready cluster" had beg
 **Configuration:** ClusterSecretStore pointing to Vault
 **Sync Frequency:** Every 24 hours (or on-demand)
 
-### Unsealing Process
+### Unsealing Process (The Part Everyone Forgets About)
 
-**Challenge:** Vault seals after each restart
-**Solution:** Manual unsealing with 3 of 5 keys
-**Automation:** `unseal-vault.sh` script
+**Challenge:** Vault seals after each restart (because of course it does)
+**Reality:** Every time you restart the cluster, Vault decides to lock itself. It's like a bank vault that locks itself every time you close the door. Security? Yes. Convenience? Not so much.
+**Solution:** Manual unsealing with 3 of 5 keys (because 1 key would be too easy)
+**Automation:** `unseal-vault.sh` script (because typing commands is hard, and also because I forget things)
+**The Fun Part:** You need 3 of 5 keys. Not 2. Not 4. Exactly 3. Because math is important, apparently.
 
 ### Backup Strategy
 
@@ -1026,7 +991,7 @@ I verified everything was working:
 ```bash
 # Test DNS resolution
 nslookup vault.eldertree.local
-# Result: 192.168.2.86 ✅
+# Result: 192.168.2.101 ✅
 
 # Test ping
 ping -c 2 vault.eldertree.local
@@ -1665,18 +1630,21 @@ After setting up Pi-hole as the DNS server for the cluster, DNS resolution wasn'
 **Root Causes (Multiple Layers):**
 
 1. **MetalLB Layer 2 Advertisement Issue:**
+
    - MetalLB was announcing the LoadBalancer IP but not on the correct network interface
    - Nodes have InternalIPs `10.0.0.1/10.0.0.2` (K3s internal network) but physical IPs are on `192.168.2.0/24` via `wlan0`
    - MetalLB wasn't explicitly configured to use `wlan0` interface, causing advertisement on wrong network
 
 2. **Service externalTrafficPolicy Misconfiguration:**
+
    - Initially set to `Local` policy, which was too restrictive
    - With `Local` policy, only the node hosting the pod can respond, but routing wasn't working correctly
    - Changed to `Cluster` policy to allow traffic from any node
 
 3. **Manual DNS Entries Overriding ExternalDNS:**
-   - Manual entries in Pi-hole dnsmasq ConfigMap (`address=/grafana.eldertree.local/192.168.2.86`) were overriding ExternalDNS-managed records
-   - Wildcard entry in BIND zone (`* A 192.168.2.86`) was catching all queries before ExternalDNS records could be used
+
+   - Manual entries in Pi-hole dnsmasq ConfigMap (`address=/grafana.eldertree.local/192.168.2.101`) were overriding ExternalDNS-managed records
+   - Wildcard entry in BIND zone (`* A 192.168.2.101`) was catching all queries before ExternalDNS records could be used
 
 4. **ExternalDNS Circular Dependency:**
    - ExternalDNS was trying to resolve `pi-hole.pihole.svc.cluster.local` for RFC2136 connection
@@ -1688,44 +1656,48 @@ After setting up Pi-hole as the DNS server for the cluster, DNS resolution wasn'
 This was a multi-hour troubleshooting session that required investigating multiple layers:
 
 1. **Initial Diagnosis:**
+
    ```bash
    # DNS queries timing out
    dig @192.168.2.201 google.com
    # Result: connection timed out
-   
+
    # LoadBalancer IP not reachable
    ping 192.168.2.201
    # Result: Destination Host Unreachable
    ```
 
 2. **MetalLB Investigation:**
+
    ```bash
    # Checked MetalLB speaker logs
    kubectl logs -n metallb-system -l app.kubernetes.io/component=speaker
    # Found: "notOwner" errors, IP being withdrawn and re-announced
-   
+
    # Checked L2Advertisement configuration
    kubectl get l2advertisement -n metallb-system default -o yaml
    # Found: Missing `interfaces: [wlan0]` specification
    ```
 
 3. **Service Policy Testing:**
+
    ```bash
    # Tested with Local policy (didn't work)
    kubectl patch svc -n pihole pi-hole -p '{"spec":{"externalTrafficPolicy":"Local"}}'
    # Still timing out
-   
+
    # Tested with Cluster policy
    kubectl patch svc -n pihole pi-hole -p '{"spec":{"externalTrafficPolicy":"Cluster"}}'
    # Still timing out initially
    ```
 
 4. **DNS Record Investigation:**
+
    ```bash
    # Checked what DNS records existed
    kubectl get configmap -n pihole pi-hole-dnsmasq -o yaml
    # Found: Manual entries overriding ExternalDNS
-   
+
    # Checked BIND zone
    kubectl get configmap -n pihole pi-hole-bind -o yaml
    # Found: Wildcard entry catching all queries
@@ -1741,9 +1713,9 @@ This was a multi-hour troubleshooting session that required investigating multip
 **Solution (Multi-Step Fix):**
 
 1. **Fixed MetalLB Interface Configuration:**
-   
+
    Updated `clusters/eldertree/core-infrastructure/metallb/config.yaml`:
-   
+
    ```yaml
    apiVersion: metallb.io/v1beta1
    kind: L2Advertisement
@@ -1757,17 +1729,18 @@ This was a multi-hour troubleshooting session that required investigating multip
      interfaces:
        - wlan0
    ```
-   
+
    Applied and restarted MetalLB speakers:
+
    ```bash
    kubectl apply -f clusters/eldertree/core-infrastructure/metallb/config.yaml
    kubectl rollout restart daemonset -n metallb-system metallb-speaker
    ```
 
 2. **Changed Service externalTrafficPolicy:**
-   
+
    Updated `helm/pi-hole/templates/service.yaml`:
-   
+
    ```yaml
    spec:
      # Use Cluster policy for DNS to allow traffic from any node
@@ -1775,12 +1748,13 @@ This was a multi-hour troubleshooting session that required investigating multip
      # proper DNS response routing in MetalLB LoadBalancer setup with multiple nodes
      externalTrafficPolicy: Cluster
    ```
-   
+
    This allows DNS traffic to be routed from any node, not just the node hosting the pod.
 
 3. **Removed Manual DNS Overrides:**
-   
+
    Cleared manual entries from `pi-hole-dnsmasq` ConfigMap:
+
    ```yaml
    data:
      05-custom-dns.conf: |
@@ -1788,8 +1762,9 @@ This was a multi-hour troubleshooting session that required investigating multip
        # Only put non-dynamic records here if needed
        # Removed manual DNS entries that were overriding ExternalDNS
    ```
-   
+
    Removed wildcard from BIND zone in `pi-hole-bind` ConfigMap:
+
    ```yaml
    data:
      eldertree.local.zone: |
@@ -1798,8 +1773,9 @@ This was a multi-hour troubleshooting session that required investigating multip
    ```
 
 4. **Fixed ExternalDNS Circular Dependency:**
-   
+
    Updated `clusters/eldertree/dns-services/external-dns/helmrelease.yaml`:
+
    ```yaml
    env:
      - name: EXTERNAL_DNS_RFC2136_HOST
@@ -1857,6 +1833,353 @@ ping -c 2 192.168.2.201
 **The Victory:**
 
 After hours of troubleshooting across multiple layers, Pi-hole now works as the primary DNS server without requiring any fallback. The MacBook can use `192.168.2.201` as the sole DNS server, and both local (`*.eldertree.local`) and external domains resolve correctly. This was a true battle that required understanding MetalLB Layer 2 mode, Kubernetes service routing, DNS resolution chains, and ExternalDNS integration.
+
+---
+
+#### Challenge 7: Cluster-Wide Boot Failure and SD Card Recovery
+
+**Date:** January 2-3, 2026  
+**Branch:** Recovery from maintenance shutdown  
+**Commits:** Multiple recovery commits
+
+**Problem:**
+After a maintenance shutdown of all Raspberry Pi nodes, the entire cluster failed to boot. All three nodes (node-1, node-2, node-3) were stuck in emergency mode or busybox/initramfs, making the cluster completely inaccessible. This was a critical failure that required physical recovery using SD card backups.
+
+**Symptoms:**
+
+- All nodes unreachable via SSH and ping
+- Nodes stuck in emergency mode requiring root password
+- Nodes stuck in busybox/initramfs shell
+- Root account locked (preventing console access)
+- Boot hanging waiting for unavailable mounts
+- Cluster API completely down: `Unable to connect to the server: dial tcp 192.168.2.101:6443: connect: host is down`
+
+**Root Causes (Multiple Issues):**
+
+1. **Missing `nofail` on Optional Mounts:**
+
+   - `/etc/fstab` had entries for optional mounts (backup drive `/dev/sdb1`, NVMe partitions) without the `nofail` flag
+   - Systemd would wait ~30 seconds for each unavailable mount before giving up
+   - This caused boot delays and timeouts, sometimes leading to emergency mode
+
+2. **Unused Backup Mount Causing Boot Delays:**
+
+   - An unused `/dev/sdb1 /mnt/backup` mount was configured in fstab
+   - This mount was never actually used (no scripts, no cron jobs)
+   - Even with `nofail`, systemd would wait ~30 seconds for the mount to fail
+   - This added unnecessary boot delay on every restart
+
+3. **Root Account Locked:**
+
+   - Root account was locked after switching boot devices (SD to NVMe)
+   - PAM faillock was enabled, locking accounts after failed login attempts
+   - Without console access (only Bluetooth keyboard available), recovery was impossible
+
+4. **Incorrect fstab Configuration:**
+
+   - NVMe partitions were mounted without `nofail` flag
+   - When booting from SD card, NVMe mounts would fail and cause boot issues
+   - Missing `nofail` on boot partition caused issues during recovery
+
+5. **Corrupted SD Card OS:**
+   - SD card backup OS had corrupted initramfs
+   - SD card fstab had incorrect entries
+   - SD card would get stuck in busybox/initramfs even after fixes
+
+**Investigation Journey:**
+
+This was a multi-day recovery process that required understanding boot processes, fstab configuration, and recovery procedures:
+
+1. **Initial Diagnosis:**
+
+   ```bash
+   # All nodes unreachable
+   ping -c 1 192.168.2.101  # node-1 - no response
+   ping -c 1 192.168.2.102  # node-2 - no response
+   ping -c 1 192.168.2.103  # node-3 - no response
+
+   # Cluster API down
+   kubectl get nodes
+   # Error: Unable to connect to the server: dial tcp 192.168.2.101:6443: connect: host is down
+   ```
+
+2. **Physical Inspection:**
+
+   - Nodes were stuck during boot
+   - Some showed emergency mode requiring root password
+   - Some showed busybox/initramfs shell
+   - No USB keyboard available (only Bluetooth), making console access difficult
+
+3. **SD Card Recovery Strategy:**
+
+   - Decided to recover nodes one by one using SD card backups
+   - SD card has generic hostname `node-x` (from Raspberry Pi Imager)
+   - Nodes identified by IP address during recovery
+   - Boot from SD card, then fix NVMe, then boot from NVMe
+
+4. **Root Cause Analysis:**
+
+   ```bash
+   # When booted from SD card, checked fstab
+   cat /etc/fstab
+   # Found: Missing nofail on optional mounts
+   # Found: Unused backup mount causing delays
+
+   # Checked root account status
+   passwd -S root
+   # Found: Root account locked (L)
+
+   # Checked PAM configuration
+   grep pam_faillock /etc/pam.d/common-auth
+   # Found: PAM faillock enabled
+   ```
+
+**Solution (Multi-Step Recovery):**
+
+1. **Created Boot Reliability Fix Playbook:**
+
+   Created `ansible/playbooks/fix-boot-reliability.yml` to address all boot issues:
+
+   ```yaml
+   - name: Fix Boot Reliability Issues
+     hosts: raspberry_pi
+     become: true
+     tasks:
+       # Unlock root account
+       - name: Unlock root account
+         command: passwd -u root
+
+       # Set root password
+       - name: Set root password
+         user:
+           name: root
+           password: "{{ password_hash }}"
+
+       # Remove unused backup mount
+       - name: Remove unused backup mount
+         replace:
+           path: /etc/fstab
+           regexp: '^/dev/sdb1.*/mnt/backup.*\n?'
+           replace: ""
+
+       # Add nofail to optional mounts
+       - name: Add nofail to optional mounts
+         replace:
+           path: /etc/fstab
+           regexp: '^(/dev/nvme[^\s]*\s+[^\s]*\s+ext4\s+defaults)([^,]*)(\s+\d+\s+\d+)$'
+           replace: '\1,nofail\2\3'
+
+       # Disable PAM faillock
+       - name: Disable PAM faillock
+         replace:
+           path: /etc/pam.d/common-auth
+           regexp: "^(auth.*pam_faillock)"
+           replace: '# \1'
+   ```
+
+2. **SD Card Recovery Process:**
+
+   For each node, the recovery process was:
+
+   a. **Boot from SD Card:**
+
+   - Insert SD card backup into node
+   - Remove NVMe temporarily (to ensure boot from SD)
+   - Power on and wait for boot (hostname will be `node-x`)
+   - Identify node by IP address
+
+   b. **Fix NVMe (Not SD Card):**
+
+   - Mount NVMe partitions: `/mnt/nvme-root` and `/mnt/nvme-boot`
+   - Apply boot reliability fixes to NVMe fstab
+   - Fix NVMe cmdline.txt
+   - Unlock root account on NVMe
+   - Disable PAM faillock on NVMe
+
+   c. **Reboot from NVMe:**
+
+   - Remove SD card
+   - Ensure NVMe is connected
+   - Reboot - node should boot from NVMe correctly
+
+   Created `scripts/recover-node-by-ip.sh` to automate this process:
+
+   ```bash
+   # Usage: ./scripts/recover-node-by-ip.sh <IP_ADDRESS>
+   # Example: ./scripts/recover-node-by-ip.sh 192.168.2.101
+
+   # Script automatically:
+   # - Identifies node by IP
+   # - Mounts NVMe partitions
+   # - Applies fixes to NVMe (not SD card)
+   # - Verifies fixes
+   ```
+
+3. **SD Card Fresh Setup:**
+
+   When SD card itself was corrupted (stuck in busybox/initramfs):
+
+   a. **Format SD Card with Raspberry Pi Imager:**
+
+   - OS: Debian 12 Bookworm (64-bit)
+   - Hostname: `node-x` (generic, works for any node)
+   - User: `raolivei`
+   - Password: `Control01!` (different from main password to avoid mistakes)
+   - SSH: Enabled
+
+   b. **Apply Boot Reliability Fixes:**
+
+   - Boot from SD card
+   - Run `./scripts/setup-sd-card-os.sh <IP>` to apply fixes
+   - Script updates initramfs, fixes fstab, removes backup mount
+
+   c. **SD Card Ready for Recovery:**
+
+   - SD card can now be used to boot and fix NVMe on any node
+
+4. **Removed Unused Backup Mount:**
+
+   Updated `ansible/playbooks/setup-system.yml` to make backup mount optional:
+
+   ```yaml
+   vars:
+     # Backup mount is now optional (default: false)
+     # Only enable if you have a permanently connected backup drive
+     enable_backup_mount: "{{ enable_backup_mount | default(false) | bool }}"
+   ```
+
+   Created `ansible/playbooks/remove-backup-mount.yml` to remove from existing nodes.
+
+5. **Documentation Created:**
+   - `docs/RECOVERY_FROM_SD_CARD.md` - Complete recovery guide
+   - `docs/SD_CARD_FRESH_SETUP.md` - SD card setup guide
+   - `docs/BACKUP_MOUNT_DECISION.md` - Trade-off analysis for backup mount
+   - `scripts/recover-node-by-ip.sh` - Automated recovery script
+   - `scripts/setup-sd-card-os.sh` - SD card setup script
+   - `scripts/fix-sd-card-on-node2.sh` - Fix SD card while mounted
+
+**Verification:**
+
+After recovery, all nodes boot correctly:
+
+```bash
+# All nodes accessible
+ping -c 1 192.168.2.101  # node-1 - ✅ Working
+ping -c 1 192.168.2.102  # node-2 - ✅ Working
+ping -c 1 192.168.2.103  # node-3 - ✅ Working
+
+# Cluster API accessible
+kubectl get nodes
+# Result: ✅ All nodes in Ready state
+
+# Boot times improved
+# Before: ~60-90 seconds (with backup mount timeout)
+# After: ~30-40 seconds (backup mount removed)
+```
+
+**Prevention:**
+
+- **Always use `nofail` on optional mounts** - Prevents boot failures when mounts are unavailable
+- **Remove unused mounts from fstab** - Even with `nofail`, systemd waits before giving up
+- **Keep root account unlocked** - Critical for emergency mode access
+- **Disable PAM faillock** - Prevents account lockouts during recovery
+- **Test reboots after important changes** - Catch boot issues before they become critical
+- **Maintain SD card backups** - Essential for recovery when NVMe boot fails
+- **Document recovery procedures** - When disaster strikes, you need clear steps
+- **Make optional features truly optional** - Don't add features by default that cause boot delays
+
+**Lessons Learned:**
+
+- **Boot reliability is critical** - A cluster that can't boot is completely useless
+- **`nofail` is not enough** - Even with `nofail`, systemd waits before giving up, causing delays
+- **Unused mounts cause problems** - Remove mounts that aren't actually being used
+- **SD card recovery is essential** - When NVMe boot fails, SD card is your lifeline
+- **Root account must be accessible** - Locked root accounts prevent emergency mode recovery
+- **Documentation saves time** - Clear recovery procedures are critical during disasters
+- **Test assumptions** - Just because something has `nofail` doesn't mean it's harmless
+- **Default behavior matters** - Don't add optional features by default that cause boot delays
+- **Physical access limitations** - No USB keyboard (only Bluetooth) made console access difficult
+- **Recovery is iterative** - Each node recovered teaches lessons for the next one
+
+**The Recovery Process:**
+
+The recovery took several days and required:
+
+1. Understanding boot processes (initramfs, fstab, systemd mounts)
+2. Creating automated recovery scripts
+3. Documenting the complete process
+4. Fixing SD card OS when it was corrupted
+5. Applying fixes to NVMe (not SD card) during recovery
+6. Testing reboots after each fix
+
+**Key Insight:**
+
+The most important lesson was understanding that **optional mounts should be truly optional**. Even with `nofail`, systemd waits before giving up, causing boot delays. The unused backup mount was adding ~30 seconds to every boot, and when combined with other issues, it could cause boot failures. Removing unused mounts and ensuring all optional mounts have `nofail` is critical for boot reliability.
+
+**Trade-off Analysis:**
+
+The backup mount decision illustrates an important trade-off:
+
+- **ON (default):** Prepared for backup drive, but causes boot timeout if drive not connected
+- **OFF (recommended):** Faster boot, but need to configure manually when connecting drive
+
+**Decision:** Keep backup mount OFF by default. Only enable when you have a permanently connected backup drive. Boot speed is more important than the convenience of an unused feature.
+
+**The Recovery: A Tale of SD Cards and NVMe Drives**
+
+With the root causes identified and tools created, it was time for the actual recovery. Picture this: three Raspberry Pis sitting in a rack, completely unresponsive, like they'd collectively decided to take a vacation. The only way back was through a single SD card and a lot of patience.
+
+**Round 1: Node-1 (The Boss)**
+
+Node-1 is the control plane—the brain of the operation. Without it, nothing works. So naturally, it got first priority.
+
+I formatted a fresh SD card (because the old one was also corrupted—because of course it was), booted node-1 from it, and watched it come online with the generic hostname `node-x`. It felt like meeting a stranger who happens to live at your address.
+
+Then came the moment of truth: mount the NVMe, fix its fstab, unlock root, disable PAM faillock, fix cmdline.txt. All while the node is running from the SD card, like performing surgery on someone while they're walking around.
+
+I removed the SD card, crossed my fingers, and rebooted. Two minutes later: `node-1.eldertree.local` was back online, booting from NVMe, k3s running, cluster API responding. Victory! 🎉
+
+**Round 2: Node-2 (The Worker)**
+
+With node-1 recovered, node-2 was next. Same SD card (why waste a good thing?), same process. By this point, I had the routine down: boot from SD, mount NVMe, apply fixes, remove SD, reboot, celebrate.
+
+Node-2 came back online without drama. Sometimes the second time is easier because you've already made all the mistakes.
+
+**Round 3: Node-3 (The Other Worker)**
+
+Finally, node-3. By now, the process was muscle memory. Boot from SD, mount NVMe, apply fixes, remove SD, reboot. Done. Three nodes, three recoveries, one very relieved cluster administrator.
+
+**The Plot Twist: Fixing the Wrong Thing**
+
+Here's where it gets embarrassing. Early in the recovery, I was applying fixes to the SD card instead of the NVMe. The SD card! The thing I was only using to temporarily boot the system!
+
+It's like fixing the rental car's engine when your actual car is in the shop. The SD card was just a means to an end, but I kept trying to make it perfect. Eventually, I realized: "Wait, I'm supposed to fix the NVMe, not the SD card. The SD card is just... temporary access."
+
+This led to a very important update in the recovery scripts: big, bold warnings that say "⚠️ THIS FIXES THE NVME, NOT THE SD CARD!" Because apparently, I needed that reminder.
+
+**The Happy Ending**
+
+After two days of investigation, tool creation, and actual recovery work, all three nodes (node-1, node-2, and node-3) were back online:
+
+```bash
+$ kubectl get nodes
+NAME                     STATUS   ROLES
+node-1.eldertree.local   Ready    control-plane,etcd,master
+node-2.eldertree.local   Ready    <none>
+node-3.eldertree.local   Ready    <none>
+```
+
+All pods running, all services healthy, cluster fully operational. The eldertree was back to providing shelter.
+
+**What I Learned (The Hard Way):**
+
+1. **SD cards are your lifeline** - When NVMe boot fails, that SD card backup is worth its weight in gold
+2. **Fix the right thing** - SD card is temporary access, NVMe is the actual target (yes, I needed to learn this)
+3. **Unused mounts are troublemakers** - That backup mount I never used? It was adding 30 seconds to every boot and causing timeouts
+4. **Documentation saves sanity** - When you're in the middle of a disaster, clear steps are everything
+5. **One node at a time** - Methodical beats frantic every time
+
+The cluster is now more resilient, with better boot reliability and a complete recovery playbook. And I have a newfound appreciation for the humble SD card—the unsung hero of this recovery story.
 
 ---
 
@@ -1940,7 +2263,7 @@ Based on 212 commits, 45 pull requests, and 92 problems solved:
 - 📝 **Automation from the start** - Scripts and Ansible playbooks save time and prevent errors
 - 📝 **Documentation is critical** - Every problem solved should be documented to avoid repetition
 - 📝 **Monitoring is essential** - Grafana dashboards help identify issues before they become critical
-- 📝 **Start simple, add complexity gradually** - Single-node cluster first, then scale
+- 📝 **Start simple, add complexity gradually** - Begin with control plane, then add worker nodes
 - 📝 **Git history tells the story** - Commit messages document problems, solutions, and decisions
 - 📝 **ARM64 requires special attention** - Always verify image compatibility for Raspberry Pi
 - 📝 **Explicit configuration beats defaults** - Always specify storage classes, resource limits, network settings
@@ -1972,30 +2295,34 @@ This blog represents months of learning, troubleshooting, and iteration. Each co
 - [ ] Improve monitoring and alerting
 - [ ] Enhance backup strategy
 
-### Cluster Expansion: Adding node-2 (December 31, 2025)
+### Cluster Expansion: Adding Worker Nodes (December 31, 2025)
 
-**The Goal:** Expand the eldertree cluster from a single control plane to a multi-node setup with dedicated worker nodes, enabling better resource distribution and redundancy.
+**The Goal:** Expand the eldertree cluster to a multi-node setup with dedicated worker nodes (node-2 and node-3), enabling better resource distribution and redundancy.
 
 **Initial Setup:**
-- **node-0**: Control plane (192.168.2.86, eth0: 10.0.0.1)
-- **node-1**: Worker node (192.168.2.85, eth0: 10.0.0.2) - already configured
-- **node-2**: New worker node (192.168.2.84, eth0: 10.0.0.3) - to be added
+
+- **node-1**: Control plane (192.168.2.101 (wlan0), eth0: 10.0.0.1)
+- **node-2**: Worker node (192.168.2.102 (wlan0), eth0: 10.0.0.2) - already configured
+- **node-3**: Worker node (192.168.2.103 (wlan0), eth0: 10.0.0.3) - already configured
 
 **The Process:**
 
 1. **Automated Node Setup Playbook**
+
    - Created `setup-new-node.yml` master playbook to orchestrate complete node setup
    - Automatically calculates next available IP addresses from inventory
    - Handles DNS configuration, network setup, k3s installation, and prerequisites
 
 2. **Key Fixes Applied:**
+
    - **DNS Configuration**: Added `/etc/hosts` entries for all cluster nodes before k3s installation
-   - **Network Configuration**: Fixed node-0 eth0 IP to use 10.0.0.1 (was incorrectly configured)
+   - **Network Configuration**: Fixed node-1 eth0 IP to use 10.0.0.1 (was incorrectly configured)
    - **k3s-agent Cleanup**: Added automatic cleanup of stuck k3s-agent state before restart
    - **Longhorn Prerequisites**: Improved open-iscsi detection and installation
 
 3. **Challenges Encountered:**
-   - **DNS Resolution Failure**: node-2 couldn't resolve `node-0.eldertree.local`, causing k3s-agent to fail
+
+   - **DNS Resolution Failure**: node-2 couldn't resolve `node-1.eldertree.local`, causing k3s-agent to fail
      - **Solution**: Added DNS configuration play to setup-new-node.yml before k3s installation
    - **k3s-agent Stuck State**: Service stuck in "activating" state after configuration changes
      - **Solution**: Added cleanup tasks to stop service and remove `/var/lib/rancher/k3s/agent` before restart
@@ -2014,10 +2341,11 @@ This blog represents months of learning, troubleshooting, and iteration. Each co
 After running the master playbook:
 
 ```bash
-ansible-playbook playbooks/setup-new-node.yml --limit localhost,node-0,node-2
+ansible-playbook playbooks/setup-new-node.yml --limit localhost,node-1,node-3
 ```
 
 **Cluster Status:**
+
 - ✅ All 3 nodes in Ready state
 - ✅ All nodes have correct eth0 IPs (10.0.0.1, 10.0.0.2, 10.0.0.3)
 - ✅ All Longhorn manager pods running (2/2 Ready)
@@ -2041,7 +2369,7 @@ The `setup-new-node.yml` playbook orchestrates the complete setup process:
 3. **System Configuration** - Hostname, user setup, SSH, firewall, cgroups, timezone, NTP
 4. **NVMe Boot Setup** - Partitions, clones OS from SD card, fixes emergency mode prevention (fstab, cmdline.txt, root account)
 5. **Gigabit Network (eth0)** - Configures NetworkManager connection with calculated IP
-6. **k3s Token Retrieval** - Automatically retrieves token from control plane (node-0)
+6. **k3s Token Retrieval** - Automatically retrieves token from control plane (node-1)
 7. **k3s Worker Installation** - Installs k3s agent with proper cgroup configuration
 8. **k3s Gigabit Network** - Configures k3s to use eth0 for cluster communication
 9. **SSH Keys Setup** - Node-to-node communication and optional local key addition
@@ -2051,6 +2379,7 @@ The `setup-new-node.yml` playbook orchestrates the complete setup process:
 13. **Idempotency Verification** - Optional verification play (enable with `-e verify_idempotency=true`)
 
 **Key Features:**
+
 - **Fully automated** - No manual IP or token input required
 - **Idempotent** - Safe to rerun multiple times
 - **Comprehensive** - Handles all prerequisites and configuration
@@ -2068,11 +2397,12 @@ Adding new nodes is now as simple as:
    ```
 3. **Run master playbook**:
    ```bash
-   ansible-playbook playbooks/setup-new-node.yml --limit localhost,node-0,node-N
+   ansible-playbook playbooks/setup-new-node.yml --limit localhost,node-1,node-N
    ```
 4. **All configuration is automated** - IPs calculated, DNS configured, k3s installed, prerequisites set up
 
 **Optional Overrides:**
+
 - Override IPs: `-e wlan0_ip_override=192.168.2.XX -e eth0_ip_override=10.0.0.X`
 - Override k3s token: `-e k3s_token_override=<token>`
 - Verify idempotency: `-e verify_idempotency=true`
