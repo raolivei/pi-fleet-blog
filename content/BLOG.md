@@ -375,7 +375,7 @@ This chapter documents that journey—from "let's use infrastructure as code" to
 
 **November 6, 2025 - The Beginning (Or: How I Learned to Love YAML)**
 
-The journey started with infrastructure as code. Because manually configuring servers is for peasants, right? The first commit set up Terraform for the eldertree control plane. Because nothing says "I know what I'm doing" like using Terraform for a single Raspberry Pi.
+The journey started with infrastructure as code. Because manually configuring servers is for peasants, right? The first commit set up Terraform for the eldertree control plane. Because nothing says "I know what I'm doing" like using Terraform for a cluster of Raspberry Pis.
 
 This established the pattern that would define the entire project: **everything in Git, everything automated, everything over-engineered**. But hey, at least it's reproducible. And documented. And probably more complicated than it needs to be.
 
@@ -469,8 +469,8 @@ Service Load Balancer: MetalLB (Layer 2 mode)
 
 **Key Decisions:**
 
-- Single-node cluster initially (sufficient for learning and small workloads)
-- Embedded etcd (simpler than external etcd for single node)
+- Multi-node cluster (1 control plane + 2 workers) for redundancy and resource distribution
+- Embedded etcd (simpler than external etcd for small clusters)
 - Built-in components (Traefik, local-path) reduce complexity
 - Standard Kubernetes APIs (compatible with all K8s tools)
 
@@ -597,7 +597,7 @@ By the end of the first week (November 13, 2025), the cluster had:
 **Key Takeaways (The Things I Actually Remember):**
 
 - 📝 **Automation is essential** - Ansible playbooks made everything reproducible (and me less likely to break things)
-- 📝 **Start simple** - Single node, basic setup, then grow (because starting complex is just asking for trouble)
+- 📝 **Start simple** - Control plane first, basic setup, then add workers (because starting complex is just asking for trouble)
 - 📝 **Document decisions** - Git commits document the journey (better than my memory does)
 - 📝 **Incremental is better** - Add one service at a time, learn, then add more (because adding everything at once is chaos)
 - 📝 **Built-in components help** - K3s includes what you need, reducing complexity (which is good, because I have enough complexity in my life)
@@ -2129,9 +2129,9 @@ The backup mount decision illustrates an important trade-off:
 
 With the root causes identified and tools created, it was time for the actual recovery. Picture this: three Raspberry Pis sitting in a rack, completely unresponsive, like they'd collectively decided to take a vacation. The only way back was through a single SD card and a lot of patience.
 
-**Round 1: Node-0 (The Boss)**
+**Round 1: Node-1 (The Boss)**
 
-Node-0 is the control plane—the brain of the operation. Without it, nothing works. So naturally, it got first priority.
+Node-1 is the control plane—the brain of the operation. Without it, nothing works. So naturally, it got first priority.
 
 I formatted a fresh SD card (because the old one was also corrupted—because of course it was), booted node-1 from it, and watched it come online with the generic hostname `node-x`. It felt like meeting a stranger who happens to live at your address.
 
@@ -2143,7 +2143,11 @@ I removed the SD card, crossed my fingers, and rebooted. Two minutes later: `nod
 
 With node-1 recovered, node-2 was next. Same SD card (why waste a good thing?), same process. By this point, I had the routine down: boot from SD, mount NVMe, apply fixes, remove SD, reboot, celebrate.
 
-Node-1 came back online without drama. Sometimes the second time is easier because you've already made all the mistakes.
+Node-2 came back online without drama. Sometimes the second time is easier because you've already made all the mistakes.
+
+**Round 3: Node-3 (The Other Worker)**
+
+Finally, node-3. By now, the process was muscle memory. Boot from SD, mount NVMe, apply fixes, remove SD, reboot. Done. Three nodes, three recoveries, one very relieved cluster administrator.
 
 **The Plot Twist: Fixing the Wrong Thing**
 
@@ -2155,7 +2159,7 @@ This led to a very important update in the recovery scripts: big, bold warnings 
 
 **The Happy Ending**
 
-After two days of investigation, tool creation, and actual recovery work, all three nodes were back online:
+After two days of investigation, tool creation, and actual recovery work, all three nodes (node-1, node-2, and node-3) were back online:
 
 ```bash
 $ kubectl get nodes
@@ -2259,7 +2263,7 @@ Based on 212 commits, 45 pull requests, and 92 problems solved:
 - 📝 **Automation from the start** - Scripts and Ansible playbooks save time and prevent errors
 - 📝 **Documentation is critical** - Every problem solved should be documented to avoid repetition
 - 📝 **Monitoring is essential** - Grafana dashboards help identify issues before they become critical
-- 📝 **Start simple, add complexity gradually** - Single-node cluster first, then scale
+- 📝 **Start simple, add complexity gradually** - Begin with control plane, then add worker nodes
 - 📝 **Git history tells the story** - Commit messages document problems, solutions, and decisions
 - 📝 **ARM64 requires special attention** - Always verify image compatibility for Raspberry Pi
 - 📝 **Explicit configuration beats defaults** - Always specify storage classes, resource limits, network settings
@@ -2291,9 +2295,9 @@ This blog represents months of learning, troubleshooting, and iteration. Each co
 - [ ] Improve monitoring and alerting
 - [ ] Enhance backup strategy
 
-### Cluster Expansion: Adding node-2 (December 31, 2025)
+### Cluster Expansion: Adding Worker Nodes (December 31, 2025)
 
-**The Goal:** Expand the eldertree cluster from a single control plane to a multi-node setup with dedicated worker nodes, enabling better resource distribution and redundancy.
+**The Goal:** Expand the eldertree cluster to a multi-node setup with dedicated worker nodes (node-2 and node-3), enabling better resource distribution and redundancy.
 
 **Initial Setup:**
 
