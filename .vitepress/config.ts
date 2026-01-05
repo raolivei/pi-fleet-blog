@@ -65,6 +65,7 @@ export default defineConfig({
   ignoreDeadLinks: true,
   
   srcExclude: [
+    "src/**",
     "**/content/**",
     "**/README.md",
     "**/SETUP.md",
