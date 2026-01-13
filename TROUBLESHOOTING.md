@@ -68,13 +68,15 @@ lsof -ti:3000 | xargs kill -9
 If the blog content doesn't load:
 
 1. **Check file exists:**
+
    ```bash
    ls -la public/content/BLOG.md
    ```
 
 2. **Verify file path in main.js:**
+
    ```javascript
-   const response = await fetch('/content/BLOG.md');
+   const response = await fetch("/content/BLOG.md");
    ```
 
 3. **Check browser console** for errors
@@ -89,11 +91,13 @@ If the blog content doesn't load:
 If `npm run build` fails:
 
 1. **Check Node.js version:**
+
    ```bash
    node --version  # Should be 18+
    ```
 
 2. **Clear cache and reinstall:**
+
    ```bash
    rm -rf node_modules package-lock.json
    npm install
@@ -146,9 +150,3 @@ npm install vite@latest
 ---
 
 **Still having issues?** Check the main README.md or open an issue on GitHub.
-
-
-
-
-
-

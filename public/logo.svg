@@ -1,150 +1,66 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" width="240" height="240">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
   <defs>
     <!-- Tree gradient -->
-    <linearGradient id="treeGradient" x1="50%" y1="0%" x2="50%" y2="100%">
-      <stop offset="0%" style="stop-color:#10b981;stop-opacity:1" />
-      <stop offset="50%" style="stop-color:#059669;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#047857;stop-opacity:1" />
+    <linearGradient id="treeGradient" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" style="stop-color:#0f766e"/>
+      <stop offset="50%" style="stop-color:#14b8a6"/>
+      <stop offset="100%" style="stop-color:#2dd4bf"/>
     </linearGradient>
     
-    <!-- Pi board gradient -->
-    <linearGradient id="piGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#34d399;stop-opacity:0.9" />
-      <stop offset="100%" style="stop-color:#10b981;stop-opacity:0.9" />
-    </linearGradient>
-    
-    <!-- Background glow -->
-    <radialGradient id="glowGradient" cx="50%" cy="50%">
-      <stop offset="0%" style="stop-color:#10b981;stop-opacity:0.4" />
-      <stop offset="50%" style="stop-color:#34d399;stop-opacity:0.2" />
-      <stop offset="100%" style="stop-color:#10b981;stop-opacity:0" />
-    </radialGradient>
-    
-    <!-- Tech glow for LEDs -->
-    <radialGradient id="ledGlow" cx="50%" cy="50%">
-      <stop offset="0%" style="stop-color:#10b981;stop-opacity:1" />
-      <stop offset="70%" style="stop-color:#34d399;stop-opacity:0.6" />
-      <stop offset="100%" style="stop-color:#10b981;stop-opacity:0" />
-    </radialGradient>
-    
-    <!-- Glow filter -->
-    <filter id="glow">
+    <!-- Glow effect -->
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
       <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
       <feMerge>
         <feMergeNode in="coloredBlur"/>
         <feMergeNode in="SourceGraphic"/>
       </feMerge>
     </filter>
+    
+    <!-- Node pulse -->
+    <radialGradient id="nodeGlow" cx="50%" cy="50%">
+      <stop offset="0%" style="stop-color:#2dd4bf;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#14b8a6;stop-opacity:0.6"/>
+    </radialGradient>
   </defs>
   
-  <!-- Background glow -->
-  <circle cx="120" cy="120" r="100" fill="url(#glowGradient)"/>
+  <!-- Background circle -->
+  <circle cx="64" cy="64" r="60" fill="#0f172a" stroke="url(#treeGradient)" stroke-width="2"/>
   
-  <!-- Tree trunk (also represents rack/foundation) -->
-  <rect x="110" y="140" width="20" height="60" rx="10" fill="url(#treeGradient)" opacity="0.9"/>
+  <!-- Tree trunk -->
+  <path d="M64 110 L64 70" stroke="url(#treeGradient)" stroke-width="6" stroke-linecap="round"/>
   
-  <!-- Abstract Raspberry Pi boards as tree branches/leaves -->
+  <!-- Tree branches - left -->
+  <path d="M64 85 L44 65" stroke="url(#treeGradient)" stroke-width="4" stroke-linecap="round"/>
+  <path d="M44 65 L34 50" stroke="url(#treeGradient)" stroke-width="3" stroke-linecap="round"/>
+  <path d="M44 65 L50 45" stroke="url(#treeGradient)" stroke-width="3" stroke-linecap="round"/>
   
-  <!-- Left upper Pi (as branch) -->
-  <g transform="translate(50, 60) rotate(-25)">
-    <!-- Pi board shape -->
-    <rect x="0" y="0" width="50" height="32" rx="3" fill="url(#piGradient)" stroke="#10b981" stroke-width="1.5" opacity="0.85"/>
-    <rect x="3" y="3" width="44" height="26" rx="2" fill="#0f172a" opacity="0.6"/>
-    <!-- GPIO header -->
-    <rect x="5" y="5" width="15" height="3" rx="1" fill="#10b981" opacity="0.7"/>
-    <!-- Status LED -->
-    <circle cx="40" cy="12" r="1.5" fill="#10b981" filter="url(#glow)"/>
-    <!-- CPU area -->
-    <rect x="8" y="12" width="10" height="8" rx="1" fill="#10b981" opacity="0.3"/>
-  </g>
+  <!-- Tree branches - right -->
+  <path d="M64 85 L84 65" stroke="url(#treeGradient)" stroke-width="4" stroke-linecap="round"/>
+  <path d="M84 65 L94 50" stroke="url(#treeGradient)" stroke-width="3" stroke-linecap="round"/>
+  <path d="M84 65 L78 45" stroke="url(#treeGradient)" stroke-width="3" stroke-linecap="round"/>
   
-  <!-- Right upper Pi (as branch) -->
-  <g transform="translate(140, 60) rotate(25)">
-    <rect x="0" y="0" width="50" height="32" rx="3" fill="url(#piGradient)" stroke="#10b981" stroke-width="1.5" opacity="0.85"/>
-    <rect x="3" y="3" width="44" height="26" rx="2" fill="#0f172a" opacity="0.6"/>
-    <rect x="5" y="5" width="15" height="3" rx="1" fill="#10b981" opacity="0.7"/>
-    <circle cx="40" cy="12" r="1.5" fill="#10b981" filter="url(#glow)"/>
-    <rect x="8" y="12" width="10" height="8" rx="1" fill="#10b981" opacity="0.3"/>
-  </g>
+  <!-- Tree branches - center/top -->
+  <path d="M64 70 L64 40" stroke="url(#treeGradient)" stroke-width="4" stroke-linecap="round"/>
+  <path d="M64 50 L54 35" stroke="url(#treeGradient)" stroke-width="3" stroke-linecap="round"/>
+  <path d="M64 50 L74 35" stroke="url(#treeGradient)" stroke-width="3" stroke-linecap="round"/>
   
-  <!-- Center top Pi (main branch) -->
-  <g transform="translate(95, 30)">
-    <rect x="0" y="0" width="50" height="32" rx="3" fill="url(#piGradient)" stroke="#10b981" stroke-width="1.5" opacity="0.9"/>
-    <rect x="3" y="3" width="44" height="26" rx="2" fill="#0f172a" opacity="0.6"/>
-    <rect x="5" y="5" width="15" height="3" rx="1" fill="#10b981" opacity="0.7"/>
-    <circle cx="40" cy="12" r="1.5" fill="#10b981" filter="url(#glow)"/>
-    <rect x="8" y="12" width="10" height="8" rx="1" fill="#10b981" opacity="0.3"/>
-  </g>
+  <!-- Kubernetes-like nodes at branch ends -->
+  <circle cx="34" cy="50" r="6" fill="url(#nodeGlow)" filter="url(#glow)"/>
+  <circle cx="50" cy="45" r="5" fill="url(#nodeGlow)" filter="url(#glow)"/>
+  <circle cx="94" cy="50" r="6" fill="url(#nodeGlow)" filter="url(#glow)"/>
+  <circle cx="78" cy="45" r="5" fill="url(#nodeGlow)" filter="url(#glow)"/>
+  <circle cx="54" cy="35" r="5" fill="url(#nodeGlow)" filter="url(#glow)"/>
+  <circle cx="74" cy="35" r="5" fill="url(#nodeGlow)" filter="url(#glow)"/>
+  <circle cx="64" cy="40" r="7" fill="url(#nodeGlow)" filter="url(#glow)"/>
   
-  <!-- Left middle Pi -->
-  <g transform="translate(40, 100) rotate(-15)">
-    <rect x="0" y="0" width="45" height="28" rx="3" fill="url(#piGradient)" stroke="#10b981" stroke-width="1.5" opacity="0.8"/>
-    <rect x="3" y="3" width="39" height="22" rx="2" fill="#0f172a" opacity="0.6"/>
-    <rect x="5" y="5" width="12" height="2.5" rx="1" fill="#10b981" opacity="0.7"/>
-    <circle cx="35" cy="10" r="1.5" fill="#10b981" filter="url(#glow)"/>
-    <rect x="7" y="10" width="8" height="6" rx="1" fill="#10b981" opacity="0.3"/>
-  </g>
+  <!-- Small data flow particles -->
+  <circle cx="40" cy="58" r="2" fill="#2dd4bf" opacity="0.7"/>
+  <circle cx="88" cy="58" r="2" fill="#2dd4bf" opacity="0.7"/>
+  <circle cx="64" cy="55" r="2" fill="#2dd4bf" opacity="0.7"/>
   
-  <!-- Right middle Pi -->
-  <g transform="translate(155, 100) rotate(15)">
-    <rect x="0" y="0" width="45" height="28" rx="3" fill="url(#piGradient)" stroke="#10b981" stroke-width="1.5" opacity="0.8"/>
-    <rect x="3" y="3" width="39" height="22" rx="2" fill="#0f172a" opacity="0.6"/>
-    <rect x="5" y="5" width="12" height="2.5" rx="1" fill="#10b981" opacity="0.7"/>
-    <circle cx="35" cy="10" r="1.5" fill="#10b981" filter="url(#glow)"/>
-    <rect x="7" y="10" width="8" height="6" rx="1" fill="#10b981" opacity="0.3"/>
-  </g>
-  
-  <!-- Lower left Pi -->
-  <g transform="translate(60, 140) rotate(-10)">
-    <rect x="0" y="0" width="40" height="25" rx="3" fill="url(#piGradient)" stroke="#10b981" stroke-width="1.5" opacity="0.75"/>
-    <rect x="3" y="3" width="34" height="19" rx="2" fill="#0f172a" opacity="0.6"/>
-    <rect x="5" y="5" width="10" height="2" rx="1" fill="#10b981" opacity="0.7"/>
-    <circle cx="30" cy="9" r="1.5" fill="#10b981" filter="url(#glow)"/>
-    <rect x="6" y="9" width="7" height="5" rx="1" fill="#10b981" opacity="0.3"/>
-  </g>
-  
-  <!-- Lower right Pi -->
-  <g transform="translate(140, 140) rotate(10)">
-    <rect x="0" y="0" width="40" height="25" rx="3" fill="url(#piGradient)" stroke="#10b981" stroke-width="1.5" opacity="0.75"/>
-    <rect x="3" y="3" width="34" height="19" rx="2" fill="#0f172a" opacity="0.6"/>
-    <rect x="5" y="5" width="10" height="2" rx="1" fill="#10b981" opacity="0.7"/>
-    <circle cx="30" cy="9" r="1.5" fill="#10b981" filter="url(#glow)"/>
-    <rect x="6" y="9" width="7" height="5" rx="1" fill="#10b981" opacity="0.3"/>
-  </g>
-  
-  <!-- Connection lines (representing network/data flow) -->
-  <g stroke="#10b981" stroke-width="1.5" fill="none" opacity="0.4" stroke-dasharray="2,2">
-    <line x1="120" y1="140" x2="75" y2="75" filter="url(#glow)"/>
-    <line x1="120" y1="140" x2="165" y2="75" filter="url(#glow)"/>
-    <line x1="120" y1="140" x2="120" y2="50" filter="url(#glow)"/>
-    <line x1="120" y1="140" x2="80" y2="115" filter="url(#glow)"/>
-    <line x1="120" y1="140" x2="160" y2="115" filter="url(#glow)"/>
-  </g>
-  
-  <!-- Root system (foundation, also abstract network connections) -->
-  <path d="M 110 200 Q 100 210 90 205 Q 85 200 90 195" 
-        stroke="url(#treeGradient)" 
-        stroke-width="3" 
-        fill="none" 
-        opacity="0.6" 
-        stroke-linecap="round"/>
-  <path d="M 130 200 Q 140 210 150 205 Q 155 200 150 195" 
-        stroke="url(#treeGradient)" 
-        stroke-width="3" 
-        fill="none" 
-        opacity="0.6" 
-        stroke-linecap="round"/>
-  
-  <!-- Center cluster core (where all Pis connect) -->
-  <circle cx="120" cy="120" r="8" fill="#ffffff" opacity="0.9"/>
-  <circle cx="120" cy="120" r="5" fill="url(#treeGradient)"/>
-  <circle cx="120" cy="120" r="2" fill="#ffffff" opacity="0.8"/>
-  
-  <!-- Additional tech elements: data particles -->
-  <g opacity="0.5">
-    <circle cx="100" cy="90" r="1.5" fill="#34d399" filter="url(#glow)"/>
-    <circle cx="140" cy="90" r="1.5" fill="#34d399" filter="url(#glow)"/>
-    <circle cx="85" cy="110" r="1" fill="#10b981" filter="url(#glow)"/>
-    <circle cx="155" cy="110" r="1" fill="#10b981" filter="url(#glow)"/>
-  </g>
+  <!-- Connection lines (subtle) -->
+  <line x1="34" y1="50" x2="50" y2="45" stroke="#14b8a6" stroke-width="1" opacity="0.3"/>
+  <line x1="94" y1="50" x2="78" y2="45" stroke="#14b8a6" stroke-width="1" opacity="0.3"/>
+  <line x1="50" y1="45" x2="64" y2="40" stroke="#14b8a6" stroke-width="1" opacity="0.3"/>
+  <line x1="78" y1="45" x2="64" y2="40" stroke="#14b8a6" stroke-width="1" opacity="0.3"/>
 </svg>

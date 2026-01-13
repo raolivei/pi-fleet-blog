@@ -29,4 +29,3 @@ Welcome to the Building Eldertree blog chapters. Navigate through the sidebar or
 ## Reference
 
 - Appendix: Reference Materials _(Coming soon)_
-

@@ -86,11 +86,11 @@ The actual K3s installation was handled by Ansible, ensuring:
 
 ## Cluster Configuration
 
-The initial cluster configuration:
+### Initial Configuration (November 2025)
 
 ```yaml
 Cluster Name: eldertree
-Control Plane: eldertree (192.168.2.83)
+Control Plane: node-1 (192.168.2.101)
 Kubernetes Version: v1.33.5+k3s1
 Storage Class: local-path (built-in)
 Ingress Class: traefik (built-in)
@@ -103,6 +103,30 @@ Service Load Balancer: Klipper (built-in)
 - Embedded etcd (simpler than external etcd for single node)
 - Built-in components (Traefik, local-path) reduce complexity
 - Standard Kubernetes APIs (compatible with all K8s tools)
+
+### Current Configuration (January 2026) - TRUE HIGH AVAILABILITY 🎉
+
+```yaml
+Cluster Name: eldertree
+Control Plane: 3-node HA (node-1, node-2, node-3)
+Kubernetes Version: v1.33.6+k3s1
+API VIP: 192.168.2.100 (kube-vip)
+Storage Classes: 
+  - local-path (non-critical)
+  - longhorn (3-replica distributed)
+Ingress Class: traefik (built-in)
+```
+
+**HA Components:**
+
+| Component | HA Method | Failure Tolerance |
+|-----------|-----------|-------------------|
+| Control Plane | 3-node etcd | 1 node |
+| API Access | kube-vip VIP | 1 node |
+| Storage | Longhorn 3 replicas | 1 node |
+| Secrets | Vault Raft 3 replicas | 1 node |
+
+**Any single node can now fail and the cluster keeps running!**
 
 ## First Pods
 

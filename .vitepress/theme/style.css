@@ -1,13 +1,26 @@
 /**
- * Custom theme styling for Building Eldertree blog
- * Based on VitePress default theme with customizations inspired by Doc Yard
+ * Building Eldertree - Custom Theme
+ * A sophisticated dark theme inspired by terminal aesthetics and infrastructure
  */
 
 @import "./var.css";
 
-/**
- * Component: Button
- * -------------------------------------------------------------------------- */
+/* ============================================================================
+ * Typography - JetBrains Mono for that infrastructure/DevOps feel
+ * ========================================================================== */
+
+@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap");
+
+:root {
+  --vp-font-family-base: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, Oxygen, Ubuntu, sans-serif;
+  --vp-font-family-mono: "JetBrains Mono", "Fira Code", Consolas, Monaco,
+    "Andale Mono", monospace;
+}
+
+/* ============================================================================
+ * Button Styling
+ * ========================================================================== */
 
 :root {
   --vp-button-brand-border: transparent;
@@ -21,33 +34,43 @@
   --vp-button-brand-active-bg: var(--vp-c-brand-1);
 }
 
-/**
- * Component: Home
- * -------------------------------------------------------------------------- */
+/* ============================================================================
+ * Home Hero Section
+ * ========================================================================== */
 
 :root {
   --vp-home-hero-name-color: transparent;
-  --vp-home-hero-name-background: -webkit-linear-gradient(120deg, #10b981 30%, #34d399);
-  
-  --vp-home-hero-image-background-image: linear-gradient(-45deg, #10b981 50%, #34d399 50%);
-  --vp-home-hero-image-filter: blur(44px);
+  --vp-home-hero-name-background: linear-gradient(
+    135deg,
+    #14b8a6 0%,
+    #2dd4bf 50%,
+    #5eead4 100%
+  );
+  --vp-home-hero-image-background-image: radial-gradient(
+    circle at center,
+    rgba(20, 184, 166, 0.4) 0%,
+    transparent 70%
+  );
+  --vp-home-hero-image-filter: blur(72px);
 }
 
-@media (min-width: 640px) {
-  :root {
-    --vp-home-hero-image-filter: blur(56px);
-  }
+.dark {
+  --vp-home-hero-name-background: linear-gradient(
+    135deg,
+    #2dd4bf 0%,
+    #5eead4 50%,
+    #99f6e4 100%
+  );
+  --vp-home-hero-image-background-image: radial-gradient(
+    circle at center,
+    rgba(45, 212, 191, 0.3) 0%,
+    transparent 70%
+  );
 }
 
-@media (min-width: 960px) {
-  :root {
-    --vp-home-hero-image-filter: blur(68px);
-  }
-}
-
-/**
- * Component: Custom Block
- * -------------------------------------------------------------------------- */
+/* ============================================================================
+ * Custom Blocks
+ * ========================================================================== */
 
 :root {
   --vp-custom-block-tip-border: transparent;
@@ -56,63 +79,91 @@
   --vp-custom-block-tip-code-bg: var(--vp-c-brand-soft);
 }
 
-/**
+/* ============================================================================
  * Enhanced Typography
- * -------------------------------------------------------------------------- */
+ * ========================================================================== */
 
 .vp-doc h1 {
   font-weight: 700;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.03em;
+  background: linear-gradient(135deg, var(--vp-c-brand-1), var(--vp-c-brand-2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .vp-doc h2 {
   font-weight: 600;
-  letter-spacing: -0.01em;
-  margin-top: 2.5rem;
-  margin-bottom: 1rem;
+  letter-spacing: -0.02em;
+  margin-top: 3rem;
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--vp-c-divider);
 }
 
 .vp-doc h3 {
   font-weight: 600;
+  letter-spacing: -0.01em;
   margin-top: 2rem;
   margin-bottom: 0.75rem;
 }
 
-/**
- * Better Code Block Styling
- * -------------------------------------------------------------------------- */
+/* ============================================================================
+ * Code Block Styling - Terminal Aesthetic
+ * ========================================================================== */
+
+.vp-doc div[class*="language-"] {
+  border-radius: 12px;
+  border: 1px solid var(--vp-c-divider);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.vp-doc div[class*="language-"]::before {
+  font-family: var(--vp-font-family-mono);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
 
 .vp-code-group {
   margin: 1.5rem 0;
-  border-radius: 8px;
+  border-radius: 12px;
   overflow: hidden;
 }
 
 .vp-code-group .tabs {
-  border-radius: 8px 8px 0 0;
+  border-radius: 12px 12px 0 0;
 }
 
-/**
- * Improved Table Styling
- * -------------------------------------------------------------------------- */
+/* ============================================================================
+ * Table Styling
+ * ========================================================================== */
 
 .vp-doc table {
   display: table;
   width: 100%;
   border-collapse: collapse;
   margin: 1.5rem 0;
-  border-radius: 8px;
+  border-radius: 12px;
   overflow: hidden;
+  border: 1px solid var(--vp-c-divider);
 }
 
 .vp-doc table th {
-  background-color: var(--vp-c-bg-soft);
+  background: linear-gradient(135deg, var(--vp-c-bg-soft), var(--vp-c-bg-alt));
   font-weight: 600;
-  padding: 0.75rem 1rem;
+  padding: 0.875rem 1rem;
+  text-align: left;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--vp-c-text-2);
 }
 
 .vp-doc table td {
-  padding: 0.75rem 1rem;
+  padding: 0.875rem 1rem;
 }
 
 .vp-doc table tr {
@@ -123,9 +174,13 @@
   border-bottom: none;
 }
 
-/**
- * Better List Spacing
- * -------------------------------------------------------------------------- */
+.vp-doc table tr:hover {
+  background-color: var(--vp-c-bg-soft);
+}
+
+/* ============================================================================
+ * List Styling
+ * ========================================================================== */
 
 .vp-doc ul,
 .vp-doc ol {
@@ -134,154 +189,320 @@
 }
 
 .vp-doc li {
-  margin: 0.5rem 0;
-  line-height: 1.7;
+  margin: 0.625rem 0;
+  line-height: 1.75;
 }
 
-/**
- * Enhanced Blockquote Styling
- * -------------------------------------------------------------------------- */
+.vp-doc li::marker {
+  color: var(--vp-c-brand-1);
+}
+
+/* ============================================================================
+ * Blockquote Styling
+ * ========================================================================== */
 
 .vp-doc blockquote {
   border-left: 4px solid var(--vp-c-brand-1);
-  padding-left: 1rem;
+  padding: 1rem 1.5rem;
   margin: 1.5rem 0;
-  color: var(--vp-c-text-2);
+  background: linear-gradient(90deg, var(--vp-c-bg-soft) 0%, transparent 100%);
+  border-radius: 0 12px 12px 0;
   font-style: italic;
-  background-color: var(--vp-c-bg-soft);
-  padding: 1rem 1rem 1rem 1.5rem;
-  border-radius: 0 8px 8px 0;
+  color: var(--vp-c-text-2);
 }
 
-/**
- * Home Page Enhancements
- * -------------------------------------------------------------------------- */
+.vp-doc blockquote p {
+  margin: 0;
+}
+
+/* ============================================================================
+ * Home Page Hero Enhancements
+ * ========================================================================== */
 
 .VPHero {
-  padding: 3rem 0 2rem;
+  padding: 4rem 0 3rem;
 }
 
-.VPHero .main {
-  font-size: 3.5rem;
-  font-weight: 700;
-  line-height: 1.2;
-  letter-spacing: -0.02em;
+.VPHero .name {
+  font-size: 3.5rem !important;
+  font-weight: 800 !important;
+  line-height: 1.1 !important;
+  letter-spacing: -0.03em !important;
 }
 
 .VPHero .text {
-  font-size: 1.5rem;
-  font-weight: 500;
-  color: var(--vp-c-text-2);
-  margin-top: 0.5rem;
+  font-size: 1.5rem !important;
+  font-weight: 500 !important;
+  color: var(--vp-c-text-2) !important;
+  margin-top: 0.75rem !important;
 }
 
 .VPHero .tagline {
-  font-size: 1.1rem;
-  color: var(--vp-c-text-2);
-  margin-top: 1rem;
+  font-size: 1.125rem !important;
+  color: var(--vp-c-text-3) !important;
+  margin-top: 1.5rem !important;
+  max-width: 560px !important;
+  line-height: 1.6 !important;
 }
 
 .VPHero .actions {
-  margin-top: 2rem;
-  gap: 1rem;
+  margin-top: 2.5rem !important;
+  gap: 1rem !important;
 }
 
-/**
- * Stats Grid Enhancement
- * -------------------------------------------------------------------------- */
+.VPHero .VPButton {
+  border-radius: 8px !important;
+  padding: 0.75rem 1.5rem !important;
+  font-weight: 600 !important;
+  transition: all 0.2s ease !important;
+}
+
+.VPHero .VPButton.brand:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px -4px rgba(20, 184, 166, 0.4);
+}
+
+/* ============================================================================
+ * Stats Grid - Dashboard Style
+ * ========================================================================== */
 
 .vp-doc .stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(4, 1fr);
   gap: 1.5rem;
-  margin: 2rem 0;
+  margin: 2.5rem 0;
+}
+
+@media (max-width: 960px) {
+  .vp-doc .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .vp-doc .stats-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .vp-doc .stat-card {
-  padding: 1.5rem;
-  background: var(--vp-c-bg-soft);
-  border-radius: 12px;
+  padding: 1.75rem;
+  background: linear-gradient(
+    135deg,
+    var(--vp-c-bg-soft) 0%,
+    var(--vp-c-bg-alt) 100%
+  );
+  border-radius: 16px;
   text-align: center;
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   border: 1px solid var(--vp-c-divider);
+  position: relative;
+  overflow: hidden;
+}
+
+.vp-doc .stat-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--vp-c-brand-1), var(--vp-c-brand-2));
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
 .vp-doc .stat-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.15);
+  border-color: var(--vp-c-brand-1);
+}
+
+.vp-doc .stat-card:hover::before {
+  opacity: 1;
 }
 
 .vp-doc .stat-number {
-  font-size: 2.5rem;
-  font-weight: 700;
-  color: var(--vp-c-brand-1);
+  font-size: 3rem;
+  font-weight: 800;
+  font-family: var(--vp-font-family-mono);
+  background: linear-gradient(135deg, var(--vp-c-brand-1), var(--vp-c-brand-2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
   line-height: 1;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.75rem;
 }
 
 .vp-doc .stat-label {
   color: var(--vp-c-text-2);
-  font-size: 0.9rem;
-  font-weight: 500;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
 }
 
-/**
- * Navigation Cards Enhancement
- * -------------------------------------------------------------------------- */
+/* ============================================================================
+ * Navigation Cards - Feature Cards Style
+ * ========================================================================== */
 
 .vp-doc .nav-card {
-  padding: 1.5rem;
+  padding: 1.75rem;
   background: var(--vp-c-bg-soft);
-  border-radius: 12px;
-  border-left: 4px solid var(--vp-c-brand-1);
-  transition: transform 0.2s, box-shadow 0.2s;
+  border-radius: 16px;
   border: 1px solid var(--vp-c-divider);
-  border-left: 4px solid var(--vp-c-brand-1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.vp-doc .nav-card::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 1.5rem;
+  bottom: 1.5rem;
+  width: 4px;
+  background: linear-gradient(180deg, var(--vp-c-brand-1), var(--vp-c-brand-3));
+  border-radius: 0 4px 4px 0;
+  opacity: 0.5;
+  transition: opacity 0.3s ease;
 }
 
 .vp-doc .nav-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.15);
+  border-color: var(--vp-c-brand-soft);
+}
+
+.vp-doc .nav-card:hover::before {
+  opacity: 1;
 }
 
 .vp-doc .nav-card h3 {
-  margin-top: 0;
+  margin: 0 0 1rem 0;
   color: var(--vp-c-text-1);
   font-size: 1.25rem;
-  font-weight: 600;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .vp-doc .nav-card ul {
-  margin-top: 1rem;
-  margin-bottom: 0;
+  margin: 0;
+  padding-left: 0;
+  list-style: none;
+}
+
+.vp-doc .nav-card li {
+  margin: 0.5rem 0;
+  padding-left: 1.25rem;
+  position: relative;
+}
+
+.vp-doc .nav-card li::before {
+  content: "→";
+  position: absolute;
+  left: 0;
+  color: var(--vp-c-brand-1);
+  font-weight: 600;
 }
 
 .vp-doc .nav-card a {
   color: var(--vp-c-brand-1);
   text-decoration: none;
-  transition: color 0.2s;
+  font-weight: 500;
+  transition: color 0.2s ease;
 }
 
 .vp-doc .nav-card a:hover {
   color: var(--vp-c-brand-2);
-  text-decoration: underline;
 }
 
-/**
- * Responsive Improvements
- * -------------------------------------------------------------------------- */
+/* ============================================================================
+ * Cluster Status Badge
+ * ========================================================================== */
+
+.vp-doc .status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: rgba(20, 184, 166, 0.1);
+  border: 1px solid var(--vp-c-brand-1);
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--vp-c-brand-1);
+}
+
+.vp-doc .status-badge::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  background: var(--vp-c-brand-1);
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(1.2);
+  }
+}
+
+/* ============================================================================
+ * Responsive Adjustments
+ * ========================================================================== */
 
 @media (max-width: 768px) {
-  .VPHero .main {
-    font-size: 2.5rem;
+  .VPHero .name {
+    font-size: 2.5rem !important;
   }
-  
+
   .VPHero .text {
-    font-size: 1.25rem;
+    font-size: 1.25rem !important;
   }
-  
-  .vp-doc .stats-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
+
+  .VPHero .tagline {
+    font-size: 1rem !important;
   }
+
+  .vp-doc .stat-number {
+    font-size: 2.25rem;
+  }
+}
+
+/* ============================================================================
+ * Sidebar Enhancements
+ * ========================================================================== */
+
+.VPSidebar .VPSidebarItem.level-0 > .item > .text {
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  color: var(--vp-c-text-2);
+}
+
+.VPSidebar .VPSidebarItem.is-active > .item > .text {
+  color: var(--vp-c-brand-1);
+}
+
+/* ============================================================================
+ * Footer
+ * ========================================================================== */
+
+.VPFooter {
+  border-top: 1px solid var(--vp-c-divider);
+}
+
+.VPFooter .message {
+  font-size: 0.875rem;
 }

@@ -44,7 +44,7 @@ pi-fleet-blog/
 
 ### Prerequisites
 
-- Node.js 18+ 
+- Node.js 18+
 - npm or yarn
 
 ### Setup
@@ -74,6 +74,7 @@ The blog content is in `content/BLOG.md`. This is a comprehensive Markdown docum
 ### Current Chapters
 
 ✅ **Completed:**
+
 - Introduction
 - Chapter 1: The Vision
 - Chapter 5: Initial Cluster Setup
@@ -81,6 +82,7 @@ The blog content is in `content/BLOG.md`. This is a comprehensive Markdown docum
 - Chapter 14: Troubleshooting and Lessons Learned
 
 📝 **In Progress:**
+
 - 11 chapters remaining
 
 ## Publishing

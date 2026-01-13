@@ -1,15 +1,9 @@
 import { defineConfig } from "vitepress";
 import { sidebar } from "./sidebar";
-import { existsSync } from "fs";
-import { resolve } from "path";
 
-// Determine base path:
-// - If CNAME exists (custom domain), use root path /
-// - If production without custom domain, use /pi-fleet-blog/
-// - Otherwise (local dev), use /
-const cnamePath = resolve(__dirname, "../public/CNAME");
-const hasCustomDomain = existsSync(cnamePath);
-const base = hasCustomDomain || process.env.NODE_ENV !== "production" ? "/" : "/pi-fleet-blog/";
+// Base path is always "/" since we use custom domain blog.eldertree.xyz
+// The CNAME file in public/ tells GitHub Pages to serve from the custom domain
+const base = "/";
 
 export default defineConfig({
   base,
@@ -52,7 +46,7 @@ export default defineConfig({
 
     footer: {
       message: "Built with ❤️ documenting the eldertree Kubernetes cluster journey",
-      copyright: "Copyright © 2025 Rafael Oliveira",
+      copyright: "Copyright © 2026 Rafael Oliveira",
     },
   },
 

@@ -1,35 +1,50 @@
 /**
- * Color system variables
- * Based on VitePress default theme with custom brand colors
+ * Color system variables for Building Eldertree blog
+ * A dark, sophisticated theme inspired by terminal aesthetics and forest depths
  */
 
 :root {
+  /* Base gray scale - slate tones */
   --vp-c-default-1: var(--vp-c-gray-1);
   --vp-c-default-2: var(--vp-c-gray-2);
   --vp-c-default-3: var(--vp-c-gray-3);
   --vp-c-default-soft: var(--vp-c-gray-soft);
 
-  /* Brand colors - Green theme for Eldertree */
-  --vp-c-brand-1: #10b981;
-  --vp-c-brand-2: #059669;
-  --vp-c-brand-3: #047857;
-  --vp-c-brand-soft: rgba(16, 185, 129, 0.14);
+  /* Brand colors - Emerald/Teal gradient inspired by old-growth forests */
+  --vp-c-brand-1: #14b8a6;
+  --vp-c-brand-2: #0d9488;
+  --vp-c-brand-3: #0f766e;
+  --vp-c-brand-soft: rgba(20, 184, 166, 0.16);
 
+  /* Accent colors */
+  --eldertree-accent-gold: #fbbf24;
+  --eldertree-accent-amber: #f59e0b;
+  --eldertree-accent-rose: #f43f5e;
+  --eldertree-accent-violet: #8b5cf6;
+
+  /* Tips use brand colors */
   --vp-c-tip-1: var(--vp-c-brand-1);
   --vp-c-tip-2: var(--vp-c-brand-2);
   --vp-c-tip-3: var(--vp-c-brand-3);
   --vp-c-tip-soft: var(--vp-c-brand-soft);
 
+  /* Warning colors - amber tones */
   --vp-c-warning-1: var(--vp-c-yellow-1);
   --vp-c-warning-2: var(--vp-c-yellow-2);
   --vp-c-warning-3: var(--vp-c-yellow-3);
   --vp-c-warning-soft: var(--vp-c-yellow-soft);
 
+  /* Danger colors */
   --vp-c-danger-1: var(--vp-c-red-1);
   --vp-c-danger-2: var(--vp-c-red-2);
   --vp-c-danger-3: var(--vp-c-red-3);
   --vp-c-danger-soft: var(--vp-c-red-soft);
 }
 
-
-
+/* Dark mode specific overrides */
+.dark {
+  --vp-c-brand-1: #2dd4bf;
+  --vp-c-brand-2: #14b8a6;
+  --vp-c-brand-3: #0d9488;
+  --vp-c-brand-soft: rgba(45, 212, 191, 0.16);
+}
