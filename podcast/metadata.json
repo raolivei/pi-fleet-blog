@@ -1,0 +1,122 @@
+{
+  "series": {
+    "title": "Building Eldertree",
+    "subtitle": "The real journey of running Kubernetes on Raspberry Pis",
+    "description": "A documentary podcast series following the complete journey of building a highly available Kubernetes cluster on Raspberry Pi hardware. From initial setup through production deployment, including all the failures, troubleshooting, and lessons learned along the way. Perfect for DevOps engineers, SRE professionals, and anyone interested in Kubernetes or home lab setups.",
+    "author": "Rafael Oliveira",
+    "email": "podcast@eldertree.local",
+    "website": "https://github.com/raolivei/pi-fleet",
+    "language": "en",
+    "category": "Technology",
+    "subcategory": "Software How-To",
+    "explicit": false,
+    "copyright": "2026 Rafael Oliveira",
+    "keywords": [
+      "kubernetes",
+      "k3s",
+      "devops",
+      "sre",
+      "raspberry pi",
+      "home lab",
+      "infrastructure",
+      "cloud native",
+      "gitops",
+      "high availability",
+      "linux",
+      "containers",
+      "docker"
+    ]
+  },
+  "episodes": [
+    {
+      "number": 1,
+      "id": "01-the-beginning",
+      "title": "The Beginning",
+      "subtitle": "Setting up the Pi cluster hardware",
+      "description": "The journey begins. We unbox three Raspberry Pi 5 units, set up the hardware, and take our first steps toward building a home Kubernetes cluster.",
+      "duration_estimate": "15-20 minutes",
+      "keywords": ["raspberry pi", "hardware", "setup", "k3s", "cluster"]
+    },
+    {
+      "number": 2,
+      "id": "02-nvme-migration",
+      "title": "NVMe Migration",
+      "subtitle": "Moving from SD cards to NVMe storage",
+      "description": "SD cards are slow and unreliable. We migrate the entire cluster to NVMe SSDs and discover that boot configuration is an art form.",
+      "duration_estimate": "20-25 minutes",
+      "keywords": ["nvme", "ssd", "storage", "migration", "boot"]
+    },
+    {
+      "number": 3,
+      "id": "03-network-nightmares",
+      "title": "Network Nightmares",
+      "subtitle": "DNS, firewall, and connectivity battles",
+      "description": "Networking will break your cluster. We battle DNS issues, firewall misconfigurations, and packets being silently dropped.",
+      "duration_estimate": "25-30 minutes",
+      "keywords": ["networking", "dns", "firewall", "ufw", "flannel", "coredns"]
+    },
+    {
+      "number": 4,
+      "id": "04-flux-bootstrap",
+      "title": "The Flux Bootstrap",
+      "subtitle": "GitOps with Flux CD",
+      "description": "We embrace GitOps by bootstrapping Flux CD. Cluster configuration now lives in Git, and deployments happen automatically.",
+      "duration_estimate": "15-20 minutes",
+      "keywords": ["flux", "gitops", "automation", "kustomize", "helm"]
+    },
+    {
+      "number": 5,
+      "id": "05-storage-wars",
+      "title": "Storage Wars",
+      "subtitle": "Longhorn distributed storage journey",
+      "description": "Local storage fails when nodes go down. We attempt Longhorn, fail, give up, come back, and finally achieve distributed storage.",
+      "duration_estimate": "25-30 minutes",
+      "keywords": ["longhorn", "storage", "pvc", "csi", "distributed"]
+    },
+    {
+      "number": 6,
+      "id": "06-secrets-vaults",
+      "title": "Secrets & Vaults",
+      "subtitle": "HashiCorp Vault setup and HA",
+      "description": "Secrets management with HashiCorp Vault. We learn about unsealing, integrate External Secrets, and achieve HA with Raft.",
+      "duration_estimate": "20-25 minutes",
+      "keywords": ["vault", "secrets", "security", "hashicorp", "external secrets"]
+    },
+    {
+      "number": 7,
+      "id": "07-ha-quest",
+      "title": "The HA Quest",
+      "subtitle": "Converting to 3-node high availability",
+      "description": "The big one. Converting single control plane to 3-node HA. etcd quorum, kube-vip, and testing failover by shutting down node-1.",
+      "duration_estimate": "35-45 minutes",
+      "keywords": ["high availability", "etcd", "kube-vip", "failover", "control plane"]
+    },
+    {
+      "number": 8,
+      "id": "08-troubleshooting",
+      "title": "When Everything Breaks",
+      "subtitle": "Troubleshooting war stories",
+      "description": "Our greatest hits in cluster disasters. Emergency mode recovery, locked accounts, and times we couldn't SSH into anything.",
+      "duration_estimate": "30-35 minutes",
+      "keywords": ["troubleshooting", "recovery", "debugging", "emergency", "ssh"]
+    },
+    {
+      "number": 9,
+      "id": "09-monitoring-stack",
+      "title": "The Monitoring Stack",
+      "subtitle": "Prometheus, Grafana, observability",
+      "description": "What good is a cluster without visibility? We deploy Prometheus, Grafana, and build dashboards that actually help.",
+      "duration_estimate": "20-25 minutes",
+      "keywords": ["prometheus", "grafana", "monitoring", "observability", "metrics"]
+    },
+    {
+      "number": 10,
+      "id": "10-production-ready",
+      "title": "Production Ready",
+      "subtitle": "Final architecture and lessons learned",
+      "description": "The finale. Final architecture, real application deployment, Cloudflare Tunnel, and all the lessons we learned.",
+      "duration_estimate": "25-30 minutes",
+      "keywords": ["production", "deployment", "cloudflare", "architecture", "lessons"]
+    }
+  ]
+}

@@ -1,0 +1,347 @@
+# Eldertree Podcast - Episode Configuration
+# This file defines the episode structure and themes for the podcast series
+
+series:
+  name: "Building Eldertree"
+  tagline: "The real journey of running Kubernetes on Raspberry Pis"
+  description: |
+    A documentary podcast series following the complete journey of building
+    a highly available Kubernetes cluster on Raspberry Pi hardware. From
+    initial setup through production deployment, including all the failures,
+    troubleshooting, and lessons learned along the way.
+  target_audience:
+    - DevOps engineers
+    - SRE professionals
+    - Kubernetes enthusiasts
+    - Home lab hobbyists
+    - Software developers interested in infrastructure
+  host: "Rafael Oliveira"
+  website: "https://github.com/raolivei/pi-fleet"
+
+episodes:
+  - id: "01-the-beginning"
+    title: "The Beginning"
+    subtitle: "Setting up the Pi cluster hardware"
+    description: |
+      The journey begins. We unbox three Raspberry Pi 5 units, set up the
+      hardware, and take our first steps toward building a home Kubernetes
+      cluster. What could possibly go wrong?
+    keywords:
+      - raspberry
+      - pi
+      - cluster
+      - hardware
+      - setup
+      - initial
+      - flash
+      - install
+      - sd card
+      - boot
+      - first
+      - debian
+      - ubuntu
+    related_docs:
+      - FLASH_OS_NOW.md
+      - SD_CARD_SETUP.md
+      - SD_CARD_FRESH_SETUP.md
+      - OS_INSTALLATION_STEPS.md
+      - DEBIAN_VERSION_CHOICE.md
+    estimated_duration: "15-20 minutes"
+
+  - id: "02-nvme-migration"
+    title: "NVMe Migration"
+    subtitle: "Moving from SD cards to NVMe storage"
+    description: |
+      SD cards are slow and unreliable for Kubernetes workloads. We embark
+      on a journey to migrate the entire cluster to NVMe SSDs, discovering
+      along the way that boot configuration is an art form.
+    keywords:
+      - nvme
+      - ssd
+      - migration
+      - storage
+      - hat
+      - pcie
+      - boot from
+      - disk
+      - drive
+      - speed
+      - performance
+    related_docs:
+      - NVME_BOOT_SETUP.md
+      - NVME_BOOT_TROUBLESHOOTING.md
+      - NVME_BOOT_CONFIGURATION_COMPLETE.md
+      - NVME_MIGRATION_COMPLETE.md
+      - NVME_STORAGE_SETUP.md
+      - MIGRATION_NVME_HAT_QUICK_START.md
+      - INSTALL_OS_TO_NVME.md
+    estimated_duration: "20-25 minutes"
+
+  - id: "03-network-nightmares"
+    title: "Network Nightmares"
+    subtitle: "DNS, firewall, and connectivity battles"
+    description: |
+      If there's one thing that will break your cluster, it's networking.
+      Join us as we battle DNS resolution issues, firewall misconfigurations,
+      and the dreaded "packets silently dropped" syndrome.
+    keywords:
+      - network
+      - dns
+      - firewall
+      - ufw
+      - connectivity
+      - ping
+      - ip
+      - ethernet
+      - flannel
+      - vxlan
+      - port
+      - router
+      - coredns
+      - pihole
+    related_docs:
+      - NETWORK_ARCHITECTURE.md
+      - NETWORK_CONFIGURATION_BEST_PRACTICES.md
+      - NETWORK_CONFIGURATION_LESSONS.md
+      - NETWORK_CONFIGURATION_SAFETY.md
+      - DNS_TROUBLESHOOTING.md
+      - PIHOLE_DNS_TROUBLESHOOTING.md
+      - PREVENT_NETWORK_ISSUES.md
+      - FLANNEL_INTERFACE_CONFIGURATION.md
+      - IP_BASED_NETWORKING.md
+    estimated_duration: "25-30 minutes"
+
+  - id: "04-flux-bootstrap"
+    title: "The Flux Bootstrap"
+    subtitle: "GitOps with Flux CD"
+    description: |
+      We embrace GitOps by bootstrapping Flux CD. Now our cluster
+      configuration lives in Git, and deployments happen automatically.
+      The dream of declarative infrastructure becomes reality.
+    keywords:
+      - flux
+      - gitops
+      - bootstrap
+      - kustomize
+      - reconcile
+      - source
+      - helm release
+      - git
+      - declarative
+      - automation
+    related_docs:
+      - AUTOMATION.md
+    estimated_duration: "15-20 minutes"
+
+  - id: "05-storage-wars"
+    title: "Storage Wars"
+    subtitle: "Longhorn distributed storage journey"
+    description: |
+      Local-path storage is fine until a node goes down. We attempt to
+      deploy Longhorn for distributed storage, fail spectacularly, give up,
+      come back two days later, and finally achieve victory.
+    keywords:
+      - longhorn
+      - storage class
+      - pvc
+      - persistent
+      - volume
+      - replica
+      - csi
+      - local-path
+      - distributed
+      - redundancy
+    related_docs:
+      - LONGHORN_FIX_2026-01-12.md
+      - LONGHORN_RECOMMENDATION.md
+      - MULTI_NODE_STORAGE.md
+      - BACKUP_STRATEGY.md
+      - BACKUP_MOUNT_DECISION.md
+      - BACKUP_MOUNT_LEARNINGS.md
+    estimated_duration: "25-30 minutes"
+
+  - id: "06-secrets-vaults"
+    title: "Secrets & Vaults"
+    subtitle: "HashiCorp Vault setup and HA"
+    description: |
+      Secrets management is serious business. We deploy HashiCorp Vault,
+      learn about unsealing, integrate with External Secrets Operator,
+      and eventually achieve HA with Raft consensus.
+    keywords:
+      - vault
+      - secret
+      - unseal
+      - token
+      - external secrets
+      - hashicorp
+      - raft
+      - encryption
+      - security
+    related_docs:
+      - VAULT_QUICK_REFERENCE.md
+      - VAULT_SECRETS_MANAGEMENT.md
+      - VAULT_SECRETS_BOOTSTRAP.md
+      - VAULT_MIGRATION.md
+      - VAULT_RECOVERY.md
+      - PASSWORD_MANAGEMENT.md
+    estimated_duration: "20-25 minutes"
+
+  - id: "07-ha-quest"
+    title: "The HA Quest"
+    subtitle: "Converting to 3-node high availability"
+    description: |
+      The big one. We convert our single control plane into a 3-node
+      highly available cluster. etcd quorum, kube-vip, and the moment
+      of truth when we shut down node-1 to test failover.
+    keywords:
+      - high availability
+      - ha
+      - control plane
+      - etcd
+      - quorum
+      - kube-vip
+      - failover
+      - leader
+      - election
+      - redundancy
+    related_docs:
+      - HA_SETUP.md
+      - HA_CONTROL_PLANE_PROGRESS.md
+      - HA_FAILOVER_TEST_REPORT.md
+      - HA_KUBECONFIG_SETUP.md
+    blog_posts:
+      - 2026-01-10-HA-Control-Plane-Quest.md
+    estimated_duration: "35-45 minutes"
+
+  - id: "08-troubleshooting"
+    title: "When Everything Breaks"
+    subtitle: "Troubleshooting war stories"
+    description: |
+      A collection of our greatest hits in cluster disasters. Node-1's
+      recurring issues, emergency mode recovery, locked root accounts,
+      and the time we couldn't SSH into anything.
+    keywords:
+      - troubleshoot
+      - fix
+      - error
+      - issue
+      - problem
+      - debug
+      - crash
+      - fail
+      - recover
+      - emergency
+      - boot
+      - ssh
+    related_docs:
+      - NODE_TROUBLESHOOTING.md
+      - NODE_TROUBLESHOOTING_SUMMARY.md
+      - NODE_1_RECURRING_ISSUES.md
+      - NODE_1_ROOT_CAUSE.md
+      - EMERGENCY_MODE_FIX_NO_KEYBOARD.md
+      - EMERGENCY_MODE_RECOVERY.md
+      - EMERGENCY_DEPLOYMENT_STRATEGY.md
+      - RECOVER_LOCKED_ROOT.md
+      - RECOVER_NETWORK_CONNECTIVITY.md
+      - RECOVER_NODE_1_NETWORK.md
+      - RECOVERY_FROM_SD_CARD.md
+      - SSH_RECOVERY.md
+      - FIX_SSH_PERMISSION_DENIED.md
+      - BOOT_FIX.md
+      - BOOT_RELIABILITY_FIX.md
+    estimated_duration: "30-35 minutes"
+
+  - id: "09-monitoring-stack"
+    title: "The Monitoring Stack"
+    subtitle: "Prometheus, Grafana, observability"
+    description: |
+      What good is a cluster if you can't see what's happening inside?
+      We deploy Prometheus, Grafana, and build dashboards that actually
+      help us understand our infrastructure.
+    keywords:
+      - prometheus
+      - grafana
+      - monitor
+      - metric
+      - alert
+      - dashboard
+      - observability
+      - keda
+      - autoscaling
+    related_docs:
+      - LENS_METRICS.md
+      - LENS_CONNECTION_GUIDE.md
+    estimated_duration: "20-25 minutes"
+
+  - id: "10-production-ready"
+    title: "Production Ready"
+    subtitle: "Final architecture and lessons learned"
+    description: |
+      We wrap up the series with our final architecture, deployment
+      of real applications, Cloudflare Tunnel setup, and the lessons
+      we learned along the way. The cluster is finally production ready.
+    keywords:
+      - deploy
+      - production
+      - app
+      - ingress
+      - certificate
+      - cloudflare
+      - tunnel
+      - final
+      - architecture
+      - lessons
+    related_docs:
+      - INGRESS.md
+      - CLOUDFLARE_DOMAINS.md
+      - CLOUDFLARE_TUNNEL_TROUBLESHOOTING.md
+      - SERVICES_REFERENCE.md
+      - NODE_CONFIGURATION_SUMMARY.md
+    estimated_duration: "25-30 minutes"
+
+# TTS (Text-to-Speech) Configuration
+tts:
+  pronunciation_hints:
+    k3s: "k-threes"
+    k8s: "kubernetes"
+    etcd: "et-see-dee"
+    kubectl: "cube-control"
+    kube-vip: "cube-vip"
+    YAML: "yaml"
+    NVME: "en-vee-em-ee"
+    SSD: "ess-ess-dee"
+    DNS: "dee-en-ess"
+    UFW: "you-eff-double-you"
+    SSH: "ess-ess-aitch"
+    PVC: "pee-vee-see"
+    CSI: "see-ess-eye"
+    HA: "aitch-ay or high availability"
+    GitOps: "git-ops"
+    Longhorn: "long-horn"
+    Flannel: "flannel"
+    VXLAN: "vee-ex-lan"
+    CoreDNS: "core-dee-en-ess"
+    Pi-hole: "pie-hole"
+    Raft: "raft"
+    
+  pause_markers:
+    short: "[pause]"
+    medium: "[pause - 2 seconds]"
+    long: "[pause - 3 seconds]"
+    dramatic: "[dramatic pause]"
+
+# Spotify Metadata
+spotify:
+  category: "Technology"
+  subcategory: "Software How-To"
+  language: "en"
+  explicit: false
+  tags:
+    - kubernetes
+    - devops
+    - sre
+    - raspberry pi
+    - home lab
+    - infrastructure
+    - cloud native
+    - gitops
