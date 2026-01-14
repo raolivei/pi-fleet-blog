@@ -1,0 +1,6 @@
+# Eldertree Podcast Export Dependencies
+# Install with: pip3 install -r requirements.txt
+
+PyYAML>=6.0
+# Optional but recommended:
+# jinja2>=3.0  # For advanced templating

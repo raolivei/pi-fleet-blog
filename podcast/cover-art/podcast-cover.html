@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Building Eldertree - Podcast Cover Art</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Space+Grotesk:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        background: #1a1a2e;
+        font-family: "Space Grotesk", sans-serif;
+      }
+
+      .cover {
+        width: 3000px;
+        height: 3000px;
+        background: linear-gradient(
+          145deg,
+          #0f0f1a 0%,
+          #1a1a2e 50%,
+          #16213e 100%
+        );
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+
+      /* Animated grid background */
+      .grid-bg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: linear-gradient(
+            rgba(99, 102, 241, 0.03) 1px,
+            transparent 1px
+          ),
+          linear-gradient(90deg, rgba(99, 102, 241, 0.03) 1px, transparent 1px);
+        background-size: 60px 60px;
+      }
+
+      /* Glowing orbs */
+      .orb {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(80px);
+        opacity: 0.6;
+      }
+
+      .orb-1 {
+        width: 800px;
+        height: 800px;
+        background: radial-gradient(circle, #6366f1 0%, transparent 70%);
+        top: -200px;
+        right: -200px;
+      }
+
+      .orb-2 {
+        width: 600px;
+        height: 600px;
+        background: radial-gradient(circle, #22d3ee 0%, transparent 70%);
+        bottom: -150px;
+        left: -150px;
+      }
+
+      .orb-3 {
+        width: 500px;
+        height: 500px;
+        background: radial-gradient(circle, #a855f7 0%, transparent 70%);
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        opacity: 0.3;
+      }
+
+      /* Main content */
+      .content {
+        position: relative;
+        z-index: 10;
+        text-align: center;
+        padding: 100px;
+      }
+
+      /* Kubernetes wheel */
+      .k8s-wheel {
+        width: 600px;
+        height: 600px;
+        margin: 0 auto 80px;
+        position: relative;
+      }
+
+      .k8s-wheel svg {
+        width: 100%;
+        height: 100%;
+        filter: drop-shadow(0 0 60px rgba(99, 102, 241, 0.5));
+      }
+
+      /* Raspberry Pi nodes */
+      .nodes {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+      }
+
+      .node {
+        position: absolute;
+        width: 120px;
+        height: 120px;
+        background: linear-gradient(135deg, #c026d3 0%, #9333ea 100%);
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 0 40px rgba(192, 38, 211, 0.4),
+          inset 0 0 20px rgba(255, 255, 255, 0.1);
+        border: 3px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .node::before {
+        content: "🍓";
+        font-size: 60px;
+      }
+
+      .node-1 {
+        top: -60px;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+      .node-2 {
+        bottom: 60px;
+        left: 40px;
+      }
+      .node-3 {
+        bottom: 60px;
+        right: 40px;
+      }
+
+      /* Title */
+      .title {
+        font-size: 180px;
+        font-weight: 700;
+        color: #fff;
+        text-transform: uppercase;
+        letter-spacing: 8px;
+        margin-bottom: 40px;
+        text-shadow: 0 0 80px rgba(99, 102, 241, 0.8), 0 4px 0 #4338ca;
+        line-height: 1.1;
+      }
+
+      .title span {
+        display: block;
+        background: linear-gradient(
+          135deg,
+          #818cf8 0%,
+          #c084fc 50%,
+          #22d3ee 100%
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      /* Subtitle */
+      .subtitle {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 72px;
+        color: #94a3b8;
+        letter-spacing: 4px;
+        margin-bottom: 60px;
+      }
+
+      /* Tagline */
+      .tagline {
+        font-size: 56px;
+        color: #64748b;
+        max-width: 1800px;
+        line-height: 1.4;
+      }
+
+      .tagline em {
+        color: #22d3ee;
+        font-style: normal;
+      }
+
+      /* Tech badges */
+      .badges {
+        display: flex;
+        gap: 30px;
+        margin-top: 80px;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      .badge {
+        background: rgba(255, 255, 255, 0.05);
+        border: 2px solid rgba(255, 255, 255, 0.1);
+        padding: 20px 40px;
+        border-radius: 50px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 36px;
+        color: #94a3b8;
+      }
+
+      /* Corner decoration */
+      .corner-decor {
+        position: absolute;
+        width: 300px;
+        height: 300px;
+        border: 4px solid rgba(99, 102, 241, 0.3);
+      }
+
+      .corner-tl {
+        top: 60px;
+        left: 60px;
+        border-right: none;
+        border-bottom: none;
+      }
+
+      .corner-br {
+        bottom: 60px;
+        right: 60px;
+        border-left: none;
+        border-top: none;
+      }
+
+      /* Scaled version for preview */
+      .cover.preview {
+        width: 600px;
+        height: 600px;
+        transform-origin: top left;
+      }
+
+      .cover.preview .title {
+        font-size: 36px;
+        margin-bottom: 8px;
+      }
+
+      .cover.preview .subtitle {
+        font-size: 14px;
+        margin-bottom: 12px;
+      }
+
+      .cover.preview .tagline {
+        font-size: 11px;
+      }
+
+      .cover.preview .k8s-wheel {
+        width: 120px;
+        height: 120px;
+        margin-bottom: 16px;
+      }
+
+      .cover.preview .node {
+        width: 24px;
+        height: 24px;
+        border-radius: 4px;
+        border-width: 1px;
+      }
+
+      .cover.preview .node::before {
+        font-size: 12px;
+      }
+
+      .cover.preview .node-1 {
+        top: -12px;
+      }
+      .cover.preview .node-2 {
+        bottom: 12px;
+        left: 8px;
+      }
+      .cover.preview .node-3 {
+        bottom: 12px;
+        right: 8px;
+      }
+
+      .cover.preview .badges {
+        gap: 6px;
+        margin-top: 16px;
+      }
+
+      .cover.preview .badge {
+        padding: 4px 8px;
+        font-size: 7px;
+        border-width: 1px;
+      }
+
+      .cover.preview .corner-decor {
+        width: 60px;
+        height: 60px;
+        border-width: 1px;
+      }
+
+      .cover.preview .corner-tl {
+        top: 12px;
+        left: 12px;
+      }
+
+      .cover.preview .corner-br {
+        bottom: 12px;
+        right: 12px;
+      }
+
+      .cover.preview .content {
+        padding: 20px;
+      }
+
+      .cover.preview .orb {
+        filter: blur(16px);
+      }
+      .cover.preview .orb-1 {
+        width: 160px;
+        height: 160px;
+        top: -40px;
+        right: -40px;
+      }
+      .cover.preview .orb-2 {
+        width: 120px;
+        height: 120px;
+        bottom: -30px;
+        left: -30px;
+      }
+      .cover.preview .orb-3 {
+        width: 100px;
+        height: 100px;
+      }
+
+      .cover.preview .grid-bg {
+        background-size: 12px 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Preview size (600x600) - use this for quick preview -->
+    <!-- For final export: change class from "cover preview" to just "cover" -->
+    <div class="cover preview">
+      <div class="grid-bg"></div>
+      <div class="orb orb-1"></div>
+      <div class="orb orb-2"></div>
+      <div class="orb orb-3"></div>
+
+      <div class="corner-decor corner-tl"></div>
+      <div class="corner-decor corner-br"></div>
+
+      <div class="content">
+        <!-- Kubernetes wheel with Pi nodes -->
+        <div class="k8s-wheel">
+          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <!-- Outer ring -->
+            <circle
+              cx="50"
+              cy="50"
+              r="45"
+              fill="none"
+              stroke="url(#gradient1)"
+              stroke-width="2"
+              opacity="0.5"
+            />
+            <circle
+              cx="50"
+              cy="50"
+              r="38"
+              fill="none"
+              stroke="url(#gradient1)"
+              stroke-width="1.5"
+              opacity="0.3"
+            />
+
+            <!-- Kubernetes helm wheel -->
+            <g transform="translate(50, 50)">
+              <!-- Spokes -->
+              <g
+                stroke="url(#gradient1)"
+                stroke-width="3"
+                stroke-linecap="round"
+              >
+                <line x1="0" y1="-30" x2="0" y2="-18" />
+                <line x1="26" y1="-15" x2="15.6" y2="-9" />
+                <line x1="26" y1="15" x2="15.6" y2="9" />
+                <line x1="0" y1="30" x2="0" y2="18" />
+                <line x1="-26" y1="15" x2="-15.6" y2="9" />
+                <line x1="-26" y1="-15" x2="-15.6" y2="-9" />
+              </g>
+
+              <!-- Outer nodes -->
+              <g fill="url(#gradient2)">
+                <circle cx="0" cy="-30" r="6" />
+                <circle cx="26" cy="-15" r="6" />
+                <circle cx="26" cy="15" r="6" />
+                <circle cx="0" cy="30" r="6" />
+                <circle cx="-26" cy="15" r="6" />
+                <circle cx="-26" cy="-15" r="6" />
+              </g>
+
+              <!-- Center hub -->
+              <circle cx="0" cy="0" r="12" fill="url(#gradient2)" />
+              <circle cx="0" cy="0" r="8" fill="#1a1a2e" />
+              <circle cx="0" cy="0" r="5" fill="url(#gradient1)" />
+            </g>
+
+            <defs>
+              <linearGradient
+                id="gradient1"
+                x1="0%"
+                y1="0%"
+                x2="100%"
+                y2="100%"
+              >
+                <stop offset="0%" stop-color="#818cf8" />
+                <stop offset="50%" stop-color="#c084fc" />
+                <stop offset="100%" stop-color="#22d3ee" />
+              </linearGradient>
+              <linearGradient
+                id="gradient2"
+                x1="0%"
+                y1="0%"
+                x2="100%"
+                y2="100%"
+              >
+                <stop offset="0%" stop-color="#6366f1" />
+                <stop offset="100%" stop-color="#a855f7" />
+              </linearGradient>
+            </defs>
+          </svg>
+
+          <!-- Raspberry Pi nodes positioned around the wheel -->
+          <div class="nodes">
+            <div class="node node-1"></div>
+            <div class="node node-2"></div>
+            <div class="node node-3"></div>
+          </div>
+        </div>
+
+        <h1 class="title">
+          <span>Building</span>
+          <span>Eldertree</span>
+        </h1>
+
+        <p class="subtitle">KUBERNETES ON RASPBERRY PI</p>
+
+        <p class="tagline">
+          The <em>real journey</em> of running k3s on bare metal
+        </p>
+
+        <div class="badges">
+          <span class="badge">k3s</span>
+          <span class="badge">GitOps</span>
+          <span class="badge">HA</span>
+          <span class="badge">DevOps</span>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
