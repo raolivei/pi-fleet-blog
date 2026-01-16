@@ -1,0 +1,102 @@
+# Pi Fleet Blog - Cursor Rules
+
+## Workspace
+
+See `../workspace-config/docs/PROJECT_CONVENTIONS.md` for shared conventions (git workflow, CHANGELOG, security).
+
+## Commands
+
+```bash
+# Development
+npm install                      # Install dependencies
+npm run dev                      # Start VitePress dev server (localhost:5173)
+
+# Build
+npm run build                    # Build static site
+npm run preview                  # Preview production build
+
+# Deployment (automated via GitHub Actions on push to main)
+# Site deploys to: https://pi-fleet.raolivei.dev
+```
+
+## Workflow
+
+1. Run `npm run dev` to preview changes
+2. Update CHANGELOG.md for significant changes
+3. Never run git commands at workspace root
+
+## Project Overview
+
+VitePress-based build diary documenting the eldertree Raspberry Pi k3s cluster journey. Includes written chapters and podcast episodes.
+
+```
+pi-fleet-blog/
+├── .vitepress/           # VitePress config
+│   ├── config.ts        # Site configuration
+│   └── sidebar.ts       # Navigation sidebar
+├── chapters/            # Written blog chapters (1-15)
+├── podcast/             # Podcast episodes
+│   ├── episode-NN-*/   # Episode folders
+│   │   ├── script.md   # Episode script
+│   │   └── show-notes.md
+│   └── metadata.json   # Podcast metadata
+├── content/             # Blog planning docs
+├── scripts/             # Generation scripts
+└── public/              # Static assets (logo, banner)
+```
+
+## Code Style
+
+**Markdown**: See `chapters/01-vision.md` for chapter structure, `podcast/episode-01-the-beginning/script.md` for podcast format.
+
+**VitePress Config**: See `.vitepress/config.ts` for site settings, `.vitepress/sidebar.ts` for navigation.
+
+## Content Structure
+
+### Chapters (Written Blog)
+
+Each chapter in `chapters/` follows:
+1. Clear title and introduction
+2. Technical content with code examples
+3. Lessons learned section
+4. Links to related content
+
+### Podcast Episodes
+
+Each episode folder contains:
+- `script.md` - Full episode script with timestamps
+- `show-notes.md` - Summary, links, and resources
+
+## Common Tasks
+
+### Adding a New Chapter
+
+1. Create `chapters/NN-topic-name.md`
+2. Follow existing chapter format
+3. Update `.vitepress/sidebar.ts` navigation
+4. Test with `npm run dev`
+
+### Adding Podcast Episode
+
+1. Create `podcast/episode-NN-topic/` folder
+2. Add `script.md` and `show-notes.md`
+3. Update `podcast/metadata.json`
+4. Update sidebar navigation
+
+### Updating Site Theme
+
+1. Edit `.vitepress/theme/style.css` for styles
+2. Edit `.vitepress/config.ts` for site config
+3. Preview changes with `npm run dev`
+
+## Deployment
+
+- **GitHub Pages**: Auto-deploys on push to `main`
+- **Custom Domain**: `pi-fleet.raolivei.dev`
+- **Workflow**: `.github/workflows/deploy.yml`
+
+## Important Notes
+
+- **Documentation-only** - No backend, static site only
+- **Public content** - Build diary is publicly accessible
+- **Related repos**: `pi-fleet/` (infrastructure), `eldertree-docs/` (runbook)
