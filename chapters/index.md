@@ -26,6 +26,10 @@ Welcome to the Building Eldertree blog chapters. Navigate through the sidebar or
 - [Chapter 14: Troubleshooting and Lessons Learned](/chapters/14-troubleshooting)
 - [Chapter 15: Future Plans and Scaling](/chapters/15-future-plans-scaling)
 
+## War Stories
+
+- [Chapter 16: The Great Deployment Disaster of January 2026](/chapters/16-the-great-deployment-disaster-of-2026) 🔥 *New!*
+
 ## Reference
 
 - Appendix: Reference Materials _(Coming soon)_
