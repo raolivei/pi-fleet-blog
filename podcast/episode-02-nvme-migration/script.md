@@ -47,7 +47,7 @@ So let's start from the beginning...
 
 Let's talk about why migrate to nvme.
 
-Node Migration Guide: Rename and IP Update This guide walks you through migrating nodes from old names/IPs to new ones. Migration Overview **Old → New:** - `node-0` → `node-1` (192.168.2.86 → 192.168.2.101) - `node-1` → `node-2` (192.168.2.85 → 192.168.2.102) - `node-2` → `node-3` (192.168.2.84 → 192.168.2.103) **Note:** eth0 IPs (10.0.0.1, 10.0.0.2, 10.0.0.3) do NOT change - they're based on physical position. Prerequisites 1. ✅ **All nodes accessible via old IPs** (verify with `
+Node Migration Guide: Rename and IP Update This guide walks you through migrating nodes from old names/IPs to new ones. Migration Overview **Old → New:** - `node-1` → `node-1` (192.168.2.86 → 192.168.2.101) - `node-1` → `node-2` (192.168.2.85 → 192.168.2.102) - `node-2` → `node-3` (192.168.2.84 → 192.168.2.103) **Note:** eth0 IPs (10.0.0.1, 10.0.0.2, 10.0.0.3) do NOT change - they're based on physical position. Prerequisites 1. ✅ **All nodes accessible via old IPs** (verify with `
 
 [Expand with specific details, commands, and personal commentary]
 
@@ -75,7 +75,7 @@ Multi-Node Storage Configuration Overview The eldertree cluster is designed to s
 
 Let's talk about making it actually boot.
 
-NVMe Boot Configuration Complete Status: ✅ Both Nodes Configured Both **node-0** and **node-1** have been configured to boot from NVMe while preserving all existing data, including Kubernetes (K3s) data. Configuration Summary ✅ node-0 (192.168.2.86) - **Boot configuration**: Updated to use `/dev/nvme0n1p2` - **K3s data**: Preserved at `/var/lib/rancher/k3s` - **Status**: Ready to boot from NVMe ✅ node-1 (192.168.2.85) - **Boot configuration**: Updated to use `/dev/nvme0n1p2`
+NVMe Boot Configuration Complete Status: ✅ Both Nodes Configured Both **node-1** and **node-1** have been configured to boot from NVMe while preserving all existing data, including Kubernetes (K3s) data. Configuration Summary ✅ node-1 (192.168.2.86) - **Boot configuration**: Updated to use `/dev/nvme0n1p2` - **K3s data**: Preserved at `/var/lib/rancher/k3s` - **Status**: Ready to boot from NVMe ✅ node-1 (192.168.2.85) - **Boot configuration**: Updated to use `/dev/nvme0n1p2`
 
 [Expand with specific details, commands, and personal commentary]
 
