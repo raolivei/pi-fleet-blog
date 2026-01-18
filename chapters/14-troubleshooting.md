@@ -255,7 +255,75 @@ Vault in production mode requires manual unsealing after each restart for securi
 
 ---
 
-#### Challenge 6: The Great DNS Battle - Making Pi-hole Work as Primary DNS
+#### Challenge 6: MetalLB VIP Not Responding After Interface Changes
+
+**Date:** January 18, 2026  
+**Branch:** `main`  
+**Issue:** Related to NET-005 in runbook
+
+**Problem:**
+After cluster changes, the MetalLB VIP (192.168.2.200) stopped responding. Services worked via NodePort but not through the LoadBalancer IP. All `*.eldertree.local` services became unreachable.
+
+**Symptoms:**
+
+- VIP does not respond to ping: `ping 192.168.2.200` → timeout
+- Services accessible via NodePort (e.g., `192.168.2.101:32474`) but not VIP
+- `/etc/hosts` correctly mapping to VIP
+- MetalLB speakers running but VIP unreachable
+- ARP table shows no entry for VIP
+
+**Root Cause:**
+MetalLB L2Advertisement was not configured to use the correct network interface. The Raspberry Pi nodes have:
+- `wlan0`: 192.168.2.0/24 (management network, where clients connect)
+- `eth0`: 10.0.0.0/24 (internal k3s cluster network)
+
+MetalLB was attempting to announce on all interfaces or defaulting to eth0, but clients were on the wlan0 network.
+
+**Solution:**
+Explicitly configure L2Advertisement to use `wlan0`:
+
+```yaml
+apiVersion: metallb.io/v1beta1
+kind: L2Advertisement
+metadata:
+  name: default
+  namespace: metallb-system
+spec:
+  ipAddressPools:
+    - default
+  interfaces:
+    - wlan0  # Specify the management network interface
+```
+
+Apply and restart:
+
+```bash
+kubectl apply -f clusters/eldertree/core-infrastructure/metallb/config.yaml
+kubectl rollout restart daemonset/metallb-speaker -n metallb-system
+```
+
+**Verification:**
+
+```bash
+# Test VIP connectivity
+ping -c 3 192.168.2.200
+# 64 bytes from 192.168.2.200: icmp_seq=0 ttl=64 time=2.xxx ms
+
+# Test service
+curl -k https://grafana.eldertree.local
+# Works!
+```
+
+**Lessons Learned:**
+
+- Always specify interfaces for MetalLB L2 mode on multi-interface nodes
+- Don't trust auto-detection for network interfaces
+- NodePort bypass is a useful debugging technique
+- ARP table inspection helps diagnose L2 issues
+
+---
+
+#### Challenge 7: The Great DNS Battle - Making Pi-hole Work as Primary DNS
 
 **Date:** December 30-31, 2025  
 **Branch:** `fix/pi-hole-servicelb-annotation`  
