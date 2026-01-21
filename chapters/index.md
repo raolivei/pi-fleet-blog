@@ -28,7 +28,8 @@ Welcome to the Building Eldertree blog chapters. Navigate through the sidebar or
 
 ## War Stories
 
-- [Chapter 16: The Great Deployment Disaster of January 2026](/chapters/16-the-great-deployment-disaster-of-2026) 🔥 *New!*
+- [Chapter 16: The Great Deployment Disaster of January 2026](/chapters/16-the-great-deployment-disaster-of-2026)
+- [Chapter 17: The Tailscale Treachery](/chapters/17-the-tailscale-treachery) 🔥 *New!*
 
 ## Reference
 
