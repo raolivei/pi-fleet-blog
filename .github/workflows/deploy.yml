@@ -16,7 +16,7 @@ concurrency:
 
 jobs:
   deploy:
-    uses: raolivei/github-workflows/.github/workflows/static-site-pages.yml@1-implement-reusable-workflows
+    uses: raolivei/github-workflows/.github/workflows/static-site-pages.yml@main
     with:
       node-version: "20"
       build-command: "npm run build"
