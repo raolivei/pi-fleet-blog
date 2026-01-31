@@ -73,6 +73,23 @@ export function sidebar() {
           },
         ],
       },
+      {
+        text: "War Stories",
+        items: [
+          {
+            text: "Chapter 16: The Great Deployment Disaster",
+            link: "/chapters/16-the-great-deployment-disaster-of-2026",
+          },
+          {
+            text: "Chapter 17: The Tailscale Treachery",
+            link: "/chapters/17-the-tailscale-treachery",
+          },
+          {
+            text: "Chapter 18: The CI/CD Consolidation",
+            link: "/chapters/18-reusable-workflows",
+          },
+        ],
+      },
     ],
   };
 }
