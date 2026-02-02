@@ -61,6 +61,7 @@ export default defineConfig({
   srcExclude: [
     "src/**",
     "**/content/**",
+    "**/scripts/**",
     "**/README.md",
     "**/SETUP.md",
     "**/TROUBLESHOOTING.md",
