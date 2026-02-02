@@ -1,8 +1,10 @@
-# Building Eldertree - Podcast Series
+# Building Eldertree - Audio Series
 
 **The real journey of running Kubernetes on Raspberry Pis**
 
-A documentary podcast series following the complete journey of building a highly available Kubernetes cluster on Raspberry Pi hardware. From initial setup through production deployment, including all the failures, troubleshooting, and lessons learned along the way.
+A documentary audio series following the complete journey of building a highly available Kubernetes cluster on Raspberry Pi hardware. From initial setup through production deployment, including all the failures, troubleshooting, and lessons learned along the way.
+
+> **Audio Policy:** All audio is recorded with the author's real human voice. No AI TTS. No voice cloning. No hybrid approaches. See [`docs/AUDIO_SYSTEM.md`](../docs/AUDIO_SYSTEM.md) for the complete system specification.
 
 ## Target Audience
 
@@ -34,85 +36,75 @@ A documentary podcast series following the complete journey of building a highly
 ```
 podcast/
 ├── README.md                      # This file
-├── metadata.json                  # Series metadata for Spotify
+├── metadata.json                  # Series metadata
 ├── episode-01-the-beginning/
-│   ├── script.md                  # Podcast script (narrative)
+│   ├── script.md                  # Episode script (reference for recording)
 │   └── show-notes.md              # Links, resources, timestamps
 ├── episode-02-nvme-migration/
 │   └── ...
 └── ...
 ```
 
-## Generating Content
+## Recording Workflow
 
-### 1. Export Raw Data
+> Full workflow documented in [`docs/AUDIO_SYSTEM.md`](../docs/AUDIO_SYSTEM.md)
 
-Run the export script to gather all conversation and documentation data:
+### Quick Reference
 
-```bash
-cd scripts/podcast-export
-python export.py --output ../../podcast/raw-data
-```
+**Before Recording (5 min)**
+1. Read the script once, silently
+2. Note 2-3 key points to hit naturally
+3. Clear throat, drink water, settle in
 
-This will create:
-- `raw-data/raw-export.json` - Complete export
-- `raw-data/episodes/*.json` - Data categorized by episode
+**Recording (20-30 min max)**
+1. Start immediately—don't wait for "ready"
+2. Speak naturally—not audiobook narration
+3. Deviate from script when natural
+4. If you stumble, pause 3 seconds, restart the sentence
+5. Hard stop at 30 minutes
 
-### 2. Generate Episode Scripts
+**Editing (10-15 min max)**
+- Trim long silences (>4 sec) to 2 sec
+- Remove coughs, interruptions
+- Keep natural pauses, light stumbles, breath sounds
+- Do NOT over-edit for polish
 
-Use the generator script to create narrative scripts:
+**Export**
+- Format: MP3, 128kbps
+- Naming: `eldertree-audio-YYYY-MM-DD-title-slug.mp3`
 
-```bash
-python generate_episodes.py --config config.yaml --data ../../podcast/raw-data
-```
+### Quality Bar
 
-### 3. Review and Edit
+- Clear enough to understand 95%+ on first listen
+- Natural pacing with real pauses
+- Consistent volume (no major peaks/drops)
+- Background noise minimal but not zero
+- Your actual voice, not a performance
 
-Each episode script will need human review for:
-- Accuracy of technical details
-- Flow and pacing
-- Personal anecdotes and commentary
-- Transitions between sections
+## Technical Terms Reference
 
-### 4. Generate Audio
+Some technical terms for recording clarity:
 
-Upload scripts to your chosen TTS service:
-- **NotebookLM** - Free, good quality, supports sources
-- **ElevenLabs** - High quality, natural voices, paid
-- **Play.ht** - Good balance of quality and price
-- **Amazon Polly** - AWS service, pay-per-use
-
-### 5. Post-Production
-
-- Add intro/outro music
-- Normalize audio levels
-- Add chapter markers
-- Export as MP3 (192kbps recommended for spoken word)
-
-### 6. Publish to Spotify
-
-1. Create account on [Spotify for Podcasters](https://podcasters.spotify.com/)
-2. Upload episodes with show notes
-3. Add episode artwork
-4. Schedule releases
-
-## TTS Pronunciation Guide
-
-Some technical terms need pronunciation hints:
-
-| Term | Pronunciation |
-|------|---------------|
+| Term | Spoken As |
+|------|-----------|
 | k3s | "k-threes" |
-| k8s | "kubernetes" |
+| k8s | "kubernetes" or "k-eights" |
 | etcd | "et-see-dee" |
-| kubectl | "cube-control" |
+| kubectl | "cube-control" or "cube-c-t-l" |
 | kube-vip | "cube-vip" |
-| NVME | "en-vee-em-ee" |
+| NVMe | "en-vee-em-ee" |
 | VXLAN | "vee-ex-lan" |
+
+## Publishing
+
+1. Upload to chosen platform (Spotify for Podcasters, etc.)
+2. Add show notes from `show-notes.md`
+3. Add episode artwork
+4. No scheduled releases—publish when ready
 
 ## License
 
-This podcast content is based on the pi-fleet repository and is intended for educational purposes.
+This content is based on the pi-fleet repository and is intended for educational purposes.
 
 ## Contributing
 
