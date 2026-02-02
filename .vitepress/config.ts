@@ -62,6 +62,7 @@ export default defineConfig({
     "src/**",
     "**/content/**",
     "**/scripts/**",
+    "**/podcast/**",
     "**/README.md",
     "**/SETUP.md",
     "**/TROUBLESHOOTING.md",
