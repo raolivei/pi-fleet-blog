@@ -4,80 +4,45 @@
 
 **Phase 1:** `local-path` only (K3s default)
 **Phase 2:** Longhorn for distributed storage *(January 2026)*
+**Phase 3:** Back to `local-path` provisioner *(February 2026)* - Longhorn removed
+
+### Why Longhorn Was Removed
+
+Longhorn was initially deployed for distributed block storage with 3-replica replication. However, it was removed in favor of the simpler local-path provisioner:
+
+- **Resource overhead:** Longhorn's manager, driver, and replica pods consumed significant resources on 8GB Raspberry Pi nodes
+- **Complexity vs. benefit:** For a 3-node homelab, the operational overhead of distributed storage wasn't justified
+- **Vault already has HA:** Vault uses Raft consensus with its own replication across all 3 nodes, so distributed storage under Vault was redundant
+- **Simpler recovery:** With proper backup strategies, local-path with periodic backups is sufficient
 
 ### Storage Classes
 
-| Storage Class | Type | Replication | Use Case |
-|---------------|------|-------------|----------|
-| `local-path` | Local filesystem | None | Non-critical data |
-| `longhorn` | Distributed block | 3 replicas | Critical data |
-
-### Why Longhorn?
-
-**Problem:** With `local-path`, PersistentVolumes are pinned to specific nodes. If that node fails, the data is inaccessible until the node recovers.
-
-**Solution:** Longhorn provides:
-
-- [x] Distributed block storage across all nodes
-- [x] Automatic replication (3 replicas by default)
-- [x] Data survives single node failure
-- [x] Volume can be attached to any node
-- [x] Snapshot and backup capabilities
-- [x] Web UI for management
+| Storage Class | Type | Path | Use Case |
+|---------------|------|------|----------|
+| `local-path` | Local filesystem | Default | General use |
+| `local-path-nvme` | Local NVMe SSD | NVMe mount | Performance-critical data |
+| `local-path-sd` | SD card | SD mount | Low-priority data |
 
 ### Current Configuration
 
-**Longhorn Version:** 1.7.2
-**Replicas per Volume:** 3 (one per node)
-**Data Path:** `/var/lib/longhorn`
+**Storage Provisioner:** K3s local-path-provisioner
+**Default Storage Class:** `local-path`
 **Storage Nodes:** All 3 nodes (node-1, node-2, node-3)
 
 ### Persistent Volumes by Application
 
-| Application | Size | Storage Class | Critical? |
-|-------------|------|---------------|-----------|
-| **Vault** (x3) | 10Gi each | longhorn | ✅ Yes |
-| **SwimTO PostgreSQL** | 10Gi | longhorn | ✅ Yes |
-| **Prometheus** | 8Gi | local-path | No |
-| **Grafana** | 2Gi | local-path | No |
-| **Pi-hole** | 2Gi | local-path | No |
+| Application | Size | Storage Class | Notes |
+|-------------|------|---------------|-------|
+| **Vault** (x3) | 10Gi each | local-path-nvme | Raft replication handles HA |
+| **Prometheus** | 8Gi | local-path | 7-day retention |
+| **Grafana** | 2Gi | local-path | Dashboards in git |
+| **Pi-hole** | 2Gi | local-path | Easy to rebuild |
 
-### Migration Strategy
+### The Longhorn Experiment (A Lesson in Simplicity)
 
-**What to Migrate to Longhorn:**
+**January 2026:** Longhorn was deployed with 3-replica volumes.
 
-1. ✅ **Vault** - Secrets are critical, need HA
-2. ✅ **SwimTO PostgreSQL** - Commercial app, business continuity
-3. 🔄 **Canopy PostgreSQL** - When enabled, configure for Longhorn
-4. ⏸️ **Journey PostgreSQL** - Low priority, configure when enabled
-
-**What to Keep on local-path:**
-
-- **Prometheus** - Time-series data is ephemeral, can be rebuilt
-- **Grafana** - Dashboards are in git, not critical
-- **Pi-hole** - Small config, easy to rebuild
-
-### Longhorn Installation
-
-Deployed via Flux HelmRelease:
-
-```yaml
-# clusters/eldertree/storage/longhorn/helmrelease.yaml
-spec:
-  values:
-    persistence:
-      defaultClassReplicaCount: 3
-    defaultSettings:
-      defaultDataPath: /var/lib/longhorn
-```
-
-### The Longhorn Journey (A Tale of Firewalls)
-
-**January 10, 2026:** First attempt at Longhorn installation
-
-**Problem 1:** Pods couldn't reach services across nodes
-**Problem 2:** DNS resolution failing for Longhorn webhooks
-**Problem 3:** CSI drivers not deploying
+The installation itself was a tale of firewall debugging:
 
 **Root Cause:** UFW firewall blocking cross-node pod communication!
 
@@ -88,7 +53,7 @@ spec:
 # All were being silently dropped
 ```
 
-**The Fix:**
+**The Fix (still relevant for general k3s networking):**
 
 ```bash
 # On ALL nodes
@@ -100,6 +65,8 @@ sudo ufw allow 8472/udp comment 'k3s flannel VXLAN'
 
 **Lesson:** Always check firewall rules when debugging networking. UFW can silently drop packets even when services appear to be listening!
 
+**Why it was ultimately removed:** The resource overhead and complexity didn't justify the benefits for a homelab. Vault's built-in Raft replication already provides HA for secrets (the most critical data), and other workloads can tolerate node-local storage with proper backups.
+
 ### Backup Strategy
 
 **Vault Secrets:**
@@ -109,42 +76,27 @@ sudo ufw allow 8472/udp comment 'k3s flannel VXLAN'
 
 **Database Backups:**
 - pg_dump for PostgreSQL databases
-- Store backups on external storage (SanDisk SD card)
-
-**Longhorn Snapshots:**
-- Automatic snapshots configurable per volume
-- Web UI at `longhorn.eldertree.local`
+- Store backups on external storage (SD card)
 
 ### High Availability Summary
-
-With Longhorn, the cluster now has TRUE high availability:
 
 | Component | HA Method | Failure Tolerance |
 |-----------|-----------|-------------------|
 | Control Plane | 3-node etcd | 1 node |
 | API Access | kube-vip VIP | 1 node |
-| **Storage** | **Longhorn 3 replicas** | **1 node** |
-| Secrets | Vault Raft | 1 node |
+| Secrets | Vault Raft (3 replicas) | 1 node |
+| Storage | local-path-nvme (node-local) | N/A (node-pinned) |
 
-**If ANY single node goes offline:**
-- ✅ Cluster API remains accessible
-- ✅ Storage data remains accessible
-- ✅ Pods can reschedule to healthy nodes
-- ✅ Longhorn rebuilds replicas when node returns
+**Key insight:** Not everything needs distributed storage. Vault handles its own replication via Raft. For other data, proper backup strategies are more practical than running a distributed storage system on resource-constrained hardware.
 
 ### Lessons Learned
 
-- [x] Longhorn requires proper firewall configuration
-- [x] 3-replica storage is essential for HA
-- [x] Not all data needs distributed storage
-- [x] Firewall debugging is frustrating but worth it
-- [x] Always test failover before you need it
-- [x] Document everything (especially firewall rules)
-
-### Reference
-
-- Longhorn HelmRelease: `clusters/eldertree/storage/longhorn/`
-- Firewall fix: `docs/LONGHORN_FIX_2026-01-12.md`
-- Storage assessment: `clusters/eldertree/storage/longhorn/STORAGE_MIGRATION_ASSESSMENT.md`
+- Longhorn works but is resource-heavy for Raspberry Pi
+- Not all data needs distributed storage
+- Vault's Raft replication eliminates the need for distributed storage under it
+- Simpler is often better in homelab environments
+- Firewall rules are critical for any cross-node communication
+- Always test failover before you need it
+- Document everything (especially firewall rules)
 
 ---

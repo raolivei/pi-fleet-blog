@@ -91,10 +91,10 @@ The actual K3s installation was handled by Ansible, ensuring:
 ```yaml
 Cluster Name: eldertree
 Control Plane: node-1 (192.168.2.101)
-Kubernetes Version: v1.33.5+k3s1
+Kubernetes Version: v1.33.5+k3s1 (initial)
 Storage Class: local-path (built-in)
 Ingress Class: traefik (built-in)
-Service Load Balancer: Klipper (built-in)
+Service Load Balancer: Klipper (built-in, later replaced by kube-vip)
 ```
 
 **Key Decisions:**
@@ -104,17 +104,20 @@ Service Load Balancer: Klipper (built-in)
 - Built-in components (Traefik, local-path) reduce complexity
 - Standard Kubernetes APIs (compatible with all K8s tools)
 
-### Current Configuration (January 2026) - TRUE HIGH AVAILABILITY 🎉
+### Current Configuration (February 2026) - TRUE HIGH AVAILABILITY
 
 ```yaml
 Cluster Name: eldertree
-Control Plane: 3-node HA (node-1, node-2, node-3)
-Kubernetes Version: v1.33.6+k3s1
+Control Plane: 3-node HA (node-1, node-2, node-3) - all control-plane + etcd
+Kubernetes Version: v1.35.0+k3s1
 API VIP: 192.168.2.100 (kube-vip)
+Traefik VIP: 192.168.2.200
 Storage Classes: 
-  - local-path (non-critical)
-  - longhorn (3-replica distributed)
+  - local-path (default)
+  - local-path-nvme (NVMe SSD)
+  - local-path-sd (SD card)
 Ingress Class: traefik (built-in)
+Load Balancer: kube-vip (ARP-based)
 ```
 
 **HA Components:**
@@ -123,10 +126,10 @@ Ingress Class: traefik (built-in)
 |-----------|-----------|-------------------|
 | Control Plane | 3-node etcd | 1 node |
 | API Access | kube-vip VIP | 1 node |
-| Storage | Longhorn 3 replicas | 1 node |
+| Storage | local-path-nvme (node-local NVMe) | N/A (node-pinned) |
 | Secrets | Vault Raft 3 replicas | 1 node |
 
-**Any single node can now fail and the cluster keeps running!**
+**Any single node can fail and the cluster control plane keeps running. Vault data is replicated across all three nodes via Raft consensus.**
 
 ## First Pods
 

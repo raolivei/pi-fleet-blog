@@ -4,7 +4,7 @@
 
 **Purpose:** Network-wide DNS with ad-blocking
 **Deployment:** Kubernetes pod with LoadBalancer service
-**IP:** 192.168.2.201 (via MetalLB)
+**IP:** 192.168.2.201 (via kube-vip LoadBalancer)
 
 ### Local DNS Resolution
 
@@ -63,9 +63,9 @@ This is the story of that morning and what I learned about debugging DNS in Kube
 
 Before diving into the troubleshooting, it's important to understand the setup:
 
-- **Kubernetes**: k3s v1.33.6 running on Raspberry Pi 5
+- **Kubernetes**: K3s running on Raspberry Pi 5 (3-node HA cluster)
 - **DNS Server**: Pi-hole running in Kubernetes with BIND for custom zone resolution
-- **Load Balancing**: MetalLB providing a virtual IP (192.168.2.201) for the Pi-hole service
+- **Load Balancing**: kube-vip providing a virtual IP (192.168.2.201) for the Pi-hole service
 - **Custom Domains**: `.eldertree.local` domains resolving to cluster services
 - **Network**: Local network (192.168.2.0/24) with router DNS pointing to Pi-hole
 
@@ -214,14 +214,14 @@ I verified everything was working:
 ```bash
 # Test DNS resolution
 nslookup vault.eldertree.local
-# Result: 192.168.2.101 ✅
+# Result: 192.168.2.200 (Traefik VIP) ✅
 
 # Test ping
 ping -c 2 vault.eldertree.local
 # Result: Successful ✅
 
 # Test all services
-for service in vault.eldertree.local swimto.eldertree.local canopy.eldertree.local; do
+for service in vault.eldertree.local swimto.eldertree.local openclaw.eldertree.local; do
   nslookup $service
 done
 # Result: All resolving correctly ✅

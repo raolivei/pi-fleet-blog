@@ -4,19 +4,21 @@
 
 **Management Network (wlan0):** 192.168.2.0/24
 
-- **node-1**: 192.168.2.101 (control plane, wlan0)
-- **node-2**: 192.168.2.102 (worker, wlan0)
-- **node-3**: 192.168.2.103 (worker, wlan0)
+- **node-1**: 192.168.2.101 (control plane + etcd, wlan0)
+- **node-2**: 192.168.2.102 (control plane + etcd, wlan0)
+- **node-3**: 192.168.2.103 (control plane + etcd, wlan0)
 
-**Gigabit Network (eth0):** 10.0.0.0/24
+**Gigabit Network (eth0):** 10.0.0.0/24 (isolated switch, primary for k8s traffic)
 
-- **node-1**: 10.0.0.1 (control plane, eth0)
-- **node-2**: 10.0.0.2 (worker, eth0)
-- **node-3**: 10.0.0.3 (worker, eth0)
-- **node-1**: 10.0.0.2 (worker)
-- **node-2**: 10.0.0.3 (worker)
+- **node-1**: 10.0.0.1 (eth0)
+- **node-2**: 10.0.0.2 (eth0)
+- **node-3**: 10.0.0.3 (eth0)
 
-**DNS Server:** 192.168.2.201 (Pi-hole via MetalLB)
+**Virtual IPs (kube-vip):**
+
+- **192.168.2.100**: Kubernetes API server (HA VIP)
+- **192.168.2.200**: Traefik Ingress (LoadBalancer VIP)
+- **192.168.2.201**: Pi-hole DNS
 
 ### DNS Strategy (Or: How DNS Became My Nemesis)
 
@@ -33,14 +35,23 @@ Because nothing says "I know what I'm doing" like running your own DNS server. A
 
 ### Service Discovery
 
-**Local Domains:** `*.eldertree.local`
+**Local Domains:** `*.eldertree.local` (via ExternalDNS + Pi-hole)
 
 - `grafana.eldertree.local`
 - `prometheus.eldertree.local`
+- `pushgateway.eldertree.local`
 - `vault.eldertree.local`
 - `pihole.eldertree.local`
-- `canopy.eldertree.local`
 - `swimto.eldertree.local`
+- `openclaw.eldertree.local`
+- `docs.eldertree.local`
+
+**Public Domains** (via Cloudflare Tunnel):
+
+- `swimto.eldertree.xyz`
+- `pitanga.cloud` / `www.pitanga.cloud`
+- `northwaysignal.pitanga.cloud`
+- `docs.eldertree.xyz` (GitHub Pages)
 
 ### Ingress Configuration
 
@@ -48,62 +59,27 @@ Because nothing says "I know what I'm doing" like running your own DNS server. A
 **TLS:** Cert-Manager with self-signed certificates
 **Ingress Class:** `traefik`
 
-### MetalLB for LoadBalancer Services
+### kube-vip for LoadBalancer Services
 
-**Purpose:** Provide LoadBalancer services on bare metal
-**Configuration:** Layer 2 mode
-**IP Range:** 192.168.2.200-210
+**Purpose:** Provide HA API access and LoadBalancer services on bare metal
+**Configuration:** ARP-based IP assignment
+**Replaces:** MetalLB (which was used initially but replaced by kube-vip for simplicity)
 
 | VIP            | Service          | Description                |
 |----------------|------------------|----------------------------|
+| 192.168.2.100  | Kubernetes API   | HA API server endpoint     |
 | 192.168.2.200  | Traefik Ingress  | HTTPS ingress for all apps |
 | 192.168.2.201  | Pi-hole          | Network-wide DNS           |
-| 192.168.2.202  | WireGuard (planned) | VPN access              |
 
-#### The VIP Debugging Saga (January 2026)
+#### The Evolution: MetalLB to kube-vip
 
-Everything was working... until it wasn't. The VIP (192.168.2.200) suddenly stopped responding. Services worked via NodePort, but the LoadBalancer IP was just... gone.
+The cluster initially used MetalLB for LoadBalancer services. However, kube-vip proved to be a better fit because it also handles the Kubernetes API VIP (192.168.2.100), consolidating two responsibilities into one component.
 
-**The Symptoms:**
-```bash
-# This worked (NodePort bypass)
-curl -k https://192.168.2.101:32474
-# OK!
+**The MetalLB VIP Debugging Saga (January 2026):**
 
-# This didn't (VIP)
-curl -k https://192.168.2.200
-# Connection refused
+Before the migration to kube-vip, MetalLB caused issues with VIP announcements on multi-interface nodes. The Raspberry Pis have two interfaces (`wlan0` for management, `eth0` for cluster traffic), and MetalLB was announcing on the wrong interface. This was one of the motivations for switching to kube-vip.
 
-ping 192.168.2.200
-# Request timeout for icmp_seq 0
-```
-
-**The Hunt:**
-
-After much debugging (checking MetalLB speakers, ARP tables, iptables rules), the culprit was found: MetalLB was announcing on the wrong interface!
-
-The Raspberry Pis have two interfaces:
-- `wlan0`: 192.168.2.0/24 (management network, where clients are)
-- `eth0`: 10.0.0.0/24 (internal cluster network)
-
-MetalLB was trying to announce the VIP on all interfaces or defaulting to the wrong one.
-
-**The Fix:**
-
-```yaml
-apiVersion: metallb.io/v1beta1
-kind: L2Advertisement
-metadata:
-  name: default
-  namespace: metallb-system
-spec:
-  ipAddressPools:
-    - default
-  interfaces:
-    - wlan0  # THE MAGIC LINE
-```
-
-**Lesson:** Always specify the exact interface for MetalLB L2 mode on multi-interface nodes. Don't trust auto-detection.
+**Lesson:** On multi-interface bare-metal nodes, always be explicit about which interface handles VIP announcements.
 
 ### External DNS
 
@@ -117,7 +93,7 @@ spec:
 
 - DNS is critical for service discovery (who knew? Everyone. Everyone knew.)
 - Pi-hole integration simplified local DNS (eventually, after much troubleshooting)
-- MetalLB essential for LoadBalancer services (because bare metal doesn't have cloud magic)
+- A dedicated LoadBalancer (kube-vip) is essential for bare-metal services
 - ExternalDNS automation saves time (when it works, which is most of the time, but not always)
 
 ---

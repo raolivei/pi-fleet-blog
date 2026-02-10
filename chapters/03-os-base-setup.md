@@ -22,7 +22,7 @@
 
 2. **System Configuration**
 
-   - [ ] Hostname: `eldertree`
+   - [ ] Hostnames: `node-1.eldertree.local`, `node-2.eldertree.local`, `node-3.eldertree.local`
    - [ ] Static IP configuration
    - [ ] SSH key setup
    - [ ] Firewall rules
@@ -47,6 +47,8 @@
 **Key Playbooks:**
 
 - `setup-system.yml` - Base system configuration
+- `setup-new-node.yml` - Master playbook for adding new nodes (handles everything)
+- `setup-nvme-boot.yml` - Clone OS from SD to NVMe with emergency mode prevention
 - `install-k3s.yml` - K3s installation
 - `bootstrap-flux.yml` - GitOps bootstrap
 

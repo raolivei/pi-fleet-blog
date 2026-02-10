@@ -36,7 +36,7 @@
 
   - NVMe provides 10-20x better random I/O performance
   - Lower latency for database and storage operations
-  - Better suited for Longhorn distributed storage
+  - Better suited for Kubernetes persistent volumes (Vault, PostgreSQL)
 
 - **Migration path:**
   - Started with SD card for initial setup

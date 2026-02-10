@@ -30,13 +30,13 @@
 - **Version:** v1.17.2
 - **Mode:** High Availability with Raft
 - **Replicas:** 3 (one per node)
-- **Storage:** 10Gi per pod (Longhorn, replicated)
+- **Storage:** 10Gi per pod (local-path-nvme)
 - **Storage Type:** Raft integrated storage
 - **Failure Tolerance:** 1 node
 
 ### Why HA? The Final Piece of True High Availability
 
-After achieving 3-node HA for the control plane and Longhorn for distributed storage, Vault was the last single point of failure. In standalone mode with local-path storage:
+After achieving 3-node HA for the control plane, Vault in standalone mode was the last single point of failure. In standalone mode with local-path storage:
 
 ```
 If node-1 fails → Vault PVC is pinned to node-1 → Vault goes down → 
@@ -109,7 +109,7 @@ External Secrets continue syncing → Applications unaffected
 |--------|--------|-------|
 | Mode | Standalone | HA with Raft |
 | Replicas | 1 | 3 |
-| Storage Class | local-path | longhorn |
+| Storage Class | local-path | local-path-nvme |
 | Storage Backend | File | Raft (replicated) |
 | Unseal | Manual 3 keys | Auto from K8s secret |
 | Failure Tolerance | 0 nodes | 1 node |
@@ -143,8 +143,8 @@ We deleted vault-0 (the leader) to test failover:
 ### Lessons Learned
 
 - [x] HA mode is essential for true high availability
-- [x] Raft storage eliminates external storage dependencies
-- [x] Longhorn PVCs ensure storage survives node failures
+- [x] Raft storage eliminates external distributed storage dependencies (Longhorn was removed)
+- [x] Raft replication across all 3 nodes ensures secrets survive node failures
 - [x] Auto-unseal from K8s secret saves time (but keep offline backup!)
 - [x] Policy-based access is essential for multi-project setup
 - [x] External Secrets Operator simplifies secret management

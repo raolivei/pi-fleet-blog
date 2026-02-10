@@ -57,19 +57,21 @@ Building a Kubernetes cluster on ARM hardware comes with unique challenges and d
 
 | Component | Details |
 |-----------|---------|
-| **Control Plane** | eldertree (192.168.2.83) |
-| **Hardware** | Raspberry Pi 5 (8GB, ARM64) |
+| **Control Plane** | 3-node HA (kube-vip VIP: 192.168.2.100) |
+| **Hardware** | 3x Raspberry Pi 5 (8GB, ARM64) |
 | **Operating System** | Debian 12 Bookworm |
-| **Kubernetes** | K3s v1.33.5+k3s1 |
-| **Storage** | NVMe SSD via USB 3.0 |
+| **Kubernetes** | K3s v1.35.0+k3s1 |
+| **Storage** | NVMe SSD (local-path provisioner) |
+| **Secrets** | HashiCorp Vault (HA Raft) |
+| **Remote Access** | Tailscale VPN |
 
 ## What You'll Learn
 
 - **Cluster Architecture** — Building a production-ready K3s cluster on resource-constrained ARM64 hardware
 - **Secrets Management** — HashiCorp Vault integration with External Secrets Operator
 - **GitOps Automation** — FluxCD for declarative infrastructure management
-- **Networking** — Traefik ingress, Pi-hole DNS, and WireGuard VPN
-- **Monitoring** — Prometheus, Grafana, and Loki on minimal resources
+- **Networking** — Traefik ingress, Pi-hole DNS, kube-vip, and Tailscale VPN
+- **Monitoring** — Prometheus and Grafana on minimal resources
 - **Troubleshooting** — Real-world problems and solutions from months of operation
 
 ## Quick Navigation

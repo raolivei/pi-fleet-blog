@@ -45,7 +45,7 @@ K3s includes a built-in ServiceLB (Klipper) that automatically creates LoadBalan
      hostNetwork: false
    ```
 
-3. **Used MetalLB for LoadBalancer functionality** instead of ServiceLB
+3. **Used external LoadBalancer** (initially MetalLB, later migrated to kube-vip) instead of ServiceLB
 
 4. **Added comprehensive documentation** in Pi-hole README with troubleshooting guide
 
@@ -53,14 +53,14 @@ K3s includes a built-in ServiceLB (Klipper) that automatically creates LoadBalan
 
 - Always explicitly set `hostNetwork` in deployment templates (don't rely on defaults)
 - Document network requirements for services using privileged ports
-- Use MetalLB for LoadBalancer services on bare metal instead of ServiceLB when conflicts occur
+- Use a dedicated LoadBalancer (kube-vip or MetalLB) on bare metal instead of ServiceLB when conflicts occur
 - Add health checks and readiness probes to detect port conflicts early
 
 **Lessons Learned:**
 
 - K3s ServiceLB can conflict with pods using privileged ports
 - Explicit configuration is better than implicit defaults
-- MetalLB provides more control for bare-metal Kubernetes
+- An external LoadBalancer (MetalLB or kube-vip) provides more control for bare-metal Kubernetes
 - Documentation helps prevent repeating the same mistakes
 
 ---
@@ -255,11 +255,13 @@ Vault in production mode requires manual unsealing after each restart for securi
 
 ---
 
-#### Challenge 6: MetalLB VIP Not Responding After Interface Changes
+#### Challenge 6: MetalLB VIP Not Responding After Interface Changes *(Historical - MetalLB later replaced by kube-vip)*
 
 **Date:** January 18, 2026  
 **Branch:** `main`  
 **Issue:** Related to NET-005 in runbook
+
+> **Note:** MetalLB was later replaced by kube-vip for LoadBalancer services. This challenge is documented for historical context and because the underlying lesson (specify interfaces explicitly on multi-NIC nodes) applies to kube-vip as well.
 
 **Problem:**
 After cluster changes, the MetalLB VIP (192.168.2.200) stopped responding. Services worked via NodePort but not through the LoadBalancer IP. All `*.eldertree.local` services became unreachable.
@@ -323,11 +325,13 @@ curl -k https://grafana.eldertree.local
 
 ---
 
-#### Challenge 7: The Great DNS Battle - Making Pi-hole Work as Primary DNS
+#### Challenge 7: The Great DNS Battle - Making Pi-hole Work as Primary DNS *(Historical - MetalLB later replaced by kube-vip)*
 
 **Date:** December 30-31, 2025  
 **Branch:** `fix/pi-hole-servicelb-annotation`  
 **Commits:** `baeb241`, `1a3834d`, `d8293ca`
+
+> **Note:** This challenge occurred when the cluster was using MetalLB. The cluster later migrated to kube-vip, but the DNS troubleshooting lessons remain relevant.
 
 **Problem:**
 After setting up Pi-hole as the DNS server for the cluster, DNS resolution wasn't working when using `192.168.2.201` (Pi-hole LoadBalancer IP) as the primary DNS. Queries would timeout, requiring a fallback DNS server (1.1.1.1) to work. The goal was to use Pi-hole as the sole DNS server without any fallback.
@@ -878,8 +882,8 @@ After two days of investigation, tool creation, and actual recovery work, all th
 $ kubectl get nodes
 NAME                     STATUS   ROLES
 node-1.eldertree.local   Ready    control-plane,etcd,master
-node-2.eldertree.local   Ready    <none>
-node-3.eldertree.local   Ready    <none>
+node-2.eldertree.local   Ready    control-plane,etcd,master
+node-3.eldertree.local   Ready    control-plane,etcd,master
 ```
 
 All pods running, all services healthy, cluster fully operational. The eldertree was back to providing shelter.

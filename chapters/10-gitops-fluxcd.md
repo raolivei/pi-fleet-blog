@@ -15,7 +15,7 @@
 ### Bootstrap Process
 
 **Method:** Ansible playbook (`bootstrap-flux.yml`)
-**Repository:** [Your Git repository]
+**Repository:** `https://github.com/raolivei/pi-fleet`
 **Branch:** `main`
 **Path:** `clusters/eldertree/`
 
@@ -25,17 +25,25 @@
 clusters/eldertree/
 ├── core-infrastructure/
 │   ├── cert-manager/
-│   └── issuers/
+│   ├── issuers/
+│   ├── kube-vip/
+│   └── storage/
 ├── secrets-management/
 │   ├── vault/
 │   └── external-secrets/
 ├── dns-services/
 │   ├── pihole/
 │   ├── external-dns/
-│   └── wireguard/
-└── observability/
-    ├── keda/
-    └── monitoring-stack/
+│   └── cloudflare-tunnel/
+├── observability/
+│   ├── keda/
+│   └── monitoring-stack/
+├── apps/
+│   ├── swimto/
+│   ├── openclaw/
+│   ├── pitanga/
+│   └── eldertree-docs/
+└── kustomization.yaml
 ```
 
 ### Helm Releases

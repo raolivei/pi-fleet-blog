@@ -8,8 +8,9 @@ The decision to self-host came from several motivations:
 
 **Privacy and Data Ownership**
 
-- My personal finance data (Canopy) shouldn't live on someone else's servers
+- Personal finance data (Canopy) shouldn't live on someone else's servers
 - User data for commercial projects (SwimTO) requires full control
+- AI-generated content (Visage headshots, Ollie memories) should stay private
 - Learning projects (NIMA, Journey) generate data I want to own completely
 
 **Learning Kubernetes Hands-On**
@@ -37,11 +38,26 @@ When I started, I had a clear set of goals:
 
 ✅ **Run Personal Applications**
 
+*Active on cluster:*
+
+- **SwimTO** - Toronto pool schedules (public at swimto.eldertree.xyz)
+- **OpenClaw** - AI assistant with Telegram bot integration (@eldertree_assistant_bot)
+- **Pitanga** - Pitanga LLC website (public at pitanga.cloud)
+- **Northway Signal** - Cloud consulting website (public at northwaysignal.pitanga.cloud)
+- **Eldertree Docs** - Searchable documentation site (public at docs.eldertree.xyz)
+
+*In development / planned for cluster:*
+
 - **Canopy** - Personal finance dashboard (private financial data)
-- **SwimTO** - Toronto pool schedules (commercial project)
-- **Journey** - AI-powered career pathfinder (learning project)
-- **NIMA** - AI/ML learning project (experimentation)
+- **Visage** - Self-hosted AI headshot generator (SDXL + LoRA, GPU offloaded to local Mac)
+- **Grove** - AI agent for cluster management and development (extends OpenClaw)
+- **Ollie** - Local AI with total recall and RAG-based memory retrieval
+- **Journey** - AI-powered career pathfinder
+- **iPhone Export** - Ecommerce platform for international iPhone sales
+- **Fragment** - Identity fragments archive (local-first PWA)
+- **NIMA** - AI/ML learning project
 - **US Law Severity Map** - Data visualization project
+- **Personal Website** - Portfolio site (WIP)
 
 ✅ **Learn Kubernetes in Production**
 
@@ -117,6 +133,8 @@ What started as "let's run a few Docker containers" quickly became "let's build 
 2. **Infrastructure Phase (November 2025):** Set up K3s cluster, Terraform, FluxCD
 3. **Services Phase (November-December 2025):** Added Vault, monitoring, DNS, applications
 4. **Optimization Phase (December 2025):** Fixed issues, optimized resources, improved documentation
+5. **HA Phase (January 2026):** Expanded to 3-node HA cluster, Vault HA with Raft, kube-vip, Tailscale VPN
+6. **Consolidation Phase (February 2026):** Removed Longhorn (simplified to local-path), reusable CI/CD workflows, deployed OpenClaw and Pitanga
 
 Each phase taught new lessons and revealed new requirements. The cluster evolved organically, solving problems as they arose, rather than following a rigid plan.
 

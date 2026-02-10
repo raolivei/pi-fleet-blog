@@ -2,11 +2,12 @@
 
 ### Short-term Goals
 
-- [ ] Add worker nodes (fleet-worker-01, fleet-worker-02)
-- [ ] Implement high availability
-- [ ] Add more applications
-- [ ] Improve monitoring and alerting
+- [x] Add worker nodes - expanded to 3-node HA cluster
+- [x] Implement high availability - 3-node control plane with etcd + kube-vip
+- [x] Add more applications - SwimTO, OpenClaw, Pitanga deployed
+- [x] Improve monitoring and alerting - Prometheus + Grafana + Pushgateway
 - [ ] Enhance backup strategy
+- [ ] Add more Grafana dashboards and alerting rules
 
 ### Cluster Expansion: Adding Worker Nodes (December 31, 2025)
 
@@ -14,9 +15,9 @@
 
 **Initial Setup:**
 
-- **node-1**: Control plane (192.168.2.101 (wlan0), eth0: 10.0.0.1)
-- **node-2**: Worker node (192.168.2.102 (wlan0), eth0: 10.0.0.2) - already configured
-- **node-3**: Worker node (192.168.2.103 (wlan0), eth0: 10.0.0.3) - already configured
+- **node-1**: Control plane + etcd (192.168.2.101 (wlan0), eth0: 10.0.0.1)
+- **node-2**: Control plane + etcd (192.168.2.102 (wlan0), eth0: 10.0.0.2) - already configured
+- **node-3**: Control plane + etcd (192.168.2.103 (wlan0), eth0: 10.0.0.3) - already configured
 
 **The Process:**
 
@@ -31,7 +32,7 @@
    - **DNS Configuration**: Added `/etc/hosts` entries for all cluster nodes before k3s installation
    - **Network Configuration**: Fixed node-1 eth0 IP to use 10.0.0.1 (was incorrectly configured)
    - **k3s-agent Cleanup**: Added automatic cleanup of stuck k3s-agent state before restart
-   - **Longhorn Prerequisites**: Improved open-iscsi detection and installation
+   - **Storage Prerequisites**: Improved open-iscsi detection and installation (for Longhorn, later removed)
 
 3. **Challenges Encountered:**
 
@@ -39,7 +40,7 @@
      - **Solution**: Added DNS configuration play to setup-new-node.yml before k3s installation
    - **k3s-agent Stuck State**: Service stuck in "activating" state after configuration changes
      - **Solution**: Added cleanup tasks to stop service and remove `/var/lib/rancher/k3s/agent` before restart
-   - **Longhorn Manager Failure**: Longhorn manager pod failing due to missing `open-iscsi`
+   - **Longhorn Manager Failure** *(historical - Longhorn later removed)*: Longhorn manager pod failing due to missing `open-iscsi`
      - **Solution**: Fixed detection logic in `setup-longhorn-node.yml` to use `which iscsiadm` instead of `dpkg -l`
    - **Sudo Warnings**: "unable to resolve host node-2.eldertree.local" warnings
      - **Solution**: Added node's own hostname to `/etc/hosts` in DNS configuration play
@@ -61,7 +62,7 @@ ansible-playbook playbooks/setup-new-node.yml --limit localhost,node-1,node-3
 
 - ✅ All 3 nodes in Ready state
 - ✅ All nodes have correct eth0 IPs (10.0.0.1, 10.0.0.2, 10.0.0.3)
-- ✅ All Longhorn manager pods running (2/2 Ready)
+- ✅ All system pods running
 - ✅ DNS resolution working on all nodes
 - ✅ k3s-agent connecting successfully to control plane
 
@@ -87,8 +88,8 @@ The `setup-new-node.yml` playbook orchestrates the complete setup process:
 8. **k3s Gigabit Network** - Configures k3s to use eth0 for cluster communication
 9. **SSH Keys Setup** - Node-to-node communication and optional local key addition
 10. **Terminal Monitoring** - Installs btop, tmux, and neofetch
-11. **Longhorn Prerequisites** - Installs and loads open-iscsi, creates mount point
-12. **K3s ServiceLB Disable** - Disables ServiceLB for MetalLB compatibility
+11. **Storage Prerequisites** - Configures NVMe storage paths
+12. **K3s ServiceLB Disable** - Disables ServiceLB for kube-vip compatibility
 13. **Idempotency Verification** - Optional verification play (enable with `-e verify_idempotency=true`)
 
 **Key Features:**
@@ -122,10 +123,11 @@ Adding new nodes is now as simple as:
 
 ### Long-term Vision
 
-- [x] Multi-node cluster ✅ (3 nodes: 1 control plane, 2 workers)
-- [ ] High availability setup
-- [x] Advanced storage (Longhorn) ✅
-- [ ] Enhanced security
+- [x] Multi-node cluster (3 nodes: all control plane + etcd)
+- [x] High availability setup (kube-vip VIP, 3-node etcd, Vault Raft)
+- [x] Storage solution (local-path-nvme provisioner; Longhorn tried and removed)
+- [x] Remote access (Tailscale VPN on all nodes)
+- [ ] Enhanced security (network policies, pod security standards)
 - [ ] Disaster recovery plan
 
 ### Scaling Considerations
