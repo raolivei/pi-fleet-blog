@@ -1,6 +1,6 @@
 # Chapter 18: The Great CI/CD Consolidation
 
-*Taming the workflow wilderness with reusable GitHub Actions*
+_Taming the workflow wilderness with reusable GitHub Actions_
 
 ## The Problem: Copy-Paste Hell
 
@@ -26,6 +26,7 @@ After analyzing the patterns across all my repos, I identified 8 reusable workfl
 ### Docker Builds
 
 **`docker-build.yml`** - The workhorse. Builds and pushes arm64 Docker images to GHCR with:
+
 - Automatic version extraction from `VERSION` file
 - Smart tagging (semver, branch, SHA)
 - GitHub Actions cache for faster builds
@@ -36,6 +37,7 @@ After analyzing the patterns across all my repos, I identified 8 reusable workfl
 ### CI Pipelines
 
 **`python-ci.yml`** - Python testing with:
+
 - Support for both Poetry and pip
 - Ruff linting
 - Mypy type checking
@@ -92,16 +94,17 @@ jobs:
 
 ## Repos Migrated
 
-| Repository | Workflows Used |
-|------------|----------------|
-| pitanga-website | docker-build |
-| ollie | docker-matrix, python-ci |
-| pi-fleet-blog | static-site-pages |
-| eldertree-docs | static-site-pages, docker-build |
-| canopy | docker-build (x2), python-ci, node-ci |
-| us-law-severity-map | docker-build |
+| Repository          | Workflows Used                        |
+| ------------------- | ------------------------------------- |
+| pitanga-website     | docker-build                          |
+| ollie               | docker-matrix, python-ci              |
+| pi-fleet-blog       | static-site-pages                     |
+| eldertree-docs      | static-site-pages, docker-build       |
+| canopy              | docker-build (x2), python-ci, node-ci |
+| us-law-severity-map | docker-build                          |
 
 **Not migrated:**
+
 - **pi-fleet** - Terraform workflow is heavily customized for Cloudflare/Terraform Cloud integration
 - **docker-pi-hole** - Forked repo with upstream-specific workflows
 
@@ -121,6 +124,7 @@ If I ever need amd64, I can override the `platforms` input.
 ### Versioning Strategy
 
 The workflows repo uses tags:
+
 - `@main` - Latest stable (what most repos use)
 - `@v1` - Major version tag
 - `@v1.0.0` - Specific version for pinning
@@ -128,6 +132,7 @@ The workflows repo uses tags:
 ### Secrets Handling
 
 Reusable workflows require secrets to be explicitly passed. I standardized on:
+
 - `REGISTRY_TOKEN` for Docker builds (usually `GITHUB_TOKEN`)
 - Cloud provider secrets passed through for Terraform
 
@@ -146,10 +151,12 @@ Reusable workflows require secrets to be explicitly passed. I standardized on:
 ## The Numbers
 
 **Before:**
+
 - ~1,500 lines of workflow YAML across 8 repos
 - Changes required editing 7+ files
 
 **After:**
+
 - ~200 lines in calling workflows
 - ~1,000 lines in reusable workflows (maintained once)
 - Changes require editing 1 file
@@ -162,4 +169,4 @@ The workspace conventions documentation has been updated to recommend reusable w
 
 ---
 
-*The best infrastructure is the kind you don't have to think about. Reusable workflows aren't exciting, but they remove friction from the development loop. And in a homelab where I'm the only engineer, every bit of automation pays dividends.*
+_The best infrastructure is the kind you don't have to think about. Reusable workflows aren't exciting, but they remove friction from the development loop. And in a homelab where I'm the only engineer, every bit of automation pays dividends._

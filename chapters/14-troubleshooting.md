@@ -255,7 +255,7 @@ Vault in production mode requires manual unsealing after each restart for securi
 
 ---
 
-#### Challenge 6: MetalLB VIP Not Responding After Interface Changes *(Historical - MetalLB later replaced by kube-vip)*
+#### Challenge 6: MetalLB VIP Not Responding After Interface Changes _(Historical - MetalLB later replaced by kube-vip)_
 
 **Date:** January 18, 2026  
 **Branch:** `main`  
@@ -276,6 +276,7 @@ After cluster changes, the MetalLB VIP (192.168.2.200) stopped responding. Servi
 
 **Root Cause:**
 MetalLB L2Advertisement was not configured to use the correct network interface. The Raspberry Pi nodes have:
+
 - `wlan0`: 192.168.2.0/24 (management network, where clients connect)
 - `eth0`: 10.0.0.0/24 (internal k3s cluster network)
 
@@ -294,7 +295,7 @@ spec:
   ipAddressPools:
     - default
   interfaces:
-    - wlan0  # Specify the management network interface
+    - wlan0 # Specify the management network interface
 ```
 
 Apply and restart:
@@ -325,7 +326,7 @@ curl -k https://grafana.eldertree.local
 
 ---
 
-#### Challenge 7: The Great DNS Battle - Making Pi-hole Work as Primary DNS *(Historical - MetalLB later replaced by kube-vip)*
+#### Challenge 7: The Great DNS Battle - Making Pi-hole Work as Primary DNS _(Historical - MetalLB later replaced by kube-vip)_
 
 **Date:** December 30-31, 2025  
 **Branch:** `fix/pi-hole-servicelb-annotation`  
@@ -347,19 +348,16 @@ After setting up Pi-hole as the DNS server for the cluster, DNS resolution wasn'
 **Root Causes (Multiple Layers):**
 
 1. **MetalLB Layer 2 Advertisement Issue:**
-
    - MetalLB was announcing the LoadBalancer IP but not on the correct network interface
    - Nodes have InternalIPs `10.0.0.1/10.0.0.2` (K3s internal network) but physical IPs are on `192.168.2.0/24` via `wlan0`
    - MetalLB wasn't explicitly configured to use `wlan0` interface, causing advertisement on wrong network
 
 2. **Service externalTrafficPolicy Misconfiguration:**
-
    - Initially set to `Local` policy, which was too restrictive
    - With `Local` policy, only the node hosting the pod can respond, but routing wasn't working correctly
    - Changed to `Cluster` policy to allow traffic from any node
 
 3. **Manual DNS Entries Overriding ExternalDNS:**
-
    - Manual entries in Pi-hole dnsmasq ConfigMap (`address=/grafana.eldertree.local/192.168.2.101`) were overriding ExternalDNS-managed records
    - Wildcard entry in BIND zone (`* A 192.168.2.101`) was catching all queries before ExternalDNS records could be used
 
@@ -574,26 +572,22 @@ After a maintenance shutdown of all Raspberry Pi nodes, the entire cluster faile
 **Root Causes (Multiple Issues):**
 
 1. **Missing `nofail` on Optional Mounts:**
-
    - `/etc/fstab` had entries for optional mounts (backup drive `/dev/sdb1`, NVMe partitions) without the `nofail` flag
    - Systemd would wait ~30 seconds for each unavailable mount before giving up
    - This caused boot delays and timeouts, sometimes leading to emergency mode
 
 2. **Unused Backup Mount Causing Boot Delays:**
-
    - An unused `/dev/sdb1 /mnt/backup` mount was configured in fstab
    - This mount was never actually used (no scripts, no cron jobs)
    - Even with `nofail`, systemd would wait ~30 seconds for the mount to fail
    - This added unnecessary boot delay on every restart
 
 3. **Root Account Locked:**
-
    - Root account was locked after switching boot devices (SD to NVMe)
    - PAM faillock was enabled, locking accounts after failed login attempts
    - Without console access (only Bluetooth keyboard available), recovery was impossible
 
 4. **Incorrect fstab Configuration:**
-
    - NVMe partitions were mounted without `nofail` flag
    - When booting from SD card, NVMe mounts would fail and cause boot issues
    - Missing `nofail` on boot partition caused issues during recovery
@@ -621,14 +615,12 @@ This was a multi-day recovery process that required understanding boot processes
    ```
 
 2. **Physical Inspection:**
-
    - Nodes were stuck during boot
    - Some showed emergency mode requiring root password
    - Some showed busybox/initramfs shell
    - No USB keyboard available (only Bluetooth), making console access difficult
 
 3. **SD Card Recovery Strategy:**
-
    - Decided to recover nodes one by one using SD card backups
    - SD card has generic hostname `node-x` (from Raspberry Pi Imager)
    - Nodes identified by IP address during recovery
@@ -699,14 +691,12 @@ This was a multi-day recovery process that required understanding boot processes
    For each node, the recovery process was:
 
    a. **Boot from SD Card:**
-
    - Insert SD card backup into node
    - Remove NVMe temporarily (to ensure boot from SD)
    - Power on and wait for boot (hostname will be `node-x`)
    - Identify node by IP address
 
    b. **Fix NVMe (Not SD Card):**
-
    - Mount NVMe partitions: `/mnt/nvme-root` and `/mnt/nvme-boot`
    - Apply boot reliability fixes to NVMe fstab
    - Fix NVMe cmdline.txt
@@ -714,7 +704,6 @@ This was a multi-day recovery process that required understanding boot processes
    - Disable PAM faillock on NVMe
 
    c. **Reboot from NVMe:**
-
    - Remove SD card
    - Ensure NVMe is connected
    - Reboot - node should boot from NVMe correctly
@@ -737,7 +726,6 @@ This was a multi-day recovery process that required understanding boot processes
    When SD card itself was corrupted (stuck in busybox/initramfs):
 
    a. **Format SD Card with Raspberry Pi Imager:**
-
    - OS: Debian 12 Bookworm (64-bit)
    - Hostname: `node-x` (generic, works for any node)
    - User: `raolivei`
@@ -745,13 +733,11 @@ This was a multi-day recovery process that required understanding boot processes
    - SSH: Enabled
 
    b. **Apply Boot Reliability Fixes:**
-
    - Boot from SD card
    - Run `./scripts/setup-sd-card-os.sh <IP>` to apply fixes
    - Script updates initramfs, fixes fstab, removes backup mount
 
    c. **SD Card Ready for Recovery:**
-
    - SD card can now be used to boot and fix NVMe on any node
 
 4. **Removed Unused Backup Mount:**
@@ -905,13 +891,11 @@ The cluster is now more resilient, with better boot reliability and a complete r
 Based on analysis of 92 problems identified in the Git history, here are the most common categories:
 
 1. **Vault Sealing After Restart** (Multiple occurrences)
-
    - **Solution:** Automated unsealing script (`./scripts/operations/unseal-vault.sh`)
    - **Prevention:** Document unsealing process, add to monitoring
    - **Frequency:** Every restart (expected behavior in production mode)
 
 2. **DNS Resolution Issues** (15+ related commits)
-
    - **Common causes:** Pi-hole not ready, BIND service unavailable, ExternalDNS misconfiguration, multi-container pod readiness
    - **Solution:** Verify Pi-hole and BIND status, check ExternalDNS logs, wait for all containers to be ready
    - **Prevention:** Health checks, proper service DNS configuration, monitoring, understand readiness probes
@@ -919,21 +903,18 @@ Based on analysis of 92 problems identified in the Git history, here are the mos
    - **Detailed case study:** See Chapter 8 for a complete troubleshooting story of a DNS outage caused by multi-container pod readiness issues
 
 3. **Resource Limits on Raspberry Pi** (Multiple occurrences)
-
    - **Common issue:** "Specified limits are higher than node capacity!"
    - **Solution:** Optimize resource requests/limits for ARM64/Raspberry Pi constraints
    - **Prevention:** Monitor resource usage, set appropriate limits from start
    - **Example fixes:** Reduced FluxCD, KEDA, Journey API limits from 1000m/1Gi to 500m/512Mi
 
 4. **Storage Class Configuration** (Multiple occurrences)
-
    - **Common issue:** PVCs in Pending state, data not persisting
    - **Solution:** Explicitly specify `storageClassName: local-path` in Helm values
    - **Prevention:** Always configure storage class for stateful applications
    - **Affected services:** Prometheus, Grafana, Vault
 
 5. **Image Pull Issues** (Multiple occurrences)
-
    - **Common causes:** ARM64 incompatibility, missing GHCR secrets, wrong image tags
    - **Solution:** Verify image architecture, configure imagePullSecrets, use versioned tags
    - **Prevention:** Test image pulls, use ARM64-compatible images, pin image versions

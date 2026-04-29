@@ -15,13 +15,14 @@ The cluster uses a layered approach to remote access:
 
 Tailscale runs as subnet routers on all nodes, advertising the cluster networks:
 
-| Node | Tailscale IP | Advertised Subnets |
-|------|-------------|-------------------|
+| Node   | Tailscale IP   | Advertised Subnets                         |
+| ------ | -------------- | ------------------------------------------ |
 | node-1 | 100.86.241.124 | 192.168.2.0/24, 10.42.0.0/16, 10.43.0.0/16 |
 | node-2 | 100.116.185.57 | 192.168.2.0/24, 10.42.0.0/16, 10.43.0.0/16 |
 | node-3 | 100.104.30.105 | 192.168.2.0/24, 10.42.0.0/16, 10.43.0.0/16 |
 
 **Advertised subnets provide access to:**
+
 - `192.168.2.0/24` - Home network and management IPs
 - `10.42.0.0/16` - Kubernetes pod network
 - `10.43.0.0/16` - Kubernetes service network
@@ -29,6 +30,7 @@ Tailscale runs as subnet routers on all nodes, advertising the cluster networks:
 **Auth key stored in Vault:** `secret/pi-fleet/tailscale`
 
 **Benefits:**
+
 - Zero-config VPN (no port forwarding, no firewall rules)
 - Works from anywhere with internet access
 - Access all `*.eldertree.local` services remotely
@@ -42,6 +44,7 @@ Tailscale runs as subnet routers on all nodes, advertising the cluster networks:
 **Configuration:** Terraform-managed (infrastructure as code)
 
 **Public services exposed:**
+
 - `swimto.eldertree.xyz` - SwimTO application
 - `pitanga.cloud` / `www.pitanga.cloud` - Pitanga LLC website
 - `northwaysignal.pitanga.cloud` - Northway Signal
@@ -49,6 +52,7 @@ Tailscale runs as subnet routers on all nodes, advertising the cluster networks:
 **Tunnel token stored in Vault:** `secret/pi-fleet/cloudflare-tunnel/token`
 
 **Benefits:**
+
 - No port forwarding required
 - HTTPS by default with Cloudflare's edge certificates
 - DDoS protection included
@@ -57,10 +61,12 @@ Tailscale runs as subnet routers on all nodes, advertising the cluster networks:
 ### TLS Certificate Strategy
 
 **Internal services:** cert-manager with self-signed CA
+
 - ClusterIssuers: `selfsigned-cluster-issuer`, `ca-cluster-issuer`
 - All `*.eldertree.local` services use self-signed certificates
 
 **Public services:** Cloudflare Origin Certificates
+
 - Pitanga and SwimTO use Cloudflare-issued origin certificates
 - End-to-end encryption from Cloudflare edge to cluster
 
@@ -84,4 +90,3 @@ Tailscale runs as subnet routers on all nodes, advertising the cluster networks:
 - Subnet routing via Tailscale enables full remote cluster management
 
 ---
-

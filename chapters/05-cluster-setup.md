@@ -19,17 +19,14 @@ This established the pattern that would define the entire project: **everything 
 This was a busy day with multiple foundational pieces:
 
 1. **Git Workflow Established**
-
    - Added git branching strategy and contributing guidelines
    - Set up the workflow that would support 45 pull requests
 
 2. **K9s Installation**
-
    - Added k9s (Kubernetes CLI) to the control plane
    - Essential tool for cluster management and troubleshooting
 
 3. **Network Documentation**
-
    - Created NETWORK.md with IP configuration and service domains
    - Documented the `.eldertree.local` domain strategy
    - Set up FluxCD GitOps foundation
@@ -52,26 +49,22 @@ The actual K3s installation was handled by Ansible, ensuring:
 **Steps:**
 
 1. **System Preparation**
-
    - Base system configuration via Ansible
    - User setup, hostname, network configuration
    - Required packages installation
 
 2. **K3s Binary Installation**
-
    - Automated via `ansible/playbooks/install-k3s.yml`
    - Single binary installation (no complex dependencies)
    - ARM64 compatible out of the box
 
 3. **Cluster Initialization**
-
    - Embedded etcd (no external etcd needed)
    - Traefik ingress controller (pre-installed)
    - local-path storage provisioner (pre-installed)
    - CoreDNS for service discovery (pre-installed)
 
 4. **Kubeconfig Setup**
-
    - Ansible playbook configured kubeconfig
    - Cluster and context renamed to "eldertree"
    - Stored at `~/.kube/config-eldertree`
@@ -112,7 +105,7 @@ Control Plane: 3-node HA (node-1, node-2, node-3) - all control-plane + etcd
 Kubernetes Version: v1.35.0+k3s1
 API VIP: 192.168.2.100 (kube-vip)
 Traefik VIP: 192.168.2.200
-Storage Classes: 
+Storage Classes:
   - local-path (default)
   - local-path-nvme (NVMe SSD)
   - local-path-sd (SD card)
@@ -122,12 +115,12 @@ Load Balancer: kube-vip (ARP-based)
 
 **HA Components:**
 
-| Component | HA Method | Failure Tolerance |
-|-----------|-----------|-------------------|
-| Control Plane | 3-node etcd | 1 node |
-| API Access | kube-vip VIP | 1 node |
-| Storage | local-path-nvme (node-local NVMe) | N/A (node-pinned) |
-| Secrets | Vault Raft 3 replicas | 1 node |
+| Component     | HA Method                         | Failure Tolerance |
+| ------------- | --------------------------------- | ----------------- |
+| Control Plane | 3-node etcd                       | 1 node            |
+| API Access    | kube-vip VIP                      | 1 node            |
+| Storage       | local-path-nvme (node-local NVMe) | N/A (node-pinned) |
+| Secrets       | Vault Raft 3 replicas             | 1 node            |
 
 **Any single node can fail and the cluster control plane keeps running. Vault data is replicated across all three nodes via Raft consensus.**
 
@@ -260,6 +253,3 @@ By the end of the first week (November 13, 2025), the cluster had:
 By the end of November 2025, eldertree was a working Kubernetes cluster. It wasn't perfect—there were 92 problems to solve over the coming months—but it was functional, documented, and ready to grow. The foundation of infrastructure as code, GitOps, and automation would support all future development.
 
 The journey from "let's set up Kubernetes" to "production-ready cluster" had begun.
-
-
-

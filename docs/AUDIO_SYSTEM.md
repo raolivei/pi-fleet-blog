@@ -27,7 +27,7 @@
 
 **Long-term durability.** TTS technology changes rapidly. Voice cloning raises ethical and legal questions that will evolve unpredictably. Human voice sidesteps this entirely. Your recordings from 2026 will feel as authentic in 2036.
 
-**Identity lock-in (positive).** Your voice *is* ElderTree. This creates a moat that compounds. Listeners form parasocial trust with a specific human. This isn't replaceable by any tool—it's yours permanently.
+**Identity lock-in (positive).** Your voice _is_ ElderTree. This creates a moat that compounds. Listeners form parasocial trust with a specific human. This isn't replaceable by any tool—it's yours permanently.
 
 **Philosophy alignment.** ElderTree values authenticity over scale, depth over frequency, calm authority over performance. Human voice is the only medium that embodies these values in audio form.
 
@@ -37,25 +37,25 @@
 
 ### What This System Prioritizes
 
-| Priority | Description |
-|----------|-------------|
-| **Authenticity** | Real human voice, recorded in real conditions |
+| Priority           | Description                                                |
+| ------------------ | ---------------------------------------------------------- |
+| **Authenticity**   | Real human voice, recorded in real conditions              |
 | **Sustainability** | Time investment compatible with full-time engineering work |
-| **Durability** | Content that ages well, requires no format updates |
-| **Presence** | Feeling like the author is speaking directly to you |
-| **Calm** | No urgency, no performance, no hype |
+| **Durability**     | Content that ages well, requires no format updates         |
+| **Presence**       | Feeling like the author is speaking directly to you        |
+| **Calm**           | No urgency, no performance, no hype                        |
 
 ### What This System Explicitly Avoids
 
-| Avoided | Reason |
-|---------|--------|
-| AI TTS of any kind | Violates core identity; creates trust debt |
-| Voice cloning | Ethical ambiguity; legal uncertainty; uncanny valley |
-| Hybrid approaches | Half-measures create confusion and dilute brand |
-| Over-production | Polish signals performance, not presence |
+| Avoided             | Reason                                                        |
+| ------------------- | ------------------------------------------------------------- |
+| AI TTS of any kind  | Violates core identity; creates trust debt                    |
+| Voice cloning       | Ethical ambiguity; legal uncertainty; uncanny valley          |
+| Hybrid approaches   | Half-measures create confusion and dilute brand               |
+| Over-production     | Polish signals performance, not presence                      |
 | Scheduled treadmill | Fixed release schedules create pressure that degrades quality |
-| Growth optimization | Metrics-driven decisions poison authentic content |
-| Podcast conventions | Intros, outros, ads, guest formats—all unnecessary |
+| Growth optimization | Metrics-driven decisions poison authentic content             |
+| Podcast conventions | Intros, outros, ads, guest formats—all unnecessary            |
 
 ### Hard Rules
 
@@ -77,24 +77,24 @@ This is the north star. Every recording decision filters through this image.
 
 ### Tone
 
-| Attribute | Description |
-|-----------|-------------|
-| **Pace** | Unhurried. Thoughtful pauses are welcome. Speaking rate: 120-140 wpm (slower than typical podcasts at 150-180). |
-| **Energy** | Quiet intensity. Not flat, not animated. Engaged but not performative. Think: explaining something you care about to a curious friend at 10 PM. |
-| **Register** | Natural speaking voice, not "radio voice." Slightly lower register than casual conversation. |
-| **Confidence** | Settled. Not defensive, not boastful. The confidence of someone who has done the work. |
-| **Warmth** | Present but not performative. You're not selling anything. |
+| Attribute      | Description                                                                                                                                     |
+| -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Pace**       | Unhurried. Thoughtful pauses are welcome. Speaking rate: 120-140 wpm (slower than typical podcasts at 150-180).                                 |
+| **Energy**     | Quiet intensity. Not flat, not animated. Engaged but not performative. Think: explaining something you care about to a curious friend at 10 PM. |
+| **Register**   | Natural speaking voice, not "radio voice." Slightly lower register than casual conversation.                                                    |
+| **Confidence** | Settled. Not defensive, not boastful. The confidence of someone who has done the work.                                                          |
+| **Warmth**     | Present but not performative. You're not selling anything.                                                                                      |
 
 ### Emotional Range
 
-| Allowed | Not Allowed |
-|---------|-------------|
-| Genuine curiosity | Forced enthusiasm |
-| Quiet satisfaction | Celebration/hype |
-| Honest frustration (when earned) | Complaining/venting |
-| Dry humor | Jokes for engagement |
-| Reflective uncertainty | Performative humility |
-| Calm authority | Lecturing |
+| Allowed                          | Not Allowed           |
+| -------------------------------- | --------------------- |
+| Genuine curiosity                | Forced enthusiasm     |
+| Quiet satisfaction               | Celebration/hype      |
+| Honest frustration (when earned) | Complaining/venting   |
+| Dry humor                        | Jokes for engagement  |
+| Reflective uncertainty           | Performative humility |
+| Calm authority                   | Lecturing             |
 
 ### What ElderTree Should Never Sound Like
 
@@ -148,7 +148,7 @@ Written Post (exists)
 
 1. Read the written post once, silently
 2. Note 2-3 key points you want to hit naturally
-3. Do NOT write a script—the written post *is* the script
+3. Do NOT write a script—the written post _is_ the script
 4. Clear throat, drink water, settle into the chair
 
 **Recording (20-30 min max)**
@@ -164,12 +164,12 @@ Written Post (exists)
 
 ### Chunking Strategy
 
-| Post Length | Recording Approach |
-|-------------|---------------------|
-| < 1,500 words | Single session |
-| 1,500 - 3,000 words | Single session with break midway |
+| Post Length         | Recording Approach                     |
+| ------------------- | -------------------------------------- |
+| < 1,500 words       | Single session                         |
+| 1,500 - 3,000 words | Single session with break midway       |
 | 3,000 - 5,000 words | Two sessions, two separate audio files |
-| > 5,000 words | Split into parts before recording |
+| > 5,000 words       | Split into parts before recording      |
 
 **Guideline:** Approximately 150 words = 1 minute of audio at ElderTree pace.
 
@@ -197,12 +197,12 @@ If editing takes longer, you're over-editing.
 
 ### Publishing Cadence
 
-| Cadence | Recommended |
-|---------|-------------|
-| **Maximum** | One per week |
-| **Sustainable** | One every 2-3 weeks |
-| **Acceptable** | Monthly |
-| **Floor** | Quarterly (minimum to maintain presence) |
+| Cadence         | Recommended                              |
+| --------------- | ---------------------------------------- |
+| **Maximum**     | One per week                             |
+| **Sustainable** | One every 2-3 weeks                      |
+| **Acceptable**  | Monthly                                  |
+| **Floor**       | Quarterly (minimum to maintain presence) |
 
 **No commitments.** Publish when ready. Gaps are fine. Consistency matters over years, not weeks.
 
@@ -236,13 +236,13 @@ If editing takes longer, you're over-editing.
 
 ### Concrete Thresholds
 
-| Aspect | Acceptable | Unacceptable |
-|--------|------------|--------------|
-| Audio clarity | Can understand 95%+ on first listen | Words frequently unclear |
-| Background noise | Faint, consistent room tone | Distracting sounds, traffic, interruptions |
-| Vocal energy | Engaged, present | Monotone or exhausted |
-| Stumbles | Occasional, self-corrected | Multiple per minute, confusing |
-| Recording quality | -12 to -6 dB peaks | Clipping, distortion |
+| Aspect            | Acceptable                          | Unacceptable                               |
+| ----------------- | ----------------------------------- | ------------------------------------------ |
+| Audio clarity     | Can understand 95%+ on first listen | Words frequently unclear                   |
+| Background noise  | Faint, consistent room tone         | Distracting sounds, traffic, interruptions |
+| Vocal energy      | Engaged, present                    | Monotone or exhausted                      |
+| Stumbles          | Occasional, self-corrected          | Multiple per minute, confusing             |
+| Recording quality | -12 to -6 dB peaks                  | Clipping, distortion                       |
 
 ### Perfectionism Traps to Avoid
 
@@ -276,6 +276,7 @@ If a recording is 80% good, ship it. The remaining 20% of polish has diminishing
 **Root cause:** Activation energy too high. Perfectionism masking as standards.
 
 **Safeguard:**
+
 - Keep equipment always set up
 - Define "minimum viable session" (10 minutes counts)
 - Record even when not sure—trash later if needed
@@ -288,6 +289,7 @@ If a recording is 80% good, ship it. The remaining 20% of polish has diminishing
 **Root cause:** Treating audio like written prose. Trying to manufacture polish.
 
 **Safeguard:**
+
 - Set a timer: 15 minutes max edit time
 - If it needs more, the recording itself was the problem—don't salvage it
 - Establish a "no more than 3 edits per minute of audio" rule
@@ -299,6 +301,7 @@ If a recording is 80% good, ship it. The remaining 20% of polish has diminishing
 **Root cause:** Internalized podcast/creator norms. Measuring against others.
 
 **Safeguard:**
+
 - No public schedule. Ever.
 - Never apologize for gaps in recordings
 - Remind: ElderTree optimizes for decades, not weeks
@@ -311,6 +314,7 @@ If a recording is 80% good, ship it. The remaining 20% of polish has diminishing
 **Root cause:** Confusing production value with content value.
 
 **Safeguard:**
+
 - Freeze equipment decisions for 1 year minimum
 - No intros/outros. Content starts immediately.
 - If something "needs" upgrading, wait 3 months. Still need it? Consider it.
@@ -322,6 +326,7 @@ If a recording is 80% good, ship it. The remaining 20% of polish has diminishing
 **Root cause:** Distraction from core mission. Chasing medium instead of message.
 
 **Safeguard:**
+
 - Hard rule: audio only for 2 years minimum
 - No guests. Solo only. (Guests require coordination, editing, scheduling—all friction.)
 - Video is explicitly out of scope
@@ -333,6 +338,7 @@ If a recording is 80% good, ship it. The remaining 20% of polish has diminishing
 **Root cause:** Reality. Human voices need rest.
 
 **Safeguard:**
+
 - Buffer: always have 1-2 finished recordings unreleased
 - If sick, don't record. Period.
 - If burned out, written posts continue—audio pauses. That's fine.
@@ -343,13 +349,13 @@ If a recording is 80% good, ship it. The remaining 20% of polish has diminishing
 
 ### Recommended Setup (Minimal)
 
-| Component | Recommendation |
-|-----------|----------------|
-| **Microphone** | USB condenser (Audio-Technica AT2020 USB, Blue Yeti) |
-| **Position** | 6-8 inches from mouth, slightly off-axis |
-| **Environment** | Quiet room, soft surfaces preferred |
-| **Software** | Audacity (free), or any simple DAW |
-| **Format** | Export as MP3, 128kbps (spoken word) |
+| Component       | Recommendation                                       |
+| --------------- | ---------------------------------------------------- |
+| **Microphone**  | USB condenser (Audio-Technica AT2020 USB, Blue Yeti) |
+| **Position**    | 6-8 inches from mouth, slightly off-axis             |
+| **Environment** | Quiet room, soft surfaces preferred                  |
+| **Software**    | Audacity (free), or any simple DAW                   |
+| **Format**      | Export as MP3, 128kbps (spoken word)                 |
 
 ### What You Don't Need
 
@@ -396,12 +402,45 @@ Record when you have something worth saying. Ship when it's good enough. Let gap
 
 ---
 
-## Changelog
+## Appendix: Experimental Voice Cloning (Qwen3-TTS)
 
-| Date | Change |
-|------|--------|
-| 2026-02-02 | Initial document created. Established human-voice-only policy. |
+_This section documents a temporary/experimental path for voice cloning (e.g. when human recording or external service is unavailable). It does not change the human-voice-only policy above._
+
+### Why the first EKS run produced noise
+
+- **Reference length:** Qwen3-TTS expects **~3 seconds** of reference audio for voice cloning. Using a long sample (e.g. 4+ minutes) can produce noisy or unusable output.
+- **Fix:** Use a **short reference clip** (3–10 s) and a transcript that matches only that clip.
+
+### Short reference workflow
+
+1. **Extract a short clip** from your full voice sample (e.g. first 5–7 seconds):
+   ```bash
+   ffmpeg -i voice_sample.wav -t 6 -acodec copy -y voice_ref_short.wav
+   ```
+2. **Create a matching transcript** containing only the words spoken in that clip (e.g. first sentence), saved as `voice_ref_transcript.txt`.
+3. **Use the short ref in generation:** Point the TTS script at `voice_ref_short.wav` and `voice_ref_transcript.txt` (not the full sample/transcript).
+
+### EKS GPU generation (Qwen3-TTS)
+
+- Script: `generate_gpu_fixed.py` (uses short ref by default).
+- **One-command run:** From the directory containing the short-ref files and script, run `./run_tts_eks.sh [namespace]`. It copies `voice_ref_short.wav`, `voice_ref_transcript.txt`, and `generate_gpu_fixed.py` to the pod’s `/data/`, runs generation, and copies `goldie_demo.wav` back.
+- Manual: Copy to pod `voice_ref_short.wav`, `voice_ref_transcript.txt`, and the script. Model at `/models/qwen3-tts`, data at `/data/`.
+- If output is still noisy, try `X_VECTOR_ONLY = True` in the script (speaker embedding only, no ICL ref text/code).
+- **Repetition / pitch drift** (first second good, then repeats, rising pitch, weird laugh): script now uses higher `repetition_penalty` (1.3) and lower `temperature` / `subtalker_temperature` (0.65). Override via env: `TTS_REPETITION_PENALTY`, `TTS_TEMPERATURE`, `TTS_SUBTALKER_TEMPERATURE`.
+
+### Reference
+
+- Qwen3-TTS voice cloning: ~3 s reference; ICL mode uses ref audio + ref text; `x_vector_only` uses only speaker embedding.
 
 ---
 
-*This document supersedes any prior TTS-based audio guidance in the pi-fleet-blog repository.*
+## Changelog
+
+| Date       | Change                                                         |
+| ---------- | -------------------------------------------------------------- |
+| 2026-02-02 | Initial document created. Established human-voice-only policy. |
+| 2026-02-02 | Appendix: experimental Qwen3-TTS voice cloning (short ref, EKS). |
+
+---
+
+_This document supersedes any prior TTS-based audio guidance in the pi-fleet-blog repository._

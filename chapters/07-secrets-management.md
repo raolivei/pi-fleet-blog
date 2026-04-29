@@ -17,7 +17,7 @@
 
 **Initial Setup:** Dev mode (no persistence)
 **Migration 1:** Production mode with persistent storage
-**Migration 2:** Full HA with Raft integrated storage *(January 2026)*
+**Migration 2:** Full HA with Raft integrated storage _(January 2026)_
 
 **Key Dates:**
 
@@ -39,21 +39,21 @@
 After achieving 3-node HA for the control plane, Vault in standalone mode was the last single point of failure. In standalone mode with local-path storage:
 
 ```
-If node-1 fails → Vault PVC is pinned to node-1 → Vault goes down → 
+If node-1 fails → Vault PVC is pinned to node-1 → Vault goes down →
 All External Secrets stop syncing → Applications lose access to secrets
 ```
 
 With Vault HA:
 
 ```
-If ANY node fails → Raft elects new leader in <15 seconds → 
+If ANY node fails → Raft elects new leader in <15 seconds →
 External Secrets continue syncing → Applications unaffected
 ```
 
 ### HA Architecture
 
-| Pod | Node | Role |
-|-----|------|------|
+| Pod     | Node   | Role              |
+| ------- | ------ | ----------------- |
 | vault-0 | node-3 | Leader or Standby |
 | vault-1 | node-1 | Leader or Standby |
 | vault-2 | node-2 | Leader or Standby |
@@ -95,6 +95,7 @@ External Secrets continue syncing → Applications unaffected
 **Old Way (Standalone):** Manual unsealing, type 3 keys each time
 
 **New Way (HA with Auto-Unseal):**
+
 1. Unseal keys stored in K8s secret `vault-unseal-keys`
 2. Run `./scripts/operations/unseal-vault.sh`
 3. Script automatically unseals all 3 pods
@@ -105,14 +106,14 @@ External Secrets continue syncing → Applications unaffected
 
 **What Changed:**
 
-| Aspect | Before | After |
-|--------|--------|-------|
-| Mode | Standalone | HA with Raft |
-| Replicas | 1 | 3 |
-| Storage Class | local-path | local-path-nvme |
-| Storage Backend | File | Raft (replicated) |
-| Unseal | Manual 3 keys | Auto from K8s secret |
-| Failure Tolerance | 0 nodes | 1 node |
+| Aspect            | Before        | After                |
+| ----------------- | ------------- | -------------------- |
+| Mode              | Standalone    | HA with Raft         |
+| Replicas          | 1             | 3                    |
+| Storage Class     | local-path    | local-path-nvme      |
+| Storage Backend   | File          | Raft (replicated)    |
+| Unseal            | Manual 3 keys | Auto from K8s secret |
+| Failure Tolerance | 0 nodes       | 1 node               |
 
 **Migration Steps:**
 

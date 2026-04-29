@@ -8,21 +8,35 @@ const base = "/";
 export default defineConfig({
   base,
   title: "Building Eldertree",
-  description: "A Journey in Self-Hosted Kubernetes - Comprehensive diary of building a production-ready Kubernetes cluster on Raspberry Pi hardware",
+  description:
+    "A Journey in Self-Hosted Kubernetes - Comprehensive diary of building a production-ready Kubernetes cluster on Raspberry Pi hardware",
   cleanUrls: true,
   lastUpdated: true,
-  
+
   head: [
     ["link", { rel: "icon", href: "/favicon.ico" }],
     ["meta", { property: "og:type", content: "website" }],
     ["meta", { property: "og:site_name", content: "Building Eldertree" }],
-    ["meta", { property: "og:title", content: "Building Eldertree: A Journey in Self-Hosted Kubernetes" }],
-    ["meta", { property: "og:description", content: "A comprehensive diary of building a production-ready Kubernetes cluster on Raspberry Pi hardware" }],
+    [
+      "meta",
+      {
+        property: "og:title",
+        content: "Building Eldertree: A Journey in Self-Hosted Kubernetes",
+      },
+    ],
+    [
+      "meta",
+      {
+        property: "og:description",
+        content:
+          "A comprehensive diary of building a production-ready Kubernetes cluster on Raspberry Pi hardware",
+      },
+    ],
   ],
 
   themeConfig: {
     logo: "/logo.svg",
-    
+
     nav: [
       { text: "Home", link: "/" },
       { text: "Chapters", link: "/chapters/" },
@@ -45,7 +59,8 @@ export default defineConfig({
     },
 
     footer: {
-      message: "Built with ❤️ documenting the eldertree Kubernetes cluster journey",
+      message:
+        "Built with ❤️ documenting the eldertree Kubernetes cluster journey",
       copyright: "Copyright © 2026 Rafael Oliveira",
     },
   },
@@ -55,9 +70,9 @@ export default defineConfig({
       lazyLoading: true,
     },
   },
-  
+
   ignoreDeadLinks: true,
-  
+
   srcExclude: [
     "src/**",
     "**/content/**",
@@ -69,4 +84,3 @@ export default defineConfig({
     "**/DEPLOYMENT.md",
   ],
 });
-

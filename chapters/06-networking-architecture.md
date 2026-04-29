@@ -65,11 +65,11 @@ Because nothing says "I know what I'm doing" like running your own DNS server. A
 **Configuration:** ARP-based IP assignment
 **Replaces:** MetalLB (which was used initially but replaced by kube-vip for simplicity)
 
-| VIP            | Service          | Description                |
-|----------------|------------------|----------------------------|
-| 192.168.2.100  | Kubernetes API   | HA API server endpoint     |
-| 192.168.2.200  | Traefik Ingress  | HTTPS ingress for all apps |
-| 192.168.2.201  | Pi-hole          | Network-wide DNS           |
+| VIP           | Service         | Description                |
+| ------------- | --------------- | -------------------------- |
+| 192.168.2.100 | Kubernetes API  | HA API server endpoint     |
+| 192.168.2.200 | Traefik Ingress | HTTPS ingress for all apps |
+| 192.168.2.201 | Pi-hole         | Network-wide DNS           |
 
 #### The Evolution: MetalLB to kube-vip
 

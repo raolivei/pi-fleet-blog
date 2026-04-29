@@ -15,13 +15,11 @@
 ### Initial Setup Process
 
 1. **OS Installation**
-
    - [ ] Method used (Raspberry Pi Imager, manual, etc.)
    - [ ] Initial configuration steps
    - [ ] User setup and SSH configuration
 
 2. **System Configuration**
-
    - [ ] Hostnames: `node-1.eldertree.local`, `node-2.eldertree.local`, `node-3.eldertree.local`
    - [ ] Static IP configuration
    - [ ] SSH key setup

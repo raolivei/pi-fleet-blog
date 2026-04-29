@@ -26,14 +26,12 @@
 **Initial Setup:** NVMe (via PCIe adapter)
 
 - **Why:**
-
   - **Performance**: NVMe provides significantly better I/O performance than SD cards
   - **Reliability**: SD cards are prone to wear and failure under constant write operations
   - **Boot speed**: Faster boot times and application startup
   - **Future-proof**: Better suited for Kubernetes workloads with persistent volumes
 
 - **Performance considerations:**
-
   - NVMe provides 10-20x better random I/O performance
   - Lower latency for database and storage operations
   - Better suited for Kubernetes persistent volumes (Vault, PostgreSQL)

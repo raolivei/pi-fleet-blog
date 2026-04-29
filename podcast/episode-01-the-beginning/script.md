@@ -1,6 +1,6 @@
 # Episode 1: The Beginning
 
-**Setting up the Pi cluster hardware**
+**The vision behind the eldertree cluster**
 
 ---
 
@@ -8,8 +8,8 @@
 
 - **Episode:** 1 of 10
 - **Duration:** ~15-20 minutes
-- **Topics:** Setting up the Pi cluster hardware
-- **Source Data:** 44 docs, 73 conversations
+- **Topics:** Why self-host, project goals, constraints, and how the cluster evolved
+- **Chapter Reference:** [Chapter 1: The Vision](../../chapters/01-vision.md)
 
 ---
 
@@ -19,9 +19,9 @@
 
 [Opening music fades in - 5 seconds]
 
-Welcome back to Building Eldertree, the podcast where we document the real, unvarnished journey of running Kubernetes on Raspberry Pis.
+Welcome to Building Eldertree, the podcast where we document the real, unvarnished journey of running Kubernetes on Raspberry Pis.
 
-I'm your host, and today we're diving into Episode 1: The Beginning.
+I'm your host, and this is Episode 1: The Beginning.
 
 [Music fades out]
 
@@ -31,55 +31,83 @@ I'm your host, and today we're diving into Episode 1: The Beginning.
 
 ### Introduction
 
-The journey begins. We unbox three Raspberry Pi 5 units, set up the
-hardware, and take our first steps toward building a home Kubernetes
-cluster. What could possibly go wrong?
+The eldertree cluster didn't start as a grand plan. It began with a simple need: run my personal applications without depending on cloud providers. What started as a single Raspberry Pi running Docker containers evolved into a full Kubernetes cluster — and taught me more about infrastructure, resilience, and problem-solving than I ever expected.
+
+This episode is about the "why." Why build a Pi cluster? What was I trying to accomplish? And what constraints shaped every decision along the way?
 
 [pause]
 
-So let's start from the beginning...
+---
+
+### Act 1: Why Self-Host?
+
+_The motivations behind the project_
+
+The decision to self-host came from several directions at once.
+
+First — **privacy and data ownership**. I was building Canopy, a personal finance dashboard. My financial data shouldn't live on someone else's servers. Same for SwimTO, a commercial project tracking Toronto pool schedules — user data requires full control. And my learning projects, NIMA and Journey, generate data I want to own completely.
+
+Second — **learning Kubernetes hands-on**. I'd read about Kubernetes. I'd done tutorials. But reading about Kubernetes isn't the same as running it. Production experience teaches lessons you simply cannot learn from tutorials. I wanted to understand the full stack, from hardware all the way up to applications.
+
+Third — **cost**. A Raspberry Pi 5 costs less than a single month of cloud hosting for equivalent services. No ongoing monthly fees. Power consumption is minimal — roughly 5 to 10 watts per node. Over time, the math is overwhelmingly in favor of self-hosting.
+
+And finally — **full control over the stack**. Choose my own tools and versions. No vendor lock-in. Customize everything to my needs. And most importantly, learn how everything actually works under the hood.
+
+[pause]
 
 ---
 
-### Act 1: The Vision
+### Act 2: Goals and Constraints
 
-_Why build a Pi cluster?_
+_What the cluster needed to do — and what limited it_
 
-Let's talk about why build a pi cluster?.
+When I started, I had a clear set of goals. Run personal applications — Canopy, SwimTO, Journey, NIMA. Learn Kubernetes in production, not from contrived examples. Build resilient, maintainable infrastructure using GitOps with FluxCD. Implement proper secrets management with HashiCorp Vault. Set up real monitoring and observability with Prometheus and Grafana. And enable GitOps workflows where all infrastructure lives in Git.
 
-How to Access Canopy from Your Network Canopy is now accessible at: **https://canopy.eldertree.local** Quick Start Option 1: Use Pi-hole DNS (Recommended) Configure your device to use Pi-hole as its DNS server: **DNS Server**: `192.168.2.83` This will automatically resolve `canopy.eldertree.local` and give you ad-blocking too! macOS ```bash Temporarily (until reboot) sudo networksetup -setdnsservers Wi-Fi 192.168.2.83 To revert: sudo networksetup -setdnsservers Wi-Fi e
+But every project has constraints, and eldertree was no exception.
 
-At one point, I asked: "validate everything work great..."
+**ARM64 hardware.** Not all container images support ARM64. Some tools don't have ARM builds at all. Performance characteristics differ from x86. It's a learning opportunity, but also a real limitation you hit constantly.
 
-[pause - 2 seconds]
+**Limited resources.** Each Raspberry Pi 5 has 8GB of RAM. You can't run everything at once. You need to optimize resource usage and carefully configure limits. You have to prioritize what's actually needed.
 
----
+**Home network environment.** No static public IP initially. Need a secure remote access solution. DNS resolution for local services. Network-wide DNS with Pi-hole.
 
-### Act 2: The Hardware
+**Budget.** I started with a single Raspberry Pi 5, not a multi-node cluster. No expensive hardware. Use what's available. Cost-effective solutions at every turn.
 
-_Unboxing and assembly_
+These constraints shaped every architectural decision. They forced simplicity and forced me to really understand what each component was doing.
 
-Let's talk about unboxing and assembly.
-
-Adding a New Node to Eldertree Cluster Complete guide for adding a new Raspberry Pi node (e.g., node-2) to the eldertree k3s cluster. Prerequisites - New Raspberry Pi 5 with NVMe drive attached - SD card with backup OS (for initial setup) - Physical access to the node (for initial configuration) - Access to existing cluster nodes via SSH/Ansible - kubectl configured with cluster access Overview The process involves: 1. **NVMe Boot Setup** - Configure node to boot from NVMe 2. \*\*Syst
-
-At one point, I asked: "@agent Continue: "Continue to iterate?"..."
-
-[pause - 2 seconds]
+[pause]
 
 ---
 
-### Act 3: First Boot
+### Act 3: The Evolution
 
-_Initial OS installation_
+_How the project grew organically_
 
-Let's talk about initial os installation.
+What started as "let's run a few Docker containers" quickly became "let's build a proper Kubernetes cluster." The journey wasn't linear — it was organic, solving problems as they arose.
 
-Complete Guide: Adding a New Node to Eldertree Cluster This guide covers the complete process for adding a new Raspberry Pi node to the eldertree cluster, including NVMe boot configuration, network setup, and k3s integration. > **💡 Quick Setup Option**: For a streamlined setup, you can use the master playbook `setup-new-node.yml` which automates all steps below. See [Ansible Playbook Analysis](../ansible/PLAYBOOK_ANALYSIS.md) for usage examples. Overview When adding a new node to the el
+The **initial phase**, back in October 2025, started with the US Law Severity Map project. Just getting something running.
 
-At one point, I asked: "now create a medium.com article about this project, so that I can copy and paste on my medium account..."
+Then came the **infrastructure phase** in November — setting up K3s, Terraform for Cloudflare DNS, and FluxCD for GitOps. This is when it started feeling like real infrastructure.
 
-[pause - 2 seconds]
+The **services phase** ran through November and December — adding Vault for secrets, monitoring with Prometheus and Grafana, Pi-hole for DNS, and deploying the actual applications.
+
+And then the **optimization phase** in December — fixing issues that came up, optimizing resource usage, and improving documentation.
+
+Each phase taught new lessons and revealed new requirements. The cluster evolved organically rather than following a rigid plan.
+
+[pause]
+
+---
+
+### The Name: Eldertree
+
+One thing people ask about is the name. Why "eldertree"?
+
+I wanted something that represented wisdom — learning from experience and mistakes. Stability — a foundation that supports other projects. Growth — starting small but designed to expand. And resilience — weathering challenges and continuing to thrive.
+
+Like an elder tree in a forest, this cluster is meant to be a foundational piece of infrastructure that supports other projects, learns from challenges, and grows stronger over time.
+
+[pause]
 
 ---
 
@@ -87,17 +115,17 @@ At one point, I asked: "now create a medium.com article about this project, so t
 
 [Reflective music starts - low volume]
 
-What did we learn from this experience?
+What did I learn from this first phase?
 
-**Lesson 1: Start Small**
+**Starting simple was the right choice.** Single node, basic setup, then grow. Don't try to build the final architecture on day one.
 
-You don't need a massive cluster to learn. Three nodes is plenty.
+**Problems are learning opportunities.** Over the course of this project, I hit ninety-two documented problems. Each one taught something valuable.
 
-[pause]
+**Documentation is critical.** Without it, you repeat the same mistakes. Future you will thank present you for those notes.
 
-**Lesson 2: Document Everything**
+**Git history tells the story.** Commits document the journey better than memory ever could.
 
-Future you will thank present you for those notes.
+**Iteration beats perfection.** Ship, learn, improve, repeat. That's the real workflow.
 
 [pause]
 
@@ -107,13 +135,11 @@ Future you will thank present you for those notes.
 
 [Music swells slightly]
 
-And that's a wrap on Episode 1: The Beginning.
+And that's Episode 1: The Beginning. The vision, the motivations, and the constraints that shaped everything that followed.
 
-In the next episode, we'll tackle NVMe Migration: Moving from SD cards to NVMe storage. Trust me, you won't want to miss it.
+In the next episode, we'll tackle the first real infrastructure challenge: NVMe Migration — moving from SD cards to NVMe storage. That's where things start getting hands-on, and where the first real problems show up.
 
 [pause]
-
-If you found this helpful, please subscribe and share with other DevOps enthusiasts. Your support helps us keep creating content for the community.
 
 Until next time, keep your clusters redundant and your firewalls properly configured.
 
@@ -121,4 +147,4 @@ Until next time, keep your clusters redundant and your firewalls properly config
 
 ---
 
-_Episode generated: 2026-01-13 20:38_
+*This is a draft script. Use as reference material for recording — speak naturally, deviate when it feels right, and add personal commentary. See [RECORDING_NOTES.md](../RECORDING_NOTES.md) for guidance.*

@@ -55,4 +55,6 @@
 - Grafana dashboards save significant time in troubleshooting
 - Pushgateway is useful for collecting metrics from short-lived jobs
 
+**See also:** [Chapter 20: Synthetic Uptime and a Full-Stack Observability Sprint](/chapters/20-synthetic-monitoring-observability-sprint) (Blackbox synthetic HTTPS, Traefik scrape alignment, Loki, Grafana sidecar scoping) and the pi-fleet doc `docs/OBSERVABILITY_BLACKBOX_AND_SYNTHETIC.md` in the [pi-fleet](https://github.com/raolivei/pi-fleet) repository for operational details.
+
 ---

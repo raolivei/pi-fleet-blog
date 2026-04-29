@@ -3,8 +3,8 @@
 ### The Storage Evolution
 
 **Phase 1:** `local-path` only (K3s default)
-**Phase 2:** Longhorn for distributed storage *(January 2026)*
-**Phase 3:** Back to `local-path` provisioner *(February 2026)* - Longhorn removed
+**Phase 2:** Longhorn for distributed storage _(January 2026)_
+**Phase 3:** Back to `local-path` provisioner _(February 2026)_ - Longhorn removed
 
 ### Why Longhorn Was Removed
 
@@ -17,11 +17,11 @@ Longhorn was initially deployed for distributed block storage with 3-replica rep
 
 ### Storage Classes
 
-| Storage Class | Type | Path | Use Case |
-|---------------|------|------|----------|
-| `local-path` | Local filesystem | Default | General use |
-| `local-path-nvme` | Local NVMe SSD | NVMe mount | Performance-critical data |
-| `local-path-sd` | SD card | SD mount | Low-priority data |
+| Storage Class     | Type             | Path       | Use Case                  |
+| ----------------- | ---------------- | ---------- | ------------------------- |
+| `local-path`      | Local filesystem | Default    | General use               |
+| `local-path-nvme` | Local NVMe SSD   | NVMe mount | Performance-critical data |
+| `local-path-sd`   | SD card          | SD mount   | Low-priority data         |
 
 ### Current Configuration
 
@@ -31,12 +31,12 @@ Longhorn was initially deployed for distributed block storage with 3-replica rep
 
 ### Persistent Volumes by Application
 
-| Application | Size | Storage Class | Notes |
-|-------------|------|---------------|-------|
+| Application    | Size      | Storage Class   | Notes                       |
+| -------------- | --------- | --------------- | --------------------------- |
 | **Vault** (x3) | 10Gi each | local-path-nvme | Raft replication handles HA |
-| **Prometheus** | 8Gi | local-path | 7-day retention |
-| **Grafana** | 2Gi | local-path | Dashboards in git |
-| **Pi-hole** | 2Gi | local-path | Easy to rebuild |
+| **Prometheus** | 8Gi       | local-path      | 7-day retention             |
+| **Grafana**    | 2Gi       | local-path      | Dashboards in git           |
+| **Pi-hole**    | 2Gi       | local-path      | Easy to rebuild             |
 
 ### The Longhorn Experiment (A Lesson in Simplicity)
 
@@ -70,22 +70,24 @@ sudo ufw allow 8472/udp comment 'k3s flannel VXLAN'
 ### Backup Strategy
 
 **Vault Secrets:**
+
 ```bash
 ./scripts/operations/backup-vault-secrets.sh > vault-backup-$(date +%Y%m%d).json
 ```
 
 **Database Backups:**
+
 - pg_dump for PostgreSQL databases
 - Store backups on external storage (SD card)
 
 ### High Availability Summary
 
-| Component | HA Method | Failure Tolerance |
-|-----------|-----------|-------------------|
-| Control Plane | 3-node etcd | 1 node |
-| API Access | kube-vip VIP | 1 node |
-| Secrets | Vault Raft (3 replicas) | 1 node |
-| Storage | local-path-nvme (node-local) | N/A (node-pinned) |
+| Component     | HA Method                    | Failure Tolerance |
+| ------------- | ---------------------------- | ----------------- |
+| Control Plane | 3-node etcd                  | 1 node            |
+| API Access    | kube-vip VIP                 | 1 node            |
+| Secrets       | Vault Raft (3 replicas)      | 1 node            |
+| Storage       | local-path-nvme (node-local) | N/A (node-pinned) |
 
 **Key insight:** Not everything needs distributed storage. Vault handles its own replication via Raft. For other data, proper backup strategies are more practical than running a distributed storage system on resource-constrained hardware.
 

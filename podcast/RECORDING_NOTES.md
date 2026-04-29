@@ -22,31 +22,34 @@ The `script.md` files in each episode folder are **reference material**, not scr
 
 The scripts were originally generated with podcast/TTS conventions. **Ignore these when recording:**
 
-| Script Element | What to Do Instead |
-|----------------|---------------------|
-| `[Opening music fades in]` | Start talking immediately |
-| `[Music swells]` | Just continue naturally |
-| `[Outro music]` | End when done—no formal closing |
-| "Welcome back to Building Eldertree" | Skip—or say it once in episode 1 only |
-| "I'm your host" | Skip—your voice is the identity |
-| "Subscribe and share" | Never say this |
-| "Trust me, you won't want to miss it" | Skip hype language |
-| "[pause - 2 seconds]" | Pause naturally when it feels right |
+| Script Element                        | What to Do Instead                    |
+| ------------------------------------- | ------------------------------------- |
+| `[Opening music fades in]`            | Start talking immediately             |
+| `[Music swells]`                      | Just continue naturally               |
+| `[Outro music]`                       | End when done—no formal closing       |
+| "Welcome back to Building Eldertree"  | Skip—or say it once in episode 1 only |
+| "I'm your host"                       | Skip—your voice is the identity       |
+| "Subscribe and share"                 | Never say this                        |
+| "Trust me, you won't want to miss it" | Skip hype language                    |
+| "[pause - 2 seconds]"                 | Pause naturally when it feels right   |
 
 ## Recording Structure
 
 Instead of the scripted structure, use this:
 
 **Opening (15-30 seconds)**
+
 - Brief context: "This is about [topic]"
 - Optional: "This is part of the Eldertree series" (first episode only)
 
 **Main Content**
+
 - Follow the narrative arc from the script
 - Cover the key technical points
 - Share the real experience—what actually happened
 
 **Closing (15-30 seconds)**
+
 - Brief summary of what was covered
 - Optional: hint at what comes next
 - End naturally—no call to action
@@ -74,4 +77,4 @@ Instead of the scripted structure, use this:
 
 ---
 
-*These notes apply to all episodes. The scripts remain as reference material.*
+_These notes apply to all episodes. The scripts remain as reference material._

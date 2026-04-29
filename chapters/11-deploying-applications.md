@@ -42,8 +42,8 @@
 - **Type:** AI assistant with Telegram bot integration
 - **Local Access:** https://openclaw.eldertree.local
 - **Telegram Bot:** `@eldertree_assistant_bot`
-- **AI Provider:** Google Gemini 1.5 Flash
-- **Features:** SwimTO integration, cluster monitoring, web search
+- **AI Providers:** Gemini (primary), Groq, Ollama (fallback chain); Ollama runs on Mac via Tailscale
+- **Features:** SwimTO, cluster monitoring, web search, Grove best-of-three orchestrator, META self-upgrade
 
 #### Pitanga
 
@@ -83,4 +83,3 @@
 - Cloudflare Tunnel eliminates the need for port forwarding
 
 ---
-

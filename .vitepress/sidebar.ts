@@ -90,6 +90,24 @@ export function sidebar() {
           },
         ],
       },
+      {
+        text: "AI Infrastructure",
+        items: [
+          {
+            text: "Chapter 19: AI Infrastructure on Eldertree",
+            link: "/chapters/19-ai-infrastructure",
+          },
+        ],
+      },
+      {
+        text: "Observability (2026)",
+        items: [
+          {
+            text: "Chapter 20: Synthetic Uptime and Full-Stack Sprint",
+            link: "/chapters/20-synthetic-monitoring-observability-sprint",
+          },
+        ],
+      },
     ],
   };
 }

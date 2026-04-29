@@ -38,7 +38,7 @@ When I started, I had a clear set of goals:
 
 ✅ **Run Personal Applications**
 
-*Active on cluster:*
+_Active on cluster:_
 
 - **SwimTO** - Toronto pool schedules (public at swimto.eldertree.xyz)
 - **OpenClaw** - AI assistant with Telegram bot integration (@eldertree_assistant_bot)
@@ -46,7 +46,7 @@ When I started, I had a clear set of goals:
 - **Northway Signal** - Cloud consulting website (public at northwaysignal.pitanga.cloud)
 - **Eldertree Docs** - Searchable documentation site (public at docs.eldertree.xyz)
 
-*In development / planned for cluster:*
+_In development / planned for cluster:_
 
 - **Canopy** - Personal finance dashboard (private financial data)
 - **Visage** - Self-hosted AI headshot generator (SDXL + LoRA, GPU offloaded to local Mac)
@@ -158,6 +158,3 @@ Why "eldertree"? The name came from wanting something that represented:
 - **Resilience** - Weathering challenges and continuing to thrive
 
 Like an elder tree in a forest, this cluster is meant to be a foundational piece of infrastructure that supports other projects, learns from challenges, and grows stronger over time.
-
-
-

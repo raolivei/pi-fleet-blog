@@ -55,15 +55,15 @@ Building a Kubernetes cluster on ARM hardware comes with unique challenges and d
 
 ### Current Infrastructure
 
-| Component | Details |
-|-----------|---------|
-| **Control Plane** | 3-node HA (kube-vip VIP: 192.168.2.100) |
-| **Hardware** | 3x Raspberry Pi 5 (8GB, ARM64) |
-| **Operating System** | Debian 12 Bookworm |
-| **Kubernetes** | K3s v1.35.0+k3s1 |
-| **Storage** | NVMe SSD (local-path provisioner) |
-| **Secrets** | HashiCorp Vault (HA Raft) |
-| **Remote Access** | Tailscale VPN |
+| Component            | Details                                 |
+| -------------------- | --------------------------------------- |
+| **Control Plane**    | 3-node HA (kube-vip VIP: 192.168.2.100) |
+| **Hardware**         | 3x Raspberry Pi 5 (8GB, ARM64)          |
+| **Operating System** | Debian 12 Bookworm                      |
+| **Kubernetes**       | K3s v1.35.0+k3s1                        |
+| **Storage**          | NVMe SSD (local-path provisioner)       |
+| **Secrets**          | HashiCorp Vault (HA Raft)               |
+| **Remote Access**    | Tailscale VPN                           |
 
 ## What You'll Learn
 

@@ -22,25 +22,22 @@
 **The Process:**
 
 1. **Automated Node Setup Playbook**
-
    - Created `setup-new-node.yml` master playbook to orchestrate complete node setup
    - Automatically calculates next available IP addresses from inventory
    - Handles DNS configuration, network setup, k3s installation, and prerequisites
 
 2. **Key Fixes Applied:**
-
    - **DNS Configuration**: Added `/etc/hosts` entries for all cluster nodes before k3s installation
    - **Network Configuration**: Fixed node-1 eth0 IP to use 10.0.0.1 (was incorrectly configured)
    - **k3s-agent Cleanup**: Added automatic cleanup of stuck k3s-agent state before restart
    - **Storage Prerequisites**: Improved open-iscsi detection and installation (for Longhorn, later removed)
 
 3. **Challenges Encountered:**
-
    - **DNS Resolution Failure**: node-2 couldn't resolve `node-1.eldertree.local`, causing k3s-agent to fail
      - **Solution**: Added DNS configuration play to setup-new-node.yml before k3s installation
    - **k3s-agent Stuck State**: Service stuck in "activating" state after configuration changes
      - **Solution**: Added cleanup tasks to stop service and remove `/var/lib/rancher/k3s/agent` before restart
-   - **Longhorn Manager Failure** *(historical - Longhorn later removed)*: Longhorn manager pod failing due to missing `open-iscsi`
+   - **Longhorn Manager Failure** _(historical - Longhorn later removed)_: Longhorn manager pod failing due to missing `open-iscsi`
      - **Solution**: Fixed detection logic in `setup-longhorn-node.yml` to use `which iscsiadm` instead of `dpkg -l`
    - **Sudo Warnings**: "unable to resolve host node-2.eldertree.local" warnings
      - **Solution**: Added node's own hostname to `/etc/hosts` in DNS configuration play

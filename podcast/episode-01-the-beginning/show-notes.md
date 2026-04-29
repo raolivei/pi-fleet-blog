@@ -1,43 +1,73 @@
 # Episode 1: The Beginning - Show Notes
 
-**Setting up the Pi cluster hardware**
+**The vision behind the eldertree cluster**
 
 ## Episode Summary
 
-The journey begins. We unbox three Raspberry Pi 5 units, set up the
-hardware, and take our first steps toward building a home Kubernetes
-cluster. What could possibly go wrong?
+The eldertree cluster didn't start as a grand plan — it began with a simple
+need: run personal applications without depending on cloud providers. In this
+episode, we explore the motivations behind self-hosting, the goals for the
+cluster, the constraints of building on Raspberry Pi hardware, and how the
+project evolved organically from a single Pi running Docker to a full
+Kubernetes cluster.
 
 ## Timestamps
 
 - **0:00** - Introduction
-- **[TBD]** - Act 1: The Vision
-- **[TBD]** - Act 2: The Hardware
-- **[TBD]** - Act 3: First Boot
+- **[TBD]** - Act 1: Why Self-Host?
+- **[TBD]** - Act 2: Goals and Constraints
+- **[TBD]** - Act 3: The Evolution
+- **[TBD]** - The Name: Eldertree
 - **[TBD]** - Lessons Learned
 - **[TBD]** - Closing
 
 ## Key Takeaways
 
-1. **Start Small** - You don't need a massive cluster to learn. Three nodes is plenty.
-2. **Document Everything** - Future you will thank present you for those notes.
+1. **Start simple** - Single node, basic setup, then grow. Don't build the final architecture on day one.
+2. **Problems are learning opportunities** - 92 documented problems, each one teaching something valuable.
+3. **Documentation is critical** - Without it, you repeat the same mistakes.
+4. **Git history tells the story** - Commits document the journey better than memory.
+5. **Iteration beats perfection** - Ship, learn, improve, repeat.
 
-## Documentation References
+## Applications Mentioned
 
-- [How to Access Canopy from Your Network](https://github.com/raolivei/pi-fleet/blob/main/docs/ACCESS_CANOPY.md)
-- [Adding a New Node to Eldertree Cluster](https://github.com/raolivei/pi-fleet/blob/main/docs/ADD_NEW_NODE.md)
-- [Complete Guide: Adding a New Node to Eldertree Cluster](https://github.com/raolivei/pi-fleet/blob/main/docs/ADD_NODE_COMPLETE.md)
-- [Adding a Worker Node to Eldertree Cluster](https://github.com/raolivei/pi-fleet/blob/main/docs/ADD_WORKER_NODE.md)
-- [AI Prompt: K3s Cluster Setup with GitOps](https://github.com/raolivei/pi-fleet/blob/main/docs/AI_SETUP_PROMPT.md)
+- **Canopy** - Personal finance dashboard ([canopy.eldertree.local](https://canopy.eldertree.local))
+- **SwimTO** - Toronto pool schedules ([swimto.eldertree.xyz](https://swimto.eldertree.xyz))
+- **Journey** - AI-powered career pathfinder
+- **NIMA** - AI/ML learning project
+- **US Law Severity Map** - Data visualization project
+
+## Technology Stack Mentioned
+
+- Raspberry Pi 5 (8GB RAM, ARM64)
+- K3s (lightweight Kubernetes)
+- FluxCD (GitOps)
+- HashiCorp Vault (secrets management)
+- Prometheus + Grafana (monitoring)
+- Pi-hole (DNS)
+- Terraform (Cloudflare DNS)
+
+## Project Timeline
+
+| Phase | Period | Focus |
+|-------|--------|-------|
+| Initial | October 2025 | First project on Pi, Docker containers |
+| Infrastructure | November 2025 | K3s, Terraform, FluxCD |
+| Services | Nov-Dec 2025 | Vault, monitoring, DNS, applications |
+| Optimization | December 2025 | Bug fixes, resource tuning, documentation |
+
+## Chapter Reference
+
+- [Chapter 1: The Vision](../../chapters/01-vision.md)
 
 ## Topics Covered
 
-raspberry, pi, cluster, hardware, setup, initial, flash, install, sd card, boot
+self-hosting, raspberry pi, kubernetes, k3s, privacy, data ownership, ARM64, home lab, infrastructure, gitops
 
 ## Connect
 
 - **GitHub Repository:** [raolivei/pi-fleet](https://github.com/raolivei/pi-fleet)
-- **Episode Folder:** [podcast/episode-01-the-beginning/](https://github.com/raolivei/pi-fleet/tree/main/podcast/episode-01-the-beginning)
+- **Blog:** [pi-fleet-blog](https://github.com/raolivei/pi-fleet-blog)
 
 ---
 
