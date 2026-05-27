@@ -82,9 +82,10 @@ Always run `setup-nvme-boot.yml` with emergency mode prevention enabled. Never a
 
 ### Cooling and Power
 
-- [ ] Cooling solution (if any)
-- [ ] Power supply considerations
-- [ ] Thermal management
+- [x] **Cooling:** Open-frame vertical tower; 120 mm top exhaust; PoE+ HAT fans (50–80°C thresholds via Ansible)
+- [x] **Power:** EcoFlow River 3 → TL-SG1008MP AC → PoE+ to each Pi 5
+- [x] **Mechanical CAD:** [eldertree-chassis](https://github.com/raolivei/eldertree-chassis) (parametric OpenSCAD)
+- [ ] Thermal management under sustained k3s load (measure after chassis v1)
 
 ### Lessons Learned
 
