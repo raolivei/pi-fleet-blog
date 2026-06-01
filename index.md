@@ -19,51 +19,13 @@ hero:
 
 <div class="vp-doc">
 
-## The Journey in Numbers
-
-<div class="stats-grid">
-
-<div class="stat-card">
-  <div class="stat-number">212</div>
-  <div class="stat-label">Commits</div>
-</div>
-
-<div class="stat-card">
-  <div class="stat-number">45</div>
-  <div class="stat-label">Pull Requests</div>
-</div>
-
-<div class="stat-card">
-  <div class="stat-number">92</div>
-  <div class="stat-label">Problems Solved</div>
-</div>
-
-<div class="stat-card">
-  <div class="stat-number">91</div>
-  <div class="stat-label">Features Added</div>
-</div>
-
-</div>
+<EldertreeControlCenter />
 
 ## About This Project
 
 **Eldertree** is a self-hosted Kubernetes cluster running on Raspberry Pi hardware. This blog documents the complete journey from initial concept to a production-ready infrastructure that hosts multiple applications, manages secrets securely, and provides monitoring and observability.
 
 Building a Kubernetes cluster on ARM hardware comes with unique challenges and decisions. This documentation serves as both a personal record and a resource for others embarking on similar journeys.
-
-<div class="status-badge">Production Ready</div>
-
-### Current Infrastructure
-
-| Component            | Details                                 |
-| -------------------- | --------------------------------------- |
-| **Control Plane**    | 3-node HA (kube-vip VIP: 192.168.2.100) |
-| **Hardware**         | 3x Raspberry Pi 5 (8GB, ARM64)          |
-| **Operating System** | Debian 12 Bookworm                      |
-| **Kubernetes**       | K3s v1.35.0+k3s1                        |
-| **Storage**          | NVMe SSD (local-path provisioner)       |
-| **Secrets**          | HashiCorp Vault (HA Raft)               |
-| **Remote Access**    | Tailscale VPN                           |
 
 ## What You'll Learn
 
