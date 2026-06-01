@@ -4,8 +4,9 @@
   "description": "Blog documenting the eldertree Kubernetes cluster journey",
   "type": "module",
   "scripts": {
-    "dev": "vitepress dev .",
-    "build": "vitepress build .",
+    "presync": "node scripts/sync-runbook-issues.mjs && node scripts/export-journey-stats.mjs",
+    "dev": "npm run presync && vitepress dev .",
+    "build": "npm run presync && vitepress build .",
     "preview": "vitepress preview ."
   },
   "keywords": [
@@ -17,8 +18,11 @@
   ],
   "author": "Rafael Oliveira",
   "license": "MIT",
+  "dependencies": {
+    "lucide-vue-next": "^0.511.0"
+  },
   "devDependencies": {
-    "vitepress": "^1.6.4",
-    "mermaid": "^11.12.2"
+    "mermaid": "^11.12.2",
+    "vitepress": "^1.6.4"
   }
 }

@@ -1,0 +1,318 @@
+{
+  "generatedAt": "2026-06-01T04:22:41.332Z",
+  "count": 39,
+  "issues": [
+    {
+      "id": "BOOT-001",
+      "title": "Boot Fix Guide - Automatic Boot and Bluetooth",
+      "category": "boot",
+      "severity": "high",
+      "symptoms": [],
+      "url": "https://docs.eldertree.xyz/runbook/issues/boot/BOOT-001"
+    },
+    {
+      "id": "BOOT-002",
+      "title": "Boot Reliability Fix",
+      "category": "boot",
+      "severity": "high",
+      "symptoms": [],
+      "url": "https://docs.eldertree.xyz/runbook/issues/boot/BOOT-002"
+    },
+    {
+      "id": "BOOT-003",
+      "title": "NVMe Boot Troubleshooting Guide",
+      "category": "boot",
+      "severity": "high",
+      "symptoms": [],
+      "url": "https://docs.eldertree.xyz/runbook/issues/boot/BOOT-003"
+    },
+    {
+      "id": "BOOT-004",
+      "title": "Fix Initramfs Boot Issue",
+      "category": "boot",
+      "severity": "medium",
+      "symptoms": [],
+      "url": "https://docs.eldertree.xyz/runbook/issues/boot/BOOT-004"
+    },
+    {
+      "id": "CF-001",
+      "title": "Cloudflare Tunnel Troubleshooting Guide",
+      "category": "cloudflare",
+      "severity": "high",
+      "symptoms": [],
+      "url": "https://docs.eldertree.xyz/runbook/issues/cloudflare/CF-001"
+    },
+    {
+      "id": "CF-002",
+      "title": "Cloudflare Origin Certificates Setup",
+      "category": "cloudflare",
+      "severity": "medium",
+      "symptoms": [],
+      "url": "https://docs.eldertree.xyz/runbook/issues/cloudflare/CF-002"
+    },
+    {
+      "id": "CICD-001",
+      "title": "Reusable Workflow Issues",
+      "category": "cicd",
+      "severity": "medium",
+      "symptoms": [],
+      "url": "https://docs.eldertree.xyz/runbook/issues/cicd/CICD-001"
+    },
+    {
+      "id": "DNS-001",
+      "title": "DNS Troubleshooting Guide",
+      "category": "dns",
+      "severity": "high",
+      "symptoms": [],
+      "url": "https://docs.eldertree.xyz/runbook/issues/dns/DNS-001"
+    },
+    {
+      "id": "EMERG-001",
+      "title": "Emergency Mode Recovery - Root Locked",
+      "category": "boot",
+      "severity": "critical",
+      "symptoms": [],
+      "url": "https://docs.eldertree.xyz/runbook/issues/boot/EMERG-001"
+    },
+    {
+      "id": "EMERG-002",
+      "title": "Fix Emergency Mode Without Keyboard",
+      "category": "boot",
+      "severity": "critical",
+      "symptoms": [],
+      "url": "https://docs.eldertree.xyz/runbook/issues/boot/EMERG-002"
+    },
+    {
+      "id": "EMERG-003",
+      "title": "Recovery via SD Card Backup",
+      "category": "boot",
+      "severity": "high",
+      "symptoms": [],
+      "url": "https://docs.eldertree.xyz/runbook/issues/boot/EMERG-003"
+    },
+    {
+      "id": "EMERG-004",
+      "title": "Universal Recovery SD Card",
+      "category": "boot",
+      "severity": "high",
+      "symptoms": [],
+      "url": "https://docs.eldertree.xyz/runbook/issues/boot/EMERG-004"
+    },
+    {
+      "id": "HA-001",
+      "title": "Node Failure and HA Cluster Recovery",
+      "category": "ha",
+      "severity": "critical",
+      "symptoms": [],
+      "url": "https://docs.eldertree.xyz/runbook/issues/ha/HA-001"
+    },
+    {
+      "id": "K3S-001",
+      "title": "K3s Service Troubleshooting",
+      "category": "node",
+      "severity": "high",
+      "symptoms": [],
+      "url": "https://docs.eldertree.xyz/runbook/issues/node/K3S-001"
+    },
+    {
+      "id": "LONGHORN-001",
+      "title": "Longhorn Storage Troubleshooting",
+      "category": "storage",
+      "severity": "high",
+      "symptoms": [],
+      "url": "https://docs.eldertree.xyz/runbook/issues/storage/LONGHORN-001"
+    },
+    {
+      "id": "NET-001",
+      "title": "Recovering Network Connectivity After Netplan Configuration",
+      "category": "network",
+      "severity": "critical",
+      "symptoms": [],
+      "url": "https://docs.eldertree.xyz/runbook/issues/network/NET-001"
+    },
+    {
+      "id": "NET-002",
+      "title": "Recover Node-1 Network and Hostname",
+      "category": "network",
+      "severity": "high",
+      "symptoms": [],
+      "url": "https://docs.eldertree.xyz/runbook/issues/network/NET-002"
+    },
+    {
+      "id": "NET-003",
+      "title": "Fix Nodes After Netplan Configuration Issue",
+      "category": "network",
+      "severity": "high",
+      "symptoms": [],
+      "url": "https://docs.eldertree.xyz/runbook/issues/network/NET-003"
+    },
+    {
+      "id": "NET-004",
+      "title": "Preventing Network Configuration Issues",
+      "category": "network",
+      "severity": "medium",
+      "symptoms": [],
+      "url": "https://docs.eldertree.xyz/runbook/issues/network/NET-004"
+    },
+    {
+      "id": "NET-005",
+      "title": "MetalLB VIP Not Responding (L2 Interface Mismatch)",
+      "category": "network",
+      "severity": "critical",
+      "symptoms": [],
+      "url": "https://docs.eldertree.xyz/runbook/issues/network/NET-005"
+    },
+    {
+      "id": "NET-006",
+      "title": "Tailscale Routing Table Conflict with k3s CNI",
+      "category": "network",
+      "severity": "critical",
+      "symptoms": [],
+      "url": "https://docs.eldertree.xyz/runbook/issues/network/NET-006"
+    },
+    {
+      "id": "NODE-001",
+      "title": "Node Troubleshooting Guide - eldertree Cluster",
+      "category": "node",
+      "severity": "high",
+      "symptoms": [],
+      "url": "https://docs.eldertree.xyz/runbook/issues/node/NODE-001"
+    },
+    {
+      "id": "NODE-002",
+      "title": "Node-1 Recurring Issues - Root Cause Analysis",
+      "category": "node",
+      "severity": "medium",
+      "symptoms": [],
+      "url": "https://docs.eldertree.xyz/runbook/issues/node/NODE-002"
+    },
+    {
+      "id": "NODE-003",
+      "title": "Node-1 Root Cause - IDENTIFIED ✅",
+      "category": "node",
+      "severity": "medium",
+      "symptoms": [],
+      "url": "https://docs.eldertree.xyz/runbook/issues/node/NODE-003"
+    },
+    {
+      "id": "NODE-004",
+      "title": "Node Troubleshooting Summary",
+      "category": "node",
+      "severity": "medium",
+      "symptoms": [],
+      "url": "https://docs.eldertree.xyz/runbook/issues/node/NODE-004"
+    },
+    {
+      "id": "OPENCLAW-001",
+      "title": "OpenClaw Gateway and Config Issues",
+      "category": "openclaw",
+      "severity": "high",
+      "symptoms": [],
+      "url": "https://docs.eldertree.xyz/runbook/issues/openclaw/OPENCLAW-001"
+    },
+    {
+      "id": "OPENCLAW-002",
+      "title": "Gateway Auth — Token vs Trusted-Proxy (WebSocket 1008)",
+      "category": "openclaw",
+      "severity": "high",
+      "symptoms": [],
+      "url": "https://docs.eldertree.xyz/runbook/issues/openclaw/OPENCLAW-002"
+    },
+    {
+      "id": "OPENCLAW-003",
+      "title": "LLM Context Overflow and Provider Limits (402 / TPM)",
+      "category": "openclaw",
+      "severity": "high",
+      "symptoms": [],
+      "url": "https://docs.eldertree.xyz/runbook/issues/openclaw/OPENCLAW-003"
+    },
+    {
+      "id": "OPENCLAW-004",
+      "title": "Telegram Bot Not Replying (409 / Network)",
+      "category": "openclaw",
+      "severity": "high",
+      "symptoms": [],
+      "url": "https://docs.eldertree.xyz/runbook/issues/openclaw/OPENCLAW-004"
+    },
+    {
+      "id": "OPENCLAW-005",
+      "title": "Config File EBUSY / PVC and exec-approvals EROFS",
+      "category": "openclaw",
+      "severity": "medium",
+      "symptoms": [],
+      "url": "https://docs.eldertree.xyz/runbook/issues/openclaw/OPENCLAW-005"
+    },
+    {
+      "id": "OPENCLAW-006",
+      "title": "Tool Call Schema Failures (Groq Llama Scout)",
+      "category": "openclaw",
+      "severity": "medium",
+      "symptoms": [],
+      "url": "https://docs.eldertree.xyz/runbook/issues/openclaw/OPENCLAW-006"
+    },
+    {
+      "id": "OPENCLAW-007",
+      "title": "Gmail Read/Write via Elder",
+      "category": "openclaw",
+      "severity": "medium",
+      "symptoms": [],
+      "url": "https://docs.eldertree.xyz/runbook/issues/openclaw/OPENCLAW-007"
+    },
+    {
+      "id": "OPENCLAW-008",
+      "title": "Accidental Deployment Delete / Helm Drift",
+      "category": "openclaw",
+      "severity": "high",
+      "symptoms": [],
+      "url": "https://docs.eldertree.xyz/runbook/issues/openclaw/OPENCLAW-008"
+    },
+    {
+      "id": "OPENCLAW-009",
+      "title": "OpenClaw OOM and Node Memory",
+      "category": "openclaw",
+      "severity": "high",
+      "symptoms": [],
+      "url": "https://docs.eldertree.xyz/runbook/issues/openclaw/OPENCLAW-009"
+    },
+    {
+      "id": "PIHOLE-001",
+      "title": "Pi-hole DNS Troubleshooting Guide",
+      "category": "dns",
+      "severity": "high",
+      "symptoms": [],
+      "url": "https://docs.eldertree.xyz/runbook/issues/dns/PIHOLE-001"
+    },
+    {
+      "id": "SSH-001",
+      "title": "Fix SSH Permission Denied on node-1",
+      "category": "ssh",
+      "severity": "high",
+      "symptoms": [],
+      "url": "https://docs.eldertree.xyz/runbook/issues/ssh/SSH-001"
+    },
+    {
+      "id": "SSH-002",
+      "title": "SSH Service Recovery Guide",
+      "category": "ssh",
+      "severity": "high",
+      "symptoms": [],
+      "url": "https://docs.eldertree.xyz/runbook/issues/ssh/SSH-002"
+    },
+    {
+      "id": "SSH-003",
+      "title": "Recover Locked Root Account on node-1",
+      "category": "ssh",
+      "severity": "high",
+      "symptoms": [],
+      "url": "https://docs.eldertree.xyz/runbook/issues/ssh/SSH-003"
+    },
+    {
+      "id": "VAULT-001",
+      "title": "Vault Recovery Guide",
+      "category": "storage",
+      "severity": "critical",
+      "symptoms": [],
+      "url": "https://docs.eldertree.xyz/runbook/issues/storage/VAULT-001"
+    }
+  ]
+}

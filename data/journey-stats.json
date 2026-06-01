@@ -1,0 +1,14 @@
+{
+  "repo": "pi-fleet",
+  "repoPath": "/Users/roliveira/WORKSPACE/raolivei/pi-fleet",
+  "generatedAt": "2026-06-01T04:22:41.523Z",
+  "commits": 526,
+  "pullRequests": 159,
+  "problemsSolved": 254,
+  "featuresAdded": 113,
+  "methodology": {
+    "problems": "Commits whose subject/body match fix|broken|issue|problem|error|bug|crash|fail (heuristic).",
+    "features": "feat: commits plus add|implement|create|setup|deploy|enable in subject.",
+    "chapter": "/chapters/14-troubleshooting"
+  }
+}
