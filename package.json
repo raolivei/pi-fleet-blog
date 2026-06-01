@@ -4,9 +4,8 @@
   "description": "Blog documenting the eldertree Kubernetes cluster journey",
   "type": "module",
   "scripts": {
-    "presync": "node scripts/sync-runbook-issues.mjs && node scripts/export-journey-stats.mjs",
-    "dev": "npm run presync && vitepress dev .",
-    "build": "npm run presync && vitepress build .",
+    "dev": "vitepress dev .",
+    "build": "vitepress build .",
     "preview": "vitepress preview ."
   },
   "keywords": [

@@ -3,74 +3,59 @@ layout: home
 
 hero:
   name: Building Eldertree
-  text: A Journey in Self-Hosted Kubernetes
-  tagline: Documenting the complete journey of building a production-ready K3s cluster on Raspberry Pi hardware — from first boot to GitOps automation.
+  text: A Raspberry Pi Kubernetes journey
+  tagline: The documented build diary — chapters, war stories, and podcast. Real failures, real fixes, no cloud rent.
   image:
     src: /banner.svg
-    alt: Eldertree Cluster Infrastructure
+    alt: Eldertree — circuit tree with three HA nodes
   actions:
     - theme: brand
-      text: Start Reading →
+      text: Start reading
       link: /chapters/01-vision
     - theme: alt
-      text: View on GitHub
-      link: https://github.com/raolivei/pi-fleet
+      text: War stories
+      link: /chapters/16-the-great-deployment-disaster-of-2026
+    - theme: alt
+      text: Audio series
+      link: /podcast
 ---
 
 <div class="vp-doc">
 
-<EldertreeControlCenter />
+## Start here
 
-## About This Project
+<div class="start-here">
 
-**Eldertree** is a self-hosted Kubernetes cluster running on Raspberry Pi hardware. This blog documents the complete journey from initial concept to a production-ready infrastructure that hosts multiple applications, manages secrets securely, and provides monitoring and observability.
+<a class="start-card" href="/chapters/01-vision">
+  <span class="start-card__label">Read the journey</span>
+  <span class="start-card__title">Chapter 1 — The Vision</span>
+  <span class="start-card__desc">Why self-host on ARM, what runs on the cluster, and how the story is organized.</span>
+</a>
 
-Building a Kubernetes cluster on ARM hardware comes with unique challenges and decisions. This documentation serves as both a personal record and a resource for others embarking on similar journeys.
+<a class="start-card" href="/podcast">
+  <span class="start-card__label">Listen</span>
+  <span class="start-card__title">Building Eldertree podcast</span>
+  <span class="start-card__desc">Ten episodes — hardware, HA, Vault, and the disasters in between.</span>
+</a>
 
-## What You'll Learn
-
-- **Cluster Architecture** — Building a production-ready K3s cluster on resource-constrained ARM64 hardware
-- **Secrets Management** — HashiCorp Vault integration with External Secrets Operator
-- **GitOps Automation** — FluxCD for declarative infrastructure management
-- **Networking** — Traefik ingress, Pi-hole DNS, kube-vip, and Tailscale VPN
-- **Monitoring** — Prometheus and Grafana on minimal resources
-- **Troubleshooting** — Real-world problems and solutions from months of operation
-
-## Quick Navigation
-
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin: 2rem 0;">
-
-<div class="nav-card">
-  <h3>🚀 Getting Started</h3>
-  <ul>
-    <li><a href="/chapters/01-vision">Chapter 1: The Vision</a></li>
-    <li><a href="/chapters/02-hardware-decisions">Chapter 2: Hardware Decisions</a></li>
-    <li><a href="/chapters/05-cluster-setup">Chapter 5: Initial Cluster Setup</a></li>
-  </ul>
-</div>
-
-<div class="nav-card">
-  <h3>🔧 Core Infrastructure</h3>
-  <ul>
-    <li><a href="/chapters/06-networking-architecture">Chapter 6: Networking Architecture</a></li>
-    <li><a href="/chapters/07-secrets-management">Chapter 7: Secrets Management</a></li>
-    <li><a href="/chapters/08-dns-service-discovery">Chapter 8: DNS & Service Discovery</a></li>
-  </ul>
-</div>
-
-<div class="nav-card">
-  <h3>📊 Operations</h3>
-  <ul>
-    <li><a href="/chapters/09-monitoring-observability">Chapter 9: Monitoring</a></li>
-    <li><a href="/chapters/10-gitops-fluxcd">Chapter 10: GitOps with FluxCD</a></li>
-    <li><a href="/chapters/11-deploying-applications">Chapter 11: Deploying Apps</a></li>
-  </ul>
-</div>
+<a class="start-card" href="https://docs.eldertree.xyz/runbook/" target="_blank" rel="noopener noreferrer">
+  <span class="start-card__label">When something breaks</span>
+  <span class="start-card__title">Eldertree runbook</span>
+  <span class="start-card__desc">Procedures and playbooks on docs.eldertree.xyz — not duplicated here.</span>
+</a>
 
 </div>
 
----
+<HomeNarrative />
 
-**Why "Eldertree"?** The name reflects the wisdom and stability I hoped to build into this infrastructure — a foundational system that grows and supports other projects. Like an elder tree that has weathered storms and provided shelter, this cluster is designed to be resilient and support future growth.
+## Podcast
+
+**Building Eldertree** is a documentary-style audio series (10 episodes) that follows the same arc as the written chapters — from first boot through production. Episode scripts and show notes live in the [pi-fleet-blog podcast folder on GitHub](https://github.com/raolivei/pi-fleet-blog/tree/main/podcast).
+
+<p class="glance__lead"><a href="/chapters/">Browse all chapters</a> · <a href="https://github.com/raolivei/pi-fleet">pi-fleet on GitHub</a></p>
+
+## Why Eldertree?
+
+The name reflects the stability I wanted from this foundation — an **elder tree** that weathered storms and supported everything built on top. **Eldertree** is a three-node K3s cluster on Raspberry Pi 5 hardware in a portable open-frame tower: self-hosted apps, Vault for secrets, Flux for GitOps, and Grafana when I need live metrics. This site is the **build diary**; the runbook and ops consoles live elsewhere.
 
 </div>

@@ -17,12 +17,6 @@ export interface ClusterVip {
   purpose: string;
 }
 
-export interface ClusterLink {
-  label: string;
-  href: string;
-  external?: boolean;
-}
-
 export const cluster = {
   name: "Eldertree",
   k3sVersion: "v1.35.0+k3s1",
@@ -84,33 +78,6 @@ export const cluster = {
     "eldertree-docs",
     "personal-website",
   ],
-  links: [
-    {
-      label: "Grafana Ops Home",
-      href: "https://grafana.eldertree.local/d/eldertree-ops-home",
-      external: true,
-    },
-    {
-      label: "Runbook",
-      href: "https://docs.eldertree.xyz/runbook/",
-      external: true,
-    },
-    {
-      label: "Project docs",
-      href: "https://docs.eldertree.xyz/project",
-      external: true,
-    },
-    {
-      label: "pi-fleet",
-      href: "https://github.com/raolivei/pi-fleet",
-      external: true,
-    },
-    {
-      label: "Hardware health",
-      href: "https://grafana.eldertree.local/d/hardware-health",
-      external: true,
-    },
-  ] satisfies ClusterLink[],
 } as const;
 
 export const journeyHighlights = [
@@ -162,55 +129,5 @@ export const journeyHighlights = [
     summary: "Soft taint and Flux reconciler steer new workloads to node-2/3 after intermittent freezes.",
     chapter: "/chapters/15-future-plans-scaling",
     tags: ["Node", "Scheduling"],
-  },
-] as const;
-
-export const docPillars = [
-  {
-    id: "setup",
-    title: "Cluster setup",
-    description: "Hardware, OS, K3s HA, first boot",
-    chapters: [
-      { label: "Vision", href: "/chapters/01-vision" },
-      { label: "Hardware", href: "/chapters/02-hardware-decisions" },
-      { label: "OS setup", href: "/chapters/03-os-base-setup" },
-      { label: "Why K3s", href: "/chapters/04-kubernetes-choice" },
-      { label: "Cluster setup", href: "/chapters/05-cluster-setup" },
-    ],
-    runbooks: [
-      { label: "NODE-001", href: "https://docs.eldertree.xyz/runbook/issues/node/NODE-001" },
-      { label: "BOOT-001", href: "https://docs.eldertree.xyz/runbook/issues/boot/BOOT-001" },
-      { label: "K3S-001", href: "https://docs.eldertree.xyz/runbook/issues/node/K3S-001" },
-    ],
-  },
-  {
-    id: "infra",
-    title: "Core infrastructure",
-    description: "Network, DNS, secrets, ingress",
-    chapters: [
-      { label: "Networking", href: "/chapters/06-networking-architecture" },
-      { label: "Vault", href: "/chapters/07-secrets-management" },
-      { label: "DNS", href: "/chapters/08-dns-service-discovery" },
-    ],
-    runbooks: [
-      { label: "DNS-001", href: "https://docs.eldertree.xyz/runbook/issues/dns/DNS-001" },
-      { label: "CF-001", href: "https://docs.eldertree.xyz/runbook/issues/cloudflare/CF-001" },
-      { label: "VAULT-001", href: "https://docs.eldertree.xyz/runbook/issues/storage/VAULT-001" },
-    ],
-  },
-  {
-    id: "ops",
-    title: "Operations",
-    description: "GitOps, monitoring, incidents",
-    chapters: [
-      { label: "Monitoring", href: "/chapters/09-monitoring-observability" },
-      { label: "FluxCD", href: "/chapters/10-gitops-fluxcd" },
-      { label: "Troubleshooting", href: "/chapters/14-troubleshooting" },
-    ],
-    runbooks: [
-      { label: "HA-001", href: "https://docs.eldertree.xyz/runbook/issues/ha/HA-001" },
-      { label: "CICD-001", href: "https://docs.eldertree.xyz/runbook/issues/cicd/CICD-001" },
-      { label: "OPENCLAW-001", href: "https://docs.eldertree.xyz/runbook/issues/openclaw/OPENCLAW-001" },
-    ],
   },
 ] as const;
