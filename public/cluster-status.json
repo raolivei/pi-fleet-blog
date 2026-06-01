@@ -1,0 +1,17 @@
+{
+  "updated": "2026-06-01T15:56:55Z",
+  "nodes": [
+    {
+      "id": "node-1",
+      "ready": true
+    },
+    {
+      "id": "node-2",
+      "ready": true
+    },
+    {
+      "id": "node-3",
+      "ready": true
+    }
+  ]
+}
