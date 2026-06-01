@@ -17,6 +17,6 @@ Documentary podcast following the same journey as the written chapters: Kubernet
 | 9 | The Monitoring Stack | Observability |
 | 10 | Production Ready | Where we landed |
 
-Scripts and show notes: [podcast on GitHub](https://github.com/raolivei/pi-fleet-blog/tree/main/podcast).
+Episode scripts and show notes live alongside this site in the repository linked from the header GitHub icon.
 
 [Back to home](/) · [Start reading](/chapters/01-vision)
