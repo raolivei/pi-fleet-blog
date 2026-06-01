@@ -107,6 +107,10 @@ export function sidebar() {
             text: "Chapter 19: AI Infrastructure on Eldertree",
             link: "/chapters/19-ai-infrastructure",
           },
+          {
+            text: "Chapter 22: One Brain, Two IDEs (Cursor + Claude)",
+            link: "/chapters/22-one-brain-two-ides-cursor-claude-shared-memory",
+          },
         ],
       },
       {
@@ -115,6 +119,10 @@ export function sidebar() {
           {
             text: "Chapter 20: Synthetic Uptime and Full-Stack Sprint",
             link: "/chapters/20-synthetic-monitoring-observability-sprint",
+          },
+          {
+            text: "Chapter 21: The Control Center",
+            link: "/chapters/21-the-control-center-because-i-needed-to-know-from-afar",
           },
         ],
       },

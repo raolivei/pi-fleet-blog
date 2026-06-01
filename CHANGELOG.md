@@ -8,6 +8,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ### Added
 
+- **Chapter 22** — [_One Brain, Two IDEs — Cursor + Claude Code Shared Memory_](chapters/22-one-brain-two-ides-cursor-claude-shared-memory.md): sharing Ollie memory, rules, skills, and playbooks across Cursor and Claude Code.
+- **Chapter 21** — [_The Control Center — Because I Needed to Know From Afar_](chapters/21-the-control-center-because-i-needed-to-know-from-afar.md): narrative on decoupling the ops console from the blog, Elder public health APIs, and `control.eldertree.local`.
+- **Featured stories** — Control Center chapter highlighted on home (`data/cluster.ts`).
 - **Live cluster glance:** node STABLE/UNSTABLE badges refresh at runtime from `https://elder.eldertree.local/api/public/cluster/nodes`, then `/cluster-status.json`, with static fallback from [`data/cluster.ts`](data/cluster.ts). Optional refresh: [`scripts/sync-cluster-status.sh`](scripts/sync-cluster-status.sh) (kubectl).
 
 ### Changed

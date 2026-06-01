@@ -35,10 +35,12 @@ Welcome to the Building Eldertree blog chapters. Navigate through the sidebar or
 ## AI Infrastructure
 
 - [Chapter 19: AI Infrastructure on Eldertree](/chapters/19-ai-infrastructure)
+- [Chapter 22: One Brain, Two IDEs — Cursor + Claude Code Shared Memory](/chapters/22-one-brain-two-ides-cursor-claude-shared-memory)
 
 ## Observability (2026)
 
 - [Chapter 20: Synthetic Uptime and a Full-Stack Observability Sprint](/chapters/20-synthetic-monitoring-observability-sprint)
+- [Chapter 21: The Control Center — Because I Needed to Know From Afar](/chapters/21-the-control-center-because-i-needed-to-know-from-afar)
 
 ## Reference
 

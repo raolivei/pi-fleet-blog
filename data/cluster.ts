@@ -89,6 +89,18 @@ export const cluster = {
 
 export const journeyHighlights = [
   {
+    title: "One brain, two IDEs",
+    summary: "How Cursor and Claude Code share Ollie memory, rules, and playbooks — symlink, git markdown, one setup script.",
+    chapter: "/chapters/22-one-brain-two-ides-cursor-claude-shared-memory",
+    tags: ["AI", "Ollie", "Dev workflow"],
+  },
+  {
+    title: "The Control Center",
+    summary: "Live OSI topology on Elder — green when calm, red when actionable — because Grafana is too many tabs from a hotel.",
+    chapter: "/chapters/21-the-control-center-because-i-needed-to-know-from-afar",
+    tags: ["Observability", "Elder"],
+  },
+  {
     title: "Pi-hole vs K3s ServiceLB",
     summary: "Port 53 conflict between Pi-hole and klipper-lb — resolved with kube-vip and disabling ServiceLB.",
     chapter: "/chapters/14-troubleshooting",
