@@ -5,6 +5,16 @@ export function sidebar() {
         text: "Introduction",
         link: "/",
       },
+      {
+        text: "Podcast",
+        link: "/podcast",
+      },
+    ],
+    "/podcast": [
+      {
+        text: "Audio series",
+        link: "/podcast",
+      },
     ],
     "/chapters/": [
       {

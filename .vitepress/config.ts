@@ -9,7 +9,7 @@ export default defineConfig({
   base,
   title: "Building Eldertree",
   description:
-    "A Journey in Self-Hosted Kubernetes - Comprehensive diary of building a production-ready Kubernetes cluster on Raspberry Pi hardware",
+    "The documented journey of running a highly available K3s cluster on Raspberry Pi — chapters, war stories, and podcast.",
   cleanUrls: true,
   lastUpdated: true,
 
@@ -21,7 +21,7 @@ export default defineConfig({
       "meta",
       {
         property: "og:title",
-        content: "Building Eldertree: A Journey in Self-Hosted Kubernetes",
+        content: "Building Eldertree — Raspberry Pi Kubernetes journey",
       },
     ],
     [
@@ -29,7 +29,7 @@ export default defineConfig({
       {
         property: "og:description",
         content:
-          "A comprehensive diary of building a production-ready Kubernetes cluster on Raspberry Pi hardware",
+          "Chapters, war stories, and podcast — self-hosted K3s on Raspberry Pi 5.",
       },
     ],
   ],
@@ -40,7 +40,9 @@ export default defineConfig({
     nav: [
       { text: "Home", link: "/" },
       { text: "Chapters", link: "/chapters/" },
-      { text: "Infrastructure", link: "https://github.com/raolivei/pi-fleet" },
+      { text: "Podcast", link: "/podcast" },
+      { text: "Runbook", link: "https://docs.eldertree.xyz/runbook/" },
+      { text: "pi-fleet", link: "https://github.com/raolivei/pi-fleet" },
     ],
 
     sidebar: sidebar(),
@@ -59,8 +61,7 @@ export default defineConfig({
     },
 
     footer: {
-      message:
-        "Built with ❤️ documenting the eldertree Kubernetes cluster journey",
+      message: "Building Eldertree — a self-hosted Kubernetes build diary",
       copyright: "Copyright © 2026 Rafael Oliveira",
     },
   },
@@ -77,7 +78,11 @@ export default defineConfig({
     "src/**",
     "**/content/**",
     "**/scripts/**",
-    "**/podcast/**",
+    "podcast/episode-*/**",
+    "podcast/cover-art/**",
+    "podcast/README.md",
+    "podcast/RECORDING_NOTES.md",
+    "podcast/metadata.json",
     "**/README.md",
     "**/SETUP.md",
     "**/TROUBLESHOOTING.md",

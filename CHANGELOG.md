@@ -6,13 +6,27 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## [Unreleased]
 
+### Changed
+
+- User-facing copy no longer refers to the GitHub repository by internal repo name.
+
+## [Previous]
+
+### Added (2026-06)
+
 ### Added
 
-- **Eldertree Control Center** on the home page — Vue components for cluster topology, runbook explorer, journey highlights, and documentation pillars.
-- `data/cluster.ts` static cluster manifest (VIPs, nodes, stack, storage).
-- `scripts/sync-runbook-issues.mjs` and `scripts/export-journey-stats.mjs` with CI-safe fallback when sibling repos are absent.
-- Generated `data/runbook-issues.json` and `data/journey-stats.json` (refresh via `npm run presync`).
+- Narrative-first home page: **Start here** cards, **Cluster at a glance**, **Featured stories**.
+- [`podcast/index.md`](podcast/index.md) — audio series landing page.
+- New [`public/banner.svg`](public/banner.svg) aligned with [`logo.svg`](public/logo.svg) (tree + three HA nodes, brand teal).
 
 ### Changed
 
-- Home page stats grid replaced by interactive control center; duplicate infrastructure table removed.
+- Blog identity repositioned as **build diary** (chapters, war stories, podcast); ops links out to docs and Grafana.
+- Replaced Eldertree Control Center with slim `ClusterGlance` + `FeaturedStories` components.
+- Site title, hero copy, nav (Podcast, Runbook), footer, and OG metadata updated for narrative positioning.
+
+### Removed
+
+- Home-page runbook browser, docs pillars grid, and git-heuristic stat dashboard.
+- `presync` from default `dev`/`build` (optional scripts remain for data refresh).
