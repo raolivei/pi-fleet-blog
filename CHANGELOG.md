@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## [Unreleased]
 
+### Changed
+
+- User-facing copy no longer refers to the GitHub repository by internal repo name.
+
+## [Previous]
+
+### Added (2026-06)
+
 ### Added
 
 - Narrative-first home page: **Start here** cards, **Cluster at a glance**, **Featured stories**.

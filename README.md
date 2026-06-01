@@ -1,4 +1,4 @@
-# Building Eldertree (pi-fleet-blog)
+# Building Eldertree
 
 Narrative site for the Eldertree cluster journey — **https://blog.eldertree.xyz**
 
@@ -29,7 +29,6 @@ node scripts/sync-runbook-issues.mjs
 ## Structure
 
 ```
-pi-fleet-blog/
 ├── chapters/           # Main blog content
 ├── podcast/            # Episode scripts (index.md is published)
 ├── public/             # banner.svg, logo.svg, CNAME

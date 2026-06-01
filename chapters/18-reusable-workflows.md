@@ -98,7 +98,7 @@ jobs:
 | ------------------- | ------------------------------------- |
 | pitanga-website     | docker-build                          |
 | ollie               | docker-matrix, python-ci              |
-| pi-fleet-blog       | static-site-pages                     |
+| Eldertree blog      | static-site-pages                     |
 | eldertree-docs      | static-site-pages, docker-build       |
 | canopy              | docker-build (x2), python-ci, node-ci |
 | us-law-severity-map | docker-build                          |
