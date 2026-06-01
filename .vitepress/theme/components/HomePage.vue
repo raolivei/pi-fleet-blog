@@ -41,10 +41,13 @@ const startCards = [
         </div>
       </div>
       <div class="home-hero__mark" aria-hidden="true">
-        <img src="/logo.svg" width="160" height="160" alt="" />
-        <span class="home-hero__nodes" aria-hidden="true">
-          <span /><span /><span />
-        </span>
+        <img
+          class="home-hero__logo"
+          src="/logo-full.png"
+          width="320"
+          height="320"
+          alt="eldertree — circuit tree with three cluster nodes"
+        />
       </div>
     </header>
 

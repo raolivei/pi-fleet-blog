@@ -1,4 +1,11 @@
-/** Static Eldertree cluster manifest — source: pi-fleet/docs/ELDERTREE.md */
+/** Static Eldertree cluster manifest — source: pi-fleet/docs/ELDERTREE.md
+ *
+ * ClusterGlance badge semantics (see useClusterNodeStatus.ts):
+ * - Live: K8s node Ready=True → "stable"; Ready=False → "unstable".
+ * - Fallback chain: Elder GET /api/public/cluster/nodes → public/cluster-status.json → tiers below.
+ * - Static tiers here reflect operational intent (node-1 deprioritized / soft-tainted), not live Ready.
+ *   Refresh cluster-status.json locally: scripts/sync-cluster-status.sh (requires kubectl + LAN cluster).
+ */
 
 export type NodeTier = "stable" | "unstable";
 

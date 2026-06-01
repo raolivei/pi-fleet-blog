@@ -14,7 +14,7 @@ export default defineConfig({
   lastUpdated: true,
 
   head: [
-    ["link", { rel: "icon", href: "/favicon.ico" }],
+    ["link", { rel: "icon", href: "/logo.png", type: "image/png" }],
     ["meta", { property: "og:type", content: "website" }],
     ["meta", { property: "og:site_name", content: "Building Eldertree" }],
     [
@@ -32,10 +32,11 @@ export default defineConfig({
           "Chapters, war stories, and podcast — self-hosted K3s on Raspberry Pi 5.",
       },
     ],
+    ["meta", { property: "og:image", content: "https://blog.eldertree.xyz/logo-full.png" }],
   ],
 
   themeConfig: {
-    logo: "/logo.svg",
+    logo: "/logo.png",
 
     nav: [
       { text: "Home", link: "/" },
