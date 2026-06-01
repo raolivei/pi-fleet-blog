@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ### Changed
 
+- **Home layout:** replaced VitePress default hero + blurred `banner.svg` with custom `HomePage.vue` (compact header, crisp logo, no side-by-side banner).
 - User-facing copy no longer refers to the GitHub repository by internal repo name.
 
 ## [Previous]
