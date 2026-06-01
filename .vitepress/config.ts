@@ -48,7 +48,7 @@ export default defineConfig({
     sidebar: sidebar(),
 
     socialLinks: [
-      { icon: "github", link: "https://github.com/raolivei/pi-fleet-blog" },
+      { icon: "github", link: "https://github.com/raolivei" },
     ],
 
     editLink: {

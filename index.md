@@ -50,7 +50,7 @@ hero:
 
 ## Podcast
 
-**Building Eldertree** is a documentary-style audio series (10 episodes) that follows the same arc as the written chapters — from first boot through production. Episode scripts and show notes are in the [podcast folder on GitHub](https://github.com/raolivei/pi-fleet-blog/tree/main/podcast).
+**Building Eldertree** is a documentary-style audio series (10 episodes) that follows the same arc as the written chapters — from first boot through production. See the [podcast page](/podcast) for the episode list and links to scripts.
 
 <p class="glance__lead"><a href="/chapters/">Browse all chapters</a> · <a href="https://github.com/raolivei/pi-fleet">pi-fleet on GitHub</a></p>
 
