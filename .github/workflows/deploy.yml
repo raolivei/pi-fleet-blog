@@ -22,3 +22,4 @@ jobs:
       pre-build-command: bash scripts/sync-cluster-status.sh
       build-command: "npm run build"
       output-directory: ".vitepress/dist"
+      runs-on: "arc-runner-set-ollie-eldertree"
