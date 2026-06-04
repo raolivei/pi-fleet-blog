@@ -15,11 +15,27 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  build:
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+      - run: npm ci
+      - run: bash scripts/sync-cluster-status.sh
+      - run: npm run build
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: .vitepress/dist
+
   deploy:
-    uses: raolivei/github-workflows/.github/workflows/static-site-pages.yml@main
-    with:
-      node-version: "24"
-      pre-build-command: bash scripts/sync-cluster-status.sh
-      build-command: "npm run build"
-      output-directory: ".vitepress/dist"
-      runs-on: "self-hosted"
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/deploy-pages@v4
+        id: deployment
