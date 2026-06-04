@@ -202,6 +202,65 @@ Looking back at the debugging session:
 
 **Automation is only as good as your last edge case.** The workflow worked perfectly for months. Then one small assumption (JSON serialization) broke, and the whole pipeline stopped.
 
+## Act V: The Runner Rebellion (June 2026)
+
+Fast-forward five months. SwimTO is stable. The deployment pipeline is humming. I'm feeling cocky.
+
+"You know what this cluster needs?" I thought. "Self-hosted GitHub Actions runners."
+
+The motivation was solid: Ollie's multi-service Docker builds were hitting storage limits on GitHub-hosted runners. Six services building in parallel, each pulling base images, caching layers—it adds up fast. The solution seemed obvious: run the builds on Eldertree, where I have 116GB NVMe storage per node.
+
+So I wrote a deployment. Manual runner registration, Docker-in-Docker sidecar, persistent volume for the workspace. Deploy it. Watch it start.
+
+`CrashLoopBackOff`.
+
+**Attempt 1:** Mount path conflict. The PVC was mounted at `/home/runner`, which overwrote the runner binaries (`config.sh`, `run.sh`) from the image. The pod started, couldn't find its own scripts, and died.
+
+*Fix:* Mount at `/home/runner/work` instead. Keep the binaries, persist the workspace.
+
+**Attempt 2:** Config not persisting. The runner registered successfully on first boot, but every restart lost the registration. The `.runner` and `.credentials` files weren't in the workspace directory—they lived in `/home/runner`.
+
+*Fix:* Add volume mount for `/home/runner`. Except that brings us back to Attempt 1's problem.
+
+**Attempt 3-17:** Various permutations of mount paths, init containers, symlinks, and shell script debugging. Each one fixed one issue and created two new ones. By restart #139, I'd seen every possible combination of "No such file or directory" and "Cannot connect to server, because config files are missing."
+
+This was the moment of clarity: **I was fighting the tool, not solving the problem.**
+
+### The ARC Solution
+
+Professional organizations don't manually manage runners. They use **Actions Runner Controller (ARC)**—GitHub's official solution for auto-scaling ephemeral runners in Kubernetes.
+
+The architecture is elegant:
+- **Controller** (one per cluster): Watches the GitHub job queue
+- **Listener** (one per repo/org): Provisions runner pods on demand
+- **Runner pods** (ephemeral): Execute one job, then delete themselves
+
+No persistent state. No mount conflicts. No manual registration. Runners scale from 0 to N based on queue depth, then disappear when idle.
+
+I deleted my 155-line manual deployment. Replaced it with two Helm charts:
+
+```bash
+# Controller
+helm install arc-controller \
+  oci://ghcr.io/actions/actions-runner-controller-charts/gha-runner-scale-set-controller
+
+# Runner scale set (Ollie)
+helm install ollie-runners \
+  oci://ghcr.io/actions/actions-runner-controller-charts/gha-runner-scale-set \
+  --set minRunners=0 \
+  --set maxRunners=3
+```
+
+Five minutes later: controller running, listener running, ready to auto-provision runners.
+
+The difference:
+- **Manual approach:** 139 restarts, 3 hours debugging, persistent failure
+- **ARC approach:** 2 Helm commands, 5 minutes, production-ready
+
+Sometimes the right solution is admitting you shouldn't build it yourself.
+
+**Fighting the tool means you picked the wrong tool.** When you're on restart #139 of a manual deployment, it's not a bug—it's a sign. Use the official solution, not your clever workaround.
+
 ## Epilogue
 
 As I write this, SwimTO hums along quietly. Pods running. Images pulling. Secrets... secreting? The pipeline is automated. The deployment is GitOps-driven. Everything is as it should be.
