@@ -143,3 +143,61 @@ Most are technical documentation, not stories. Many cover similar ground.
 ---
 
 **Goal**: Blog you're proud to share. Stories worth reading. Deep > wide.
+
+## URL Strategy (LinkedIn Stability)
+
+**Problem**: Consolidating chapters changes URLs. LinkedIn posts with old URLs will break.
+
+**Solution**: Keep numbered URLs, remap content
+
+### URL Mapping (Stable)
+```
+/chapters/01-why-i-built-this          → Chapter 1 (vision + hardware + k8s choice)
+/chapters/02-first-boot                → Chapter 2 (OS + cluster setup)
+/chapters/03-making-things-talk        → Chapter 3 (networking + DNS)
+/chapters/04-keeping-secrets           → Chapter 4 (Vault + security)
+/chapters/05-automation-on-automation  → Chapter 5 (GitOps + workflows)
+/chapters/06-running-real-apps         → Chapter 6 (apps + storage)
+/chapters/07-watching-it-all           → Chapter 7 (monitoring)
+/chapters/08-deployment-disaster       → Chapter 8 (existing 16)
+/chapters/09-tailscale-treachery       → Chapter 9 (existing 17)
+/chapters/10-building-ollie            → Chapter 10 (AI + memory)
+/chapters/11-the-control-center        → Chapter 11 (existing 21)
+/chapters/12-tuesday-night-apocalypse  → Chapter 12 (existing 23)
+/chapters/13-whats-next                → Chapter 13 (epilogue)
+```
+
+**Old URLs → Redirect or Archive**
+- Option A: Keep old files, add "📢 This chapter has been merged into [new chapter]" notice
+- Option B: Use VitePress redirect rules
+- Option C: Both (recommended)
+
+### Implementation
+1. **Create new consolidated chapters** with new URLs
+2. **Keep old chapter files** with redirect notices at top
+3. **LinkedIn posts** only use final URLs (new structure)
+4. **Archive section** in blog for old chapters
+
+### Example Redirect Notice
+```markdown
+---
+title: "Chapter 2: Hardware Decisions"
+redirect: /chapters/01-why-i-built-this
+archived: true
+---
+
+> 📢 **This chapter has been consolidated**  
+> The content from this chapter is now part of:  
+> [Chapter 1: Why I Built This](/chapters/01-why-i-built-this)
+>
+> You'll find the hardware decision story integrated with the vision and kubernetes choice.
+```
+
+### LinkedIn Post URLs (Never Change These)
+- Use `/chapters/NN-slug` format
+- Don't renumber published posts
+- If you consolidate AFTER publishing, keep both URLs live
+
+---
+
+**Strategy**: Consolidate BEFORE major LinkedIn push. Then URLs are stable forever.
