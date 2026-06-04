@@ -12,6 +12,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ### Changed
 
+- **Cluster at a glance:** link to Eldertree Control Center (`control.eldertree.local`, LAN/Tailscale) in the ops links row.
 - **Deploy workflow:** optional `scripts/sync-cluster-status.sh` pre-build step (no-op in GHA when kubectl/cluster unavailable; uses committed `public/cluster-status.json`).
 - **Home hero typography:** [Fraunces](https://fonts.google.com/specimen/Fraunces) display for the title, [DM Sans](https://fonts.google.com/specimen/DM+Sans) for the “Build diary” eyebrow (body unchanged).
 - **Eldertree logo:** official artwork ([`assets/logo-source.png`](assets/logo-source.png)) recolored to blog teal via [`scripts/recolor-logo.py`](scripts/recolor-logo.py); flood-fill removes white canvas/halos; brighter ramp for dark UI; [`public/logo-full.png`](public/logo-full.png) (home), [`public/logo.png`](public/logo.png) (nav/favicon).
