@@ -10,11 +10,11 @@ Most are technical documentation, not stories. Many cover similar ground.
 
 ### Part I: Foundation (3 chapters)
 
-**Chapter 1: "Why I Built This" (The Origin Story)**
+**Chapter 1: "The Moment I Decided to Own My Infrastructure" (The Origin Story)**
 - Consolidates: 01-vision + 02-hardware-decisions + 04-kubernetes-choice
 - Story: The moment you decided to self-host. Why Raspberry Pis? Why K3s?
-- Deep dive: Privacy convictions, learning goals, the "I can do this" moment
-- LinkedIn hook: "I spent $600 on Raspberry Pis instead of AWS. Here's why."
+- Deep dive: Privacy convictions, learning goals, ownership over convenience
+- LinkedIn hook: "Why I chose to own my infrastructure instead of renting it"
 
 **Chapter 2: "First Boot" (Getting Started)**
 - Consolidates: 03-os-base-setup + 05-cluster-setup
@@ -107,7 +107,7 @@ Most are technical documentation, not stories. Many cover similar ground.
 ## LinkedIn Schedule (Once Consolidated)
 
 **Week 1-2: Foundation**
-- Post 1: "Why I Built This" (vision)
+- Post 1: "The Moment I Decided to Own My Infrastructure" (vision)
 - Post 2: "First Boot" (getting started)
 
 **Week 3-4: Core Systems**
@@ -152,7 +152,7 @@ Most are technical documentation, not stories. Many cover similar ground.
 
 ### URL Mapping (Stable)
 ```
-/chapters/01-why-i-built-this          → Chapter 1 (vision + hardware + k8s choice)
+/chapters/01-the-moment-i-decided-to-own-my-infrastructure  → Chapter 1 (vision + hardware + k8s choice)
 /chapters/02-first-boot                → Chapter 2 (OS + cluster setup)
 /chapters/03-making-things-talk        → Chapter 3 (networking + DNS)
 /chapters/04-keeping-secrets           → Chapter 4 (Vault + security)
