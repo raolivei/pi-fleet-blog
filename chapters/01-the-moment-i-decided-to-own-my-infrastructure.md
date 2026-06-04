@@ -4,15 +4,25 @@ I remember the exact moment I decided to build Eldertree.
 
 I was looking at my AWS bill—again. Not a huge number, but enough to make me pause. Enough to make me think: *I'm paying monthly rent for my own data.* My personal finance dashboard lived on someone else's servers. My learning projects, my AI experiments, my half-finished ideas—all of it sitting in a cloud I didn't control, accumulating charges, subject to terms I didn't write.
 
+And then I started paying attention to the industry trends. The "storage wars"—and I don't mean the addictive TV show about abandoned storage units. I mean the actual battle between AWS, GCP, Azure, and everyone else fighting for cloud supremacy while datacenter costs kept climbing. Egress fees going up. Storage tiers getting more complex. Pricing models that required a PhD to understand.
+
+Meanwhile, my data sat there accumulating monthly charges. Forever.
+
 And I thought: *What if I just... owned this?*
 
 Not in the theoretical sense. Not "cloud ownership" with quotes around it. Actual ownership. Hardware I could touch. Infrastructure I could reboot. Data that never left my house unless I decided otherwise.
+
+On-premises wasn't just about cost. It was about putting my skills to the test. Could I actually build and maintain production infrastructure? Could I handle the operational burden? Could I architect something resilient enough to trust with real data?
+
+There was only one way to find out.
 
 That's when I started researching Raspberry Pis.
 
 ## The Ownership Question
 
-The decision to self-host wasn't purely financial, though the math helped. Three Raspberry Pi 5s cost about $600 total—less than six months of moderate cloud hosting. They pull 5-10 watts each. No monthly bills. No surprise charges because I forgot to shut down a test instance.
+The decision to self-host wasn't purely financial, though the math helped. Three Raspberry Pi 5s cost about $600 total—less than six months of moderate cloud hosting. They pull 5-10 watts each. No monthly bills. No surprise charges because I forgot to shut down a test instance. No complex pricing tiers. No egress fees.
+
+In an era where cloud providers are battling over storage pricing while simultaneously raising datacenter costs, on-premises started looking less like "old school" and more like "actually viable for the right use case."
 
 But the real motivation was deeper: **I wanted to understand the whole stack.**
 
