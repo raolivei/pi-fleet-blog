@@ -6,6 +6,11 @@ import { useClusterNodeStatus } from "../composables/useClusterNodeStatus";
 const { displayNodes, source, lastUpdated } = useClusterNodeStatus();
 
 const opsLinks = [
+  {
+    label: "Control Center (LAN)",
+    href: "https://control.eldertree.local",
+    external: true,
+  },
   { label: "Runbook", href: "https://docs.eldertree.xyz/runbook/", external: true },
   { label: "Project docs", href: "https://docs.eldertree.xyz/project", external: true },
   {
