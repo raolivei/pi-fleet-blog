@@ -36,11 +36,11 @@ Most are technical documentation, not stories. Many cover similar ground.
 - Deep dive: Why Vault? Tailscale decisions. Security mindset.
 - LinkedIn hook: "I almost committed my API keys to GitHub. Then I built this."
 
-**Chapter 5: "Automation on Automation" (GitOps)**
+**Chapter 5: "Scaling Decisions, Not YAML" (GitOps)**
 - Consolidates: 10-gitops-fluxcd + 18-reusable-workflows
-- Story: First FluxCD reconciliation. Building reusable workflows. Meta-automation.
-- Deep dive: GitOps philosophy, workflow patterns, the compound effect
-- LinkedIn hook: "How I automated my automation (and saved 60 hours)"
+- Story: First FluxCD reconciliation. Building reusable workflows. The multiplier effect.
+- Deep dive: GitOps philosophy, workflow patterns, how small automation compounds
+- LinkedIn hook: "What started as 'copy YAML and tweak later' became a platform pattern"
 
 **Chapter 6: "Running Real Apps" (Applications & Storage)**
 - Consolidates: 11-deploying-applications + 12-storage-persistence
@@ -115,7 +115,7 @@ Most are technical documentation, not stories. Many cover similar ground.
 - Post 4: "Keeping Secrets" (security)
 
 **Week 5-6: Automation**
-- Post 5: "Automation on Automation" (GitOps)
+- Post 5: "Scaling Decisions, Not YAML" (GitOps)
 - Post 6: "Running Real Apps" (applications)
 
 **Week 7-8: Observability**
@@ -156,7 +156,7 @@ Most are technical documentation, not stories. Many cover similar ground.
 /chapters/02-first-boot                → Chapter 2 (OS + cluster setup)
 /chapters/03-making-things-talk        → Chapter 3 (networking + DNS)
 /chapters/04-keeping-secrets           → Chapter 4 (Vault + security)
-/chapters/05-automation-on-automation  → Chapter 5 (GitOps + workflows)
+/chapters/05-scaling-decisions-not-yaml  → Chapter 5 (GitOps + workflows)
 /chapters/06-running-real-apps         → Chapter 6 (apps + storage)
 /chapters/07-watching-it-all           → Chapter 7 (monitoring)
 /chapters/08-deployment-disaster       → Chapter 8 (existing 16)

@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vitepress dev .",
+    "dev:control-center": "npm run dev --prefix control-center",
     "build": "vitepress build .",
+    "build:control-center": "npm run build --prefix control-center",
     "preview": "vitepress preview ."
   },
   "keywords": [
