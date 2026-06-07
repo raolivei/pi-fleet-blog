@@ -15,12 +15,15 @@ const featured = journeyHighlights.slice(0, 6);
         <div class="featured__footer">
           <span v-for="tag in card.tags" :key="tag" class="glance__chip">{{ tag }}</span>
           <a
-            v-if="'runbook' in card && (card as { runbook?: string }).runbook"
-            :href="(card as { runbook: string }).runbook"
+            v-if="'runbook' in card && card.runbook"
+            :href="card.runbook"
             target="_blank"
             rel="noopener noreferrer"
-          >Runbook</a>
-          <a :href="card.chapter">Read chapter →</a>
+          >Runbook →</a>
+          <a
+            v-if="'chapter' in card && card.chapter"
+            :href="card.chapter"
+          >Read chapter →</a>
         </div>
       </li>
     </ul>

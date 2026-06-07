@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## [Unreleased]
 
+### Changed
+
+- **Nav cleanup:** Remove archived technical chapters (01–20) from sidebar, chapters index, home CTAs, and podcast links. Only the new story-driven series is listed; old content stays in `.archive/chapters/` (not published). Featured stories on the home page now link to the runbook instead of dead chapter URLs.
+
 ### Added
 
 - **Live cluster glance:** node STABLE/UNSTABLE badges refresh at runtime from `https://elder.eldertree.local/api/public/cluster/nodes`, then `/cluster-status.json`, with static fallback from [`data/cluster.ts`](data/cluster.ts). Optional refresh: [`scripts/sync-cluster-status.sh`](scripts/sync-cluster-status.sh) (kubectl).

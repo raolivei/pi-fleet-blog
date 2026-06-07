@@ -9,7 +9,7 @@
 - **Episode:** 1 of 10
 - **Duration:** ~15-20 minutes
 - **Topics:** Why self-host, project goals, constraints, and how the cluster evolved
-- **Chapter Reference:** [Chapter 1: The Vision](../../chapters/01-vision.md)
+- **Chapter Reference:** [Chapter 1: The Moment I Decided to Own My Infrastructure](/chapters/01-the-moment-i-decided-to-own-my-infrastructure)
 
 ---
 

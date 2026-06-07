@@ -74,7 +74,7 @@ export const cluster = {
   ],
   storage: {
     active: ["local-path", "local-path-nvme (Vault)"],
-    retired: "Longhorn (removed Feb 2026 — see ch.12)",
+    retired: "Longhorn (removed Feb 2026)",
   },
   apps: [
     "canopy",
@@ -91,50 +91,49 @@ export const journeyHighlights = [
   {
     title: "Pi-hole vs K3s ServiceLB",
     summary: "Port 53 conflict between Pi-hole and klipper-lb — resolved with kube-vip and disabling ServiceLB.",
-    chapter: "/chapters/14-troubleshooting",
+    runbook: "https://docs.eldertree.xyz/runbook/",
     tags: ["DNS", "Networking"],
   },
   {
     title: "Longhorn removed",
     summary: "Distributed storage was resource-heavy on 8GB Pis; Vault uses Raft + local-path-nvme instead.",
-    chapter: "/chapters/12-storage-persistence",
+    runbook: "https://docs.eldertree.xyz/runbook/",
     tags: ["Storage"],
   },
   {
     title: "Vault seal after reboot",
     summary: "HA Raft survives node loss; unseal workflow documented in runbook VAULT-001.",
-    chapter: "/chapters/07-secrets-management",
+    runbook: "https://docs.eldertree.xyz/runbook/issues/vault/VAULT-001",
     tags: ["Vault", "Secrets"],
   },
   {
     title: "Tailscale routing",
     summary: "Subnet routes without advertising K8s CIDRs — remote access without breaking Flannel.",
-    chapter: "/chapters/17-the-tailscale-treachery",
+    runbook: "https://docs.eldertree.xyz/runbook/",
     tags: ["Networking", "Remote access"],
   },
   {
     title: "HA node failure cascade",
     summary: "node-1 NotReady triggered Multi-Attach (historical Longhorn), Vault failover, and ESO sync issues — HA-001 runbook.",
-    chapter: "/chapters/14-troubleshooting",
     runbook: "https://docs.eldertree.xyz/runbook/issues/ha/HA-001",
     tags: ["HA", "Node"],
   },
   {
     title: "Deployment disaster 2026",
     summary: "Cascading failures across the cluster — war story with recovery steps.",
-    chapter: "/chapters/16-the-great-deployment-disaster-of-2026",
+    runbook: "https://docs.eldertree.xyz/runbook/",
     tags: ["Incident", "GitOps"],
   },
   {
     title: "Reusable CI workflows",
     summary: "Centralized github-workflows for docker-build and static-site-pages.",
-    chapter: "/chapters/18-reusable-workflows",
+    runbook: "https://docs.eldertree.xyz/runbook/",
     tags: ["CI/CD"],
   },
   {
     title: "node-1 deprioritized",
     summary: "Soft taint and Flux reconciler steer new workloads to node-2/3 after intermittent freezes.",
-    chapter: "/chapters/15-future-plans-scaling",
+    runbook: "https://docs.eldertree.xyz/runbook/",
     tags: ["Node", "Scheduling"],
   },
 ] as const;

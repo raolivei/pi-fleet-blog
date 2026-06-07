@@ -3,10 +3,10 @@ import HomeNarrative from "./HomeNarrative.vue";
 
 const startCards = [
   {
-    href: "/chapters/01-vision",
+    href: "/chapters/01-the-moment-i-decided-to-own-my-infrastructure",
     label: "Read the journey",
-    title: "Chapter 1 — The Vision",
-    desc: "Why self-host on ARM, what runs on the cluster, and how the story is organized.",
+    title: "Chapter 1 — Own your infrastructure",
+    desc: "Why self-host on ARM, what ownership means, and how Eldertree started.",
   },
   {
     href: "/podcast",
@@ -35,8 +35,8 @@ const startCards = [
           Chapters, war stories, and podcast — real failures, real fixes, no cloud rent.
         </p>
         <div class="home-hero__actions">
-          <a class="home-btn home-btn--brand" href="/chapters/01-vision">Start reading</a>
-          <a class="home-btn home-btn--ghost" href="/chapters/16-the-great-deployment-disaster-of-2026">War stories</a>
+          <a class="home-btn home-btn--brand" href="/chapters/01-the-moment-i-decided-to-own-my-infrastructure">Start reading</a>
+          <a class="home-btn home-btn--ghost" href="/chapters/">All chapters</a>
           <a class="home-btn home-btn--ghost" href="/podcast">Audio series</a>
         </div>
       </div>
