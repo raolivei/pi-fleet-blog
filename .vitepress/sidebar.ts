@@ -6,14 +6,8 @@ export function sidebar() {
         link: "/",
       },
       {
-        text: "Podcast",
-        link: "/podcast",
-      },
-    ],
-    "/podcast": [
-      {
-        text: "Audio series",
-        link: "/podcast",
+        text: "Chapters",
+        link: "/chapters/",
       },
     ],
     "/chapters/": [

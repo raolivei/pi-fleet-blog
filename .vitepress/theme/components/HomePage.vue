@@ -9,10 +9,10 @@ const startCards = [
     desc: "Why self-host on ARM, what ownership means, and how Eldertree started.",
   },
   {
-    href: "/podcast",
-    label: "Listen",
-    title: "Building Eldertree podcast",
-    desc: "Ten episodes — hardware, HA, Vault, and the disasters in between.",
+    href: "/chapters/18-reusable-workflows",
+    label: "Deep dive",
+    title: "CI/CD consolidation",
+    desc: "Centralizing GitHub Actions workflows across the homelab repos.",
   },
   {
     href: "https://docs.eldertree.xyz/runbook/",
@@ -38,7 +38,7 @@ const startCards = [
         <div class="home-hero__actions">
           <a class="home-btn home-btn--brand" href="/chapters/01-the-moment-i-decided-to-own-my-infrastructure">Start reading</a>
           <a class="home-btn home-btn--ghost" href="/chapters/18-reusable-workflows">CI/CD consolidation</a>
-          <a class="home-btn home-btn--ghost" href="/podcast">Audio series</a>
+          <a class="home-btn home-btn--ghost" href="https://control.eldertree.xyz" target="_blank" rel="noopener noreferrer">Control Center</a>
         </div>
       </div>
       <div class="home-hero__mark" aria-hidden="true">
@@ -72,20 +72,6 @@ const startCards = [
 
     <HomeNarrative />
 
-    <section class="home-section home-section--compact" aria-labelledby="podcast-heading">
-      <h2 id="podcast-heading" class="home-section__title">Podcast</h2>
-      <p class="home-prose">
-        <strong>Building Eldertree</strong> is a documentary-style audio series (10 episodes)
-        that follows the same arc as the written chapters. See the
-        <a href="/podcast">podcast page</a> for the episode list.
-      </p>
-      <p class="home-meta-links">
-        <a href="/chapters/">Browse all chapters</a>
-        <span aria-hidden="true">·</span>
-        <a href="https://github.com/raolivei/pi-fleet">pi-fleet on GitHub</a>
-      </p>
-    </section>
-
     <section class="home-section home-section--compact" aria-labelledby="why-heading">
       <h2 id="why-heading" class="home-section__title">Why Eldertree?</h2>
       <p class="home-prose">
@@ -94,6 +80,11 @@ const startCards = [
         <strong>Eldertree</strong> is a three-node K3s cluster on Raspberry Pi 5 hardware in a
         portable open-frame tower. This site is the build diary; the runbook and ops consoles
         live elsewhere.
+      </p>
+      <p class="home-meta-links">
+        <a href="/chapters/">Browse all chapters</a>
+        <span aria-hidden="true">·</span>
+        <a href="https://github.com/raolivei/pi-fleet">pi-fleet on GitHub</a>
       </p>
     </section>
   </div>
