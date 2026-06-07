@@ -89,8 +89,35 @@ export const cluster = {
 
 export const journeyHighlights = [
   {
+    title: "Own your infrastructure",
+    summary:
+      "The AWS bill moment — why self-host on ARM, privacy over convenience, and how Eldertree started.",
+    chapter: "/chapters/01-the-moment-i-decided-to-own-my-infrastructure",
+    tags: ["Origin story", "Self-hosting"],
+  },
+  {
+    title: "The CI/CD consolidation",
+    summary:
+      "Eight repos, copy-paste workflows — centralized reusable GitHub Actions in github-workflows.",
+    chapter: "/chapters/18-reusable-workflows",
+    tags: ["CI/CD", "GitHub Actions"],
+  },
+  {
+    title: "HA node failure cascade",
+    summary:
+      "node-1 NotReady triggered Multi-Attach (historical Longhorn), Vault failover, and ESO sync issues.",
+    runbook: "https://docs.eldertree.xyz/runbook/issues/ha/HA-001",
+    tags: ["HA", "Node"],
+  },
+  {
+    title: "Vault seal after reboot",
+    summary: "HA Raft survives node loss; unseal workflow documented in runbook VAULT-001.",
+    runbook: "https://docs.eldertree.xyz/runbook/issues/vault/VAULT-001",
+    tags: ["Vault", "Secrets"],
+  },
+  {
     title: "Pi-hole vs K3s ServiceLB",
-    summary: "Port 53 conflict between Pi-hole and klipper-lb — resolved with kube-vip and disabling ServiceLB.",
+    summary: "Port 53 conflict between Pi-hole and klipper-lb — kube-vip and disabling ServiceLB.",
     runbook: "https://docs.eldertree.xyz/runbook/",
     tags: ["DNS", "Networking"],
   },
@@ -101,34 +128,10 @@ export const journeyHighlights = [
     tags: ["Storage"],
   },
   {
-    title: "Vault seal after reboot",
-    summary: "HA Raft survives node loss; unseal workflow documented in runbook VAULT-001.",
-    runbook: "https://docs.eldertree.xyz/runbook/issues/vault/VAULT-001",
-    tags: ["Vault", "Secrets"],
-  },
-  {
     title: "Tailscale routing",
     summary: "Subnet routes without advertising K8s CIDRs — remote access without breaking Flannel.",
     runbook: "https://docs.eldertree.xyz/runbook/",
     tags: ["Networking", "Remote access"],
-  },
-  {
-    title: "HA node failure cascade",
-    summary: "node-1 NotReady triggered Multi-Attach (historical Longhorn), Vault failover, and ESO sync issues — HA-001 runbook.",
-    runbook: "https://docs.eldertree.xyz/runbook/issues/ha/HA-001",
-    tags: ["HA", "Node"],
-  },
-  {
-    title: "Deployment disaster 2026",
-    summary: "Cascading failures across the cluster — war story with recovery steps.",
-    runbook: "https://docs.eldertree.xyz/runbook/",
-    tags: ["Incident", "GitOps"],
-  },
-  {
-    title: "Reusable CI workflows",
-    summary: "Centralized github-workflows for docker-build and static-site-pages.",
-    runbook: "https://docs.eldertree.xyz/runbook/",
-    tags: ["CI/CD"],
   },
   {
     title: "node-1 deprioritized",

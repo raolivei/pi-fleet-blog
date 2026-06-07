@@ -13,6 +13,7 @@ interface StatusPayload {
 
 const STATUS_URLS: string[] = [
   import.meta.env.VITE_CLUSTER_STATUS_URL,
+  "https://control.eldertree.xyz/api/public/cluster/nodes",
   "https://elder.eldertree.local/api/public/cluster/nodes",
   "/cluster-status.json",
 ].filter((url): url is string => Boolean(url));

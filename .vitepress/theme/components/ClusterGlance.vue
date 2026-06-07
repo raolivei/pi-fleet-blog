@@ -7,6 +7,11 @@ const { displayNodes, source, lastUpdated } = useClusterNodeStatus();
 
 const opsLinks = [
   {
+    label: "Control Center",
+    href: "https://control.eldertree.xyz",
+    external: true,
+  },
+  {
     label: "Control Center (LAN)",
     href: "https://control.eldertree.local",
     external: true,
