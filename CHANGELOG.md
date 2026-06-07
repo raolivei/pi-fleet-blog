@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ### Changed
 
+- **Cluster banner (home)** — Replace flat “at a glance” strip with a featured homelab box: live node topology, stats, stack chips, and prominent Control Center CTA.
 - **Home page (LinkedIn launch)** — Hero copy matches Chapter 1 pitch; featured cards lead with Ch.1 + Ch.18 chapter links; cluster glance uses public `control.eldertree.xyz` API for live node badges; Control Center public URL in ops links; refresh `cluster-status.json` fallback.
 - **Nav cleanup** — Remove archived technical chapters (01–20) from sidebar; only the new story-driven series is listed. Legacy deep links (e.g. Ch.18) stay published but out of sidebar.
 
