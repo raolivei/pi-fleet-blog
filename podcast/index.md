@@ -19,4 +19,4 @@ Documentary podcast following the same journey as the written chapters: Kubernet
 
 Episode scripts and show notes live alongside this site in the repository linked from the header GitHub icon.
 
-[Back to home](/) · [Start reading](/chapters/01-vision)
+[Back to home](/) · [Start reading](/chapters/01-the-moment-i-decided-to-own-my-infrastructure)
