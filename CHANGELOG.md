@@ -8,6 +8,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ### Fixed
 
+- **Legacy deep link** — Republish `/chapters/18-reusable-workflows` (not in sidebar) so LinkedIn and other shared URLs keep working after the nav cleanup.
+
 - **Deploy workflow queued forever** — `build` used `self-hosted` but the only ARC scale set (`ollie-eldertree`) registers runners for `raolivei/ollie` only. Build on `ubuntu-latest` instead (VitePress static site; cluster-status sync no-ops without kubectl on GHA).
 
 ### Changed Remove archived technical chapters (01–20) from sidebar, chapters index, home CTAs, and podcast links. Only the new story-driven series is listed; old content stays in `.archive/chapters/` (not published). Featured stories on the home page now link to the runbook instead of dead chapter URLs.
