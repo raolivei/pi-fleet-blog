@@ -16,7 +16,9 @@ concurrency:
 
 jobs:
   build:
-    runs-on: self-hosted
+    # GitHub-hosted — ARC scale set ollie-eldertree only listens to raolivei/ollie.
+    # sync-cluster-status.sh no-ops without kubectl; uses committed cluster-status.json.
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
