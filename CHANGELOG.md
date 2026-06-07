@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ### Changed
 
+- **Deploy workflow** — Build and Pages deploy on Eldertree self-hosted runners (`runs-on: self-hosted`) instead of GitHub-hosted.
 - **Podcast archived** — Move `podcast/` to `.archive/podcast/`; remove Podcast nav, sidebar, and home CTAs until the audio series is rewritten.
 - **Cluster banner node badges** — Show K8s Ready (`Ready` / `Not ready`) from Control Center instead of static scheduling tiers (`stable`/`unstable`); live pill reads **Live** / **Cached** / **Offline**.
 - **Cluster banner node list** — Topology driven by the live/cached K8s node list; `data/cluster.ts` enriches known nodes (IPs, roles) only.
