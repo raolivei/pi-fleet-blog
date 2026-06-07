@@ -32,11 +32,12 @@ const startCards = [
         <h1 class="home-hero__title">Building Eldertree</h1>
         <p class="home-hero__subtitle">A Raspberry Pi Kubernetes journey</p>
         <p class="home-hero__tagline">
-          Chapters, war stories, and podcast — real failures, real fixes, no cloud rent.
+          I was paying monthly rent for my own data — so I bought three Raspberry Pi&nbsp;5s and
+          built Kubernetes in my living room. This is the story of choosing ownership over convenience.
         </p>
         <div class="home-hero__actions">
           <a class="home-btn home-btn--brand" href="/chapters/01-the-moment-i-decided-to-own-my-infrastructure">Start reading</a>
-          <a class="home-btn home-btn--ghost" href="/chapters/">All chapters</a>
+          <a class="home-btn home-btn--ghost" href="/chapters/18-reusable-workflows">CI/CD consolidation</a>
           <a class="home-btn home-btn--ghost" href="/podcast">Audio series</a>
         </div>
       </div>
