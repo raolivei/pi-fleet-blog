@@ -248,7 +248,10 @@
   font-weight: 650;
   font-variation-settings: "SOFT" 0, "WONK" 0;
   letter-spacing: -0.02em;
-  line-height: 1.08;
+  /* Room for Fraunces descenders (g, y) — background-clip:text clips tight line-heights */
+  line-height: 1.18;
+  padding-bottom: 0.1em;
+  overflow: visible;
   background: linear-gradient(135deg, var(--vp-c-brand-1), var(--vp-c-brand-2));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -1049,9 +1052,14 @@
   backdrop-filter: blur(6px);
 }
 
-.eldertree-home .cluster-banner__node--unstable {
-  border-color: rgba(234, 179, 8, 0.45);
-  background: rgba(234, 179, 8, 0.06);
+.eldertree-home .cluster-banner__node--not-ready {
+  border-color: rgba(248, 113, 113, 0.45);
+  background: rgba(248, 113, 113, 0.08);
+}
+
+.eldertree-home .cluster-banner__node--unknown {
+  border-color: rgba(148, 163, 184, 0.35);
+  background: rgba(148, 163, 184, 0.06);
 }
 
 .eldertree-home .cluster-banner__node-id {
@@ -1075,14 +1083,19 @@
   border-radius: 999px;
 }
 
-.eldertree-home .cluster-banner__badge--stable {
+.eldertree-home .cluster-banner__badge--ready {
   background: rgba(34, 197, 94, 0.14);
   color: #4ade80;
 }
 
-.eldertree-home .cluster-banner__badge--unstable {
-  background: rgba(234, 179, 8, 0.16);
-  color: #facc15;
+.eldertree-home .cluster-banner__badge--not-ready {
+  background: rgba(248, 113, 113, 0.16);
+  color: #fca5a5;
+}
+
+.eldertree-home .cluster-banner__badge--unknown {
+  background: rgba(148, 163, 184, 0.14);
+  color: #94a3b8;
 }
 
 .eldertree-home .cluster-banner__vips {

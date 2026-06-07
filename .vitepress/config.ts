@@ -9,7 +9,7 @@ export default defineConfig({
   base,
   title: "Building Eldertree",
   description:
-    "The documented journey of running a highly available K3s cluster on Raspberry Pi — chapters, war stories, and podcast.",
+    "The documented journey of running a highly available K3s cluster on Raspberry Pi — chapters and war stories from the build diary.",
   cleanUrls: true,
   lastUpdated: true,
 
@@ -29,7 +29,7 @@ export default defineConfig({
       {
         property: "og:description",
         content:
-          "Chapters, war stories, and podcast — self-hosted K3s on Raspberry Pi 5.",
+          "Chapters and war stories — self-hosted K3s on Raspberry Pi 5 build diary.",
       },
     ],
     ["meta", { property: "og:image", content: "https://blog.eldertree.xyz/logo-full.png" }],
@@ -41,7 +41,6 @@ export default defineConfig({
     nav: [
       { text: "Home", link: "/" },
       { text: "Chapters", link: "/chapters/" },
-      { text: "Podcast", link: "/podcast" },
       { text: "Runbook", link: "https://docs.eldertree.xyz/runbook/" },
       { text: "pi-fleet", link: "https://github.com/raolivei/pi-fleet" },
     ],
@@ -79,11 +78,7 @@ export default defineConfig({
     "src/**",
     "**/content/**",
     "**/scripts/**",
-    "podcast/episode-*/**",
-    "podcast/cover-art/**",
-    "podcast/README.md",
-    "podcast/RECORDING_NOTES.md",
-    "podcast/metadata.json",
+    ".archive/**",
     "**/README.md",
     "**/SETUP.md",
     "**/TROUBLESHOOTING.md",

@@ -1,10 +1,22 @@
 <script setup lang="ts">
 import { Activity, ExternalLink, LayoutDashboard, Server } from "lucide-vue-next";
 import { cluster } from "../../../data/cluster";
-import { useClusterNodeStatus } from "../composables/useClusterNodeStatus";
+import { useClusterNodeStatus, type StatusSource } from "../composables/useClusterNodeStatus";
 
-const { displayNodes, source, lastUpdated, readyNodeCount, healthyApps, totalApps } =
+const { displayNodes, source, lastUpdated, readyNodeCount, totalNodeCount, healthyApps, totalApps } =
   useClusterNodeStatus();
+
+const sourceLabels: Record<StatusSource, string> = {
+  live: "Live",
+  cached: "Cached",
+  unavailable: "Offline",
+};
+
+const readinessLabels = {
+  ready: "Ready",
+  "not-ready": "Not ready",
+  unknown: "Unknown",
+} as const;
 
 const secondaryLinks = [
   { label: "Runbook", href: "https://docs.eldertree.xyz/runbook/" },
@@ -36,7 +48,7 @@ const secondaryLinks = [
           :class="{ 'cluster-banner__live-pill--live': source === 'live' }"
         >
           <span class="cluster-banner__live-dot" aria-hidden="true" />
-          {{ source === "live" ? "Live from cluster" : "Cached status" }}
+          {{ sourceLabels[source] }}
         </div>
       </header>
 
@@ -48,16 +60,19 @@ const secondaryLinks = [
               v-for="node in displayNodes"
               :key="node.id"
               class="cluster-banner__node"
-              :class="{ 'cluster-banner__node--unstable': node.tier === 'unstable' }"
+              :class="{
+                'cluster-banner__node--not-ready': node.readiness === 'not-ready',
+                'cluster-banner__node--unknown': node.readiness === 'unknown',
+              }"
             >
               <span class="cluster-banner__node-id">{{ node.id }}</span>
               <span
                 class="cluster-banner__badge"
-                :class="`cluster-banner__badge--${node.tier}`"
+                :class="`cluster-banner__badge--${node.readiness}`"
               >
-                {{ node.tier }}
+                {{ readinessLabels[node.readiness] }}
               </span>
-              <code class="cluster-banner__node-ip">{{ node.wlan0 }}</code>
+              <code v-if="node.wlan0" class="cluster-banner__node-ip">{{ node.wlan0 }}</code>
             </article>
           </div>
 
@@ -73,7 +88,7 @@ const secondaryLinks = [
           <dl class="cluster-banner__stats">
             <div class="cluster-banner__stat">
               <dt>Nodes ready</dt>
-              <dd>{{ readyNodeCount }}/{{ cluster.nodes.length }}</dd>
+              <dd>{{ readyNodeCount }}/{{ totalNodeCount }}</dd>
             </div>
             <div class="cluster-banner__stat">
               <dt>K3s</dt>
