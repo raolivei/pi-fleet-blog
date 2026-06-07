@@ -882,6 +882,376 @@
   border: 1px solid var(--vp-c-divider);
 }
 
+/* ============================================================================
+ * Cluster banner (home — live homelab box)
+ * ========================================================================== */
+
+.eldertree-home .cluster-banner {
+  position: relative;
+  margin: 0;
+  border-radius: 20px;
+  overflow: hidden;
+  border: 1px solid rgba(45, 212, 191, 0.28);
+  background:
+    linear-gradient(145deg, rgba(15, 118, 110, 0.14) 0%, rgba(15, 23, 42, 0.4) 45%, var(--vp-c-bg-soft) 100%);
+  box-shadow:
+    0 0 0 1px rgba(20, 184, 166, 0.06) inset,
+    0 20px 50px -24px rgba(0, 0, 0, 0.45),
+    0 0 80px -20px rgba(20, 184, 166, 0.25);
+}
+
+.eldertree-home .cluster-banner__glow {
+  pointer-events: none;
+  position: absolute;
+  inset: -40% -20% auto;
+  height: 70%;
+  background: radial-gradient(ellipse 60% 50% at 50% 0%, rgba(45, 212, 191, 0.22), transparent 70%);
+}
+
+.eldertree-home .cluster-banner__inner {
+  position: relative;
+  padding: 1.75rem 1.85rem 1.5rem;
+}
+
+.eldertree-home .cluster-banner__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.eldertree-home .cluster-banner__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0 0 0.5rem;
+  font-family: var(--vp-font-family-mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--vp-c-brand-1);
+}
+
+.eldertree-home .cluster-banner__eyebrow-icon {
+  width: 0.95rem;
+  height: 0.95rem;
+}
+
+.eldertree-home .cluster-banner__title {
+  margin: 0;
+  font-family: var(--vp-font-hero-display);
+  font-size: clamp(1.45rem, 3vw, 1.85rem);
+  font-weight: 650;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  color: var(--vp-c-text-1);
+}
+
+.eldertree-home .cluster-banner__pitch {
+  margin: 0.65rem 0 0;
+  max-width: 38rem;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--vp-c-text-2);
+}
+
+.eldertree-home .cluster-banner__live-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.4rem 0.85rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--vp-c-text-3);
+  background: var(--vp-c-bg);
+  border: 1px solid var(--vp-c-divider);
+}
+
+.eldertree-home .cluster-banner__live-pill--live {
+  color: #4ade80;
+  border-color: rgba(74, 222, 128, 0.35);
+  background: rgba(34, 197, 94, 0.08);
+}
+
+.eldertree-home .cluster-banner__live-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--vp-c-text-3);
+}
+
+.eldertree-home .cluster-banner__live-pill--live .cluster-banner__live-dot {
+  background: #4ade80;
+  box-shadow: 0 0 10px rgba(74, 222, 128, 0.7);
+  animation: cluster-pulse 2s ease-in-out infinite;
+}
+
+@keyframes cluster-pulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.55;
+    transform: scale(1.15);
+  }
+}
+
+.eldertree-home .cluster-banner__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  gap: 1.5rem 2rem;
+  align-items: start;
+}
+
+@media (max-width: 860px) {
+  .eldertree-home .cluster-banner__grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.eldertree-home .cluster-banner__label {
+  margin: 0 0 0.65rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--vp-c-text-3);
+}
+
+.eldertree-home .cluster-banner__nodes {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.65rem;
+}
+
+@media (max-width: 560px) {
+  .eldertree-home .cluster-banner__nodes {
+    grid-template-columns: 1fr;
+  }
+}
+
+.eldertree-home .cluster-banner__node {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 0.85rem 0.9rem;
+  border-radius: 12px;
+  border: 1px solid var(--vp-c-divider);
+  background: rgba(0, 0, 0, 0.18);
+  backdrop-filter: blur(6px);
+}
+
+.eldertree-home .cluster-banner__node--unstable {
+  border-color: rgba(234, 179, 8, 0.45);
+  background: rgba(234, 179, 8, 0.06);
+}
+
+.eldertree-home .cluster-banner__node-id {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--vp-c-text-1);
+}
+
+.eldertree-home .cluster-banner__node-ip {
+  font-size: 0.75rem;
+  color: var(--vp-c-text-3);
+}
+
+.eldertree-home .cluster-banner__badge {
+  align-self: flex-start;
+  font-size: 0.62rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  padding: 0.18rem 0.5rem;
+  border-radius: 999px;
+}
+
+.eldertree-home .cluster-banner__badge--stable {
+  background: rgba(34, 197, 94, 0.14);
+  color: #4ade80;
+}
+
+.eldertree-home .cluster-banner__badge--unstable {
+  background: rgba(234, 179, 8, 0.16);
+  color: #facc15;
+}
+
+.eldertree-home .cluster-banner__vips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-top: 1rem;
+}
+
+.eldertree-home .cluster-banner__vip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.65rem;
+  border-radius: 8px;
+  font-size: 0.78rem;
+  font-family: var(--vp-font-family-mono);
+  background: var(--vp-c-bg);
+  border: 1px solid var(--vp-c-divider);
+}
+
+.eldertree-home .cluster-banner__vip-label {
+  font-weight: 700;
+  color: var(--vp-c-brand-1);
+}
+
+.eldertree-home .cluster-banner__panel {
+  padding: 1.15rem 1.25rem;
+  border-radius: 14px;
+  border: 1px solid var(--vp-c-divider);
+  background: rgba(0, 0, 0, 0.22);
+}
+
+.eldertree-home .cluster-banner__stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+  margin: 0 0 1rem;
+}
+
+@media (max-width: 560px) {
+  .eldertree-home .cluster-banner__stats {
+    grid-template-columns: 1fr;
+  }
+}
+
+.eldertree-home .cluster-banner__stat {
+  margin: 0;
+}
+
+.eldertree-home .cluster-banner__stat dt {
+  margin: 0;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--vp-c-text-3);
+}
+
+.eldertree-home .cluster-banner__stat dd {
+  margin: 0.2rem 0 0;
+  font-family: var(--vp-font-family-mono);
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--vp-c-text-1);
+}
+
+.eldertree-home .cluster-banner__stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-bottom: 1.15rem;
+}
+
+.eldertree-home .cluster-banner__chip {
+  padding: 0.2rem 0.55rem;
+  border-radius: 6px;
+  font-size: 0.68rem;
+  font-family: var(--vp-font-family-mono);
+  color: var(--vp-c-text-2);
+  background: var(--vp-c-bg-soft);
+  border: 1px solid var(--vp-c-divider);
+}
+
+.eldertree-home .cluster-banner__chip--muted {
+  color: var(--vp-c-text-3);
+}
+
+.eldertree-home .cluster-banner__cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.75rem 1.1rem;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  text-decoration: none;
+  color: var(--vp-c-white);
+  background: linear-gradient(135deg, var(--vp-c-brand-1), var(--vp-c-brand-3));
+  box-shadow: 0 8px 24px -8px rgba(20, 184, 166, 0.55);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.eldertree-home .cluster-banner__cta:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 28px -6px rgba(45, 212, 191, 0.55);
+}
+
+.eldertree-home .cluster-banner__cta :is(svg) {
+  width: 1.1rem;
+  height: 1.1rem;
+  flex-shrink: 0;
+}
+
+.eldertree-home .cluster-banner__cta-icon {
+  width: 0.85rem !important;
+  height: 0.85rem !important;
+  margin-left: auto;
+  opacity: 0.85;
+}
+
+.eldertree-home .cluster-banner__cta-hint {
+  margin: 0.55rem 0 0;
+  font-size: 0.72rem;
+  color: var(--vp-c-text-3);
+  text-align: center;
+}
+
+.eldertree-home .cluster-banner__cta-hint a {
+  color: var(--vp-c-brand-1);
+  text-decoration: none;
+}
+
+.eldertree-home .cluster-banner__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem 1rem;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--vp-c-divider);
+}
+
+.eldertree-home .cluster-banner__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--vp-c-brand-1);
+  text-decoration: none;
+}
+
+.eldertree-home .cluster-banner__link :is(svg) {
+  width: 0.85rem;
+  height: 0.85rem;
+  opacity: 0.75;
+}
+
+.eldertree-home .cluster-banner__footer {
+  margin: 1.15rem 0 0;
+  padding-top: 0.85rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  font-size: 0.7rem;
+  color: var(--vp-c-text-3);
+  font-family: var(--vp-font-family-mono);
+}
+
 .eldertree-home .featured__title,
 .vp-doc .featured__title {
   margin: 0 0 0.35rem;
