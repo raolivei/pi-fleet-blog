@@ -11,6 +11,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 - **Podcast archived** — Move `podcast/` to `.archive/podcast/`; remove Podcast nav, sidebar, and home CTAs until the audio series is rewritten.
 - **Cluster banner node badges** — Show K8s Ready (`Ready` / `Not ready`) from Control Center instead of static scheduling tiers (`stable`/`unstable`); live pill reads **Live** / **Cached** / **Offline**.
 - **Cluster banner node list** — Topology driven by the live/cached K8s node list; `data/cluster.ts` enriches known nodes (IPs, roles) only.
+- **Cluster banner readability** — Raise contrast on node IPs, stat labels, VIP addresses, stack chips, footer timestamp, and Control Center hint text.
 - **Cluster banner (home)** — Replace flat “at a glance” strip with a featured homelab box: live node topology, stats, stack chips, and prominent Control Center CTA.
 - **Home page (LinkedIn launch)** — Hero copy matches Chapter 1 pitch; featured cards lead with Ch.1 + Ch.18 chapter links; cluster glance uses public `control.eldertree.xyz` API for live node badges; Control Center public URL in ops links; refresh `cluster-status.json` fallback.
 - **Nav cleanup** — Remove archived technical chapters (01–20) from sidebar; only the new story-driven series is listed. Legacy deep links (e.g. Ch.18) stay published but out of sidebar.
