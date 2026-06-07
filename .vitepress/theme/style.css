@@ -1026,7 +1026,7 @@
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--vp-c-text-3);
+  color: var(--vp-c-text-2);
 }
 
 .eldertree-home .cluster-banner__nodes {
@@ -1069,8 +1069,10 @@
 }
 
 .eldertree-home .cluster-banner__node-ip {
-  font-size: 0.75rem;
-  color: var(--vp-c-text-3);
+  font-size: 0.78rem;
+  font-family: var(--vp-font-family-mono);
+  color: var(--vp-c-text-1);
+  opacity: 0.88;
 }
 
 .eldertree-home .cluster-banner__badge {
@@ -1113,8 +1115,13 @@
   border-radius: 8px;
   font-size: 0.78rem;
   font-family: var(--vp-font-family-mono);
+  color: var(--vp-c-text-1);
   background: var(--vp-c-bg);
   border: 1px solid var(--vp-c-divider);
+}
+
+.eldertree-home .cluster-banner__vip code {
+  color: var(--vp-c-text-1);
 }
 
 .eldertree-home .cluster-banner__vip-label {
@@ -1148,11 +1155,11 @@
 
 .eldertree-home .cluster-banner__stat dt {
   margin: 0;
-  font-size: 0.65rem;
+  font-size: 0.68rem;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--vp-c-text-3);
+  color: var(--vp-c-text-2);
 }
 
 .eldertree-home .cluster-banner__stat dd {
@@ -1175,13 +1182,13 @@
   border-radius: 6px;
   font-size: 0.68rem;
   font-family: var(--vp-font-family-mono);
-  color: var(--vp-c-text-2);
+  color: var(--vp-c-text-1);
   background: var(--vp-c-bg-soft);
   border: 1px solid var(--vp-c-divider);
 }
 
 .eldertree-home .cluster-banner__chip--muted {
-  color: var(--vp-c-text-3);
+  color: var(--vp-c-text-2);
 }
 
 .eldertree-home .cluster-banner__cta {
@@ -1221,14 +1228,17 @@
 
 .eldertree-home .cluster-banner__cta-hint {
   margin: 0.55rem 0 0;
-  font-size: 0.72rem;
-  color: var(--vp-c-text-3);
+  font-size: 0.75rem;
+  line-height: 1.45;
+  color: var(--vp-c-text-2);
   text-align: center;
 }
 
 .eldertree-home .cluster-banner__cta-hint a {
   color: var(--vp-c-brand-1);
-  text-decoration: none;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
 .eldertree-home .cluster-banner__links {
@@ -1259,9 +1269,9 @@
 .eldertree-home .cluster-banner__footer {
   margin: 1.15rem 0 0;
   padding-top: 0.85rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
-  font-size: 0.7rem;
-  color: var(--vp-c-text-3);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 0.72rem;
+  color: var(--vp-c-text-2);
   font-family: var(--vp-font-family-mono);
 }
 
