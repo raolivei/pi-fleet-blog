@@ -1,5 +1,7 @@
 ## Chapter 14: Troubleshooting and Lessons Learned
 
+> **Update (June 2026):** Pi-hole challenges below are **historical**. Eldertree now runs [BIND9 LAN DNS](/chapters/02-why-we-dropped-pihole-for-bind9) on VIP `192.168.2.201`. ServiceLB/kube-vip/port-53 lessons still apply.
+
 > **Note:** This chapter is based on analysis of 212 Git commits, identifying 92 problems and their solutions. The journey wasn't always smooth, but each challenge taught valuable lessons.
 
 ### Major Challenges
@@ -545,9 +547,11 @@ ping -c 2 192.168.2.201
 - **Test from external clients:** Just because DNS works from within the cluster doesn't mean it works from external clients
 - **Document network architecture:** Understanding internal vs physical IPs is critical for troubleshooting LoadBalancer issues
 
-**The Victory:**
+**The Victory (2025):**
 
-After hours of troubleshooting across multiple layers, Pi-hole now works as the primary DNS server without requiring any fallback. The MacBook can use `192.168.2.201` as the sole DNS server, and both local (`*.eldertree.local`) and external domains resolve correctly. This was a true battle that required understanding MetalLB Layer 2 mode, Kubernetes service routing, DNS resolution chains, and ExternalDNS integration.
+After hours of troubleshooting across multiple layers, Pi-hole worked as the primary DNS server without requiring any fallback. The MacBook could use `192.168.2.201` as the sole DNS server, and both local (`*.eldertree.local`) and external domains resolved correctly.
+
+**Update (2026):** Pi-hole was later replaced by standalone BIND9 on the same VIP — see [Chapter 2](/chapters/02-why-we-dropped-pihole-for-bind9). The MetalLB/kube-vip and external-dns lessons remain valid.
 
 ---
 
@@ -944,7 +948,7 @@ Based on 212 commits, 45 pull requests, and 92 problems solved:
 - ✅ **Ansible for automation** - Idempotent configuration, reproducible deployments
 - ✅ **GitOps with FluxCD** - All infrastructure as code, easy rollbacks, version control
 - ✅ **Vault for secrets management** - Policy-based access, External Secrets integration
-- ✅ **Pi-hole for DNS** - Network-wide ad-blocking, local service resolution
+- ✅ **LAN DNS on kube-vip** - Started with Pi-hole (+ BIND sidecar); simplified to BIND9 in 2026 ([Chapter 2](/chapters/02-why-we-dropped-pihole-for-bind9))
 - ✅ **Helm charts** - Simplified application deployment and configuration
 - ✅ **Git history analysis** - Commits document the journey, problems, and solutions
 
