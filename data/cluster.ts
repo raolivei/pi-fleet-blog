@@ -60,7 +60,7 @@ export const cluster = {
   vips: [
     { label: "API", ip: "192.168.2.100", purpose: "kube-vip HA" },
     { label: "Ingress", ip: "192.168.2.200", purpose: "Traefik *.eldertree.local" },
-    { label: "DNS", ip: "192.168.2.201", purpose: "Pi-hole LB" },
+    { label: "DNS", ip: "192.168.2.201", purpose: "BIND9 LB" },
   ] satisfies ClusterVip[],
   stack: [
     "K3s HA (3× control-plane)",
@@ -68,7 +68,7 @@ export const cluster = {
     "Traefik ingress",
     "Vault HA (Raft)",
     "External Secrets Operator",
-    "Pi-hole + external-dns",
+    "BIND9 + external-dns",
     "Cloudflare Tunnel",
     "Prometheus / Grafana / Loki",
   ],
@@ -116,9 +116,17 @@ export const journeyHighlights = [
     tags: ["Vault", "Secrets"],
   },
   {
-    title: "Pi-hole vs K3s ServiceLB",
-    summary: "Port 53 conflict between Pi-hole and klipper-lb — kube-vip and disabling ServiceLB.",
-    runbook: "https://docs.eldertree.xyz/runbook/",
+    title: "Pi-hole → BIND9",
+    summary:
+      "Why we removed Pi-hole after two years — adblock unused, sidecar complexity, and the June 2026 cutover to standalone BIND9 on the same VIP.",
+    chapter: "/chapters/02-why-we-dropped-pihole-for-bind9",
+    tags: ["DNS", "Simplification"],
+  },
+  {
+    title: "Port 53 on bare-metal K3s",
+    summary:
+      "Historical: Pi-hole vs klipper ServiceLB, kube-vip VIPs, and disabling ServiceLB — lessons BIND9 inherited.",
+    chapter: "/chapters/02-why-we-dropped-pihole-for-bind9",
     tags: ["DNS", "Networking"],
   },
   {

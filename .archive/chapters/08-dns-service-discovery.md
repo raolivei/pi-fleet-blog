@@ -1,6 +1,8 @@
 # Chapter 8: DNS and Service Discovery
 
-### Pi-hole Integration
+> **Update (June 2026):** Pi-hole was removed from Eldertree; LAN DNS is now **standalone BIND9** on the same VIP (`192.168.2.201`). The troubleshooting lessons below still apply to port 53, kube-vip, and external-dns. Read the story: [Chapter 2: Why We Dropped Pi-hole for BIND9](/chapters/02-why-we-dropped-pihole-for-bind9).
+
+### Pi-hole Integration _(historical — decommissioned 2026-06)_
 
 **Purpose:** Network-wide DNS with ad-blocking
 **Deployment:** Kubernetes pod with LoadBalancer service
