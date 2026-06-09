@@ -156,4 +156,4 @@ It's the story of choosing ownership over convenience, and finding out what that
 
 ---
 
-*Next: [Chapter 2: Why We Dropped Pi-hole for BIND9](/chapters/02-why-we-dropped-pihole-for-bind9) — simplifying LAN DNS after two years of port-53 battles on K3s.*
+*Next: [Chapter 2: First Boot](/chapters/02-first-boot) — the moment I ran `kubectl get nodes` for the first time and saw all three nodes ready.*

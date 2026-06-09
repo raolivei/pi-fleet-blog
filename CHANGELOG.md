@@ -6,15 +6,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## [Unreleased]
 
+### Changed
+
+- **BIND9 story renumbered** — `02-why-we-dropped-pihole-for-bind9` → `interlude-why-we-dropped-pihole-for-bind9`; Chapter 2 reserved for *First Boot* (PR #19). Stub left at old URL.
+
 ### Added
 
-- **Chapter 2** — [`chapters/02-why-we-dropped-pihole-for-bind9.md`](chapters/02-why-we-dropped-pihole-for-bind9.md): story of the Pi-hole → BIND9 cutover (June 2026), ServiceLB/kube-vip context, and what we kept from the port-53 wars.
+- **Interlude** — [`chapters/interlude-why-we-dropped-pihole-for-bind9.md`](chapters/interlude-why-we-dropped-pihole-for-bind9.md): Pi-hole → BIND9 cutover (June 2026); not Chapter 2 (reserved for *First Boot*, PR #19).
 
 ### Changed
 
-- **Journey highlights** — Replace “Pi-hole vs ServiceLB” card with Pi-hole → BIND9 + port-53 lessons linking to Chapter 2.
-- **Legacy archive ch.8/ch.14** — Editorial notes pointing to Chapter 2; Pi-hole sections marked historical.
-- **Chapter 1 footer** — Next link points to Chapter 2 (BIND9 story).
+- **Journey highlights** — Pi-hole → BIND9 + port-53 lessons link to interlude (not Chapter 2).
+- **Legacy archive ch.8/ch.14** — Editorial notes point to interlude; Pi-hole sections marked historical.
+- **Chapter 1 footer** — Next link → Chapter 2 *First Boot* (PR #19).
 
 - **Deploy workflow** — Build and Pages deploy on Eldertree self-hosted runners (`runs-on: self-hosted`) instead of GitHub-hosted.
 - **Podcast archived** — Move `podcast/` to `.archive/podcast/`; remove Podcast nav, sidebar, and home CTAs until the audio series is rewritten.

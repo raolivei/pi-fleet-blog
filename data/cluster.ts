@@ -118,15 +118,15 @@ export const journeyHighlights = [
   {
     title: "Pi-hole → BIND9",
     summary:
-      "Why we removed Pi-hole after two years — adblock unused, sidecar complexity, and the June 2026 cutover to standalone BIND9 on the same VIP.",
-    chapter: "/chapters/02-why-we-dropped-pihole-for-bind9",
+      "Why we removed Pi-hole ~8 months in — adblock unused, sidecar complexity, and the June 2026 cutover to standalone BIND9 on the same VIP.",
+    chapter: "/chapters/interlude-why-we-dropped-pihole-for-bind9",
     tags: ["DNS", "Simplification"],
   },
   {
     title: "Port 53 on bare-metal K3s",
     summary:
       "Historical: Pi-hole vs klipper ServiceLB, kube-vip VIPs, and disabling ServiceLB — lessons BIND9 inherited.",
-    chapter: "/chapters/02-why-we-dropped-pihole-for-bind9",
+    chapter: "/chapters/interlude-why-we-dropped-pihole-for-bind9",
     tags: ["DNS", "Networking"],
   },
   {
