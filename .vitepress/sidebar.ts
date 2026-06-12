@@ -81,6 +81,10 @@ export function sidebar() {
             text: "Chapter 15: Future Plans and Scaling",
             link: "/chapters/15-future-plans-scaling",
           },
+          {
+            text: "Chapter 2: First Boot",
+            link: "/chapters/02-first-boot",
+          },
         ],
       },
       {

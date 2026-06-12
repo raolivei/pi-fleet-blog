@@ -41,7 +41,7 @@ export default defineConfig({
     nav: [
       { text: "Home", link: "/" },
       { text: "Chapters", link: "/chapters/" },
-      { text: "Podcast", link: "/podcast" },
+      { text: "Interludes", link: "/chapters/interlude-why-we-dropped-pihole-for-bind9" },
       { text: "Runbook", link: "https://docs.eldertree.xyz/runbook/" },
       { text: "pi-fleet", link: "https://github.com/raolivei/pi-fleet" },
     ],
