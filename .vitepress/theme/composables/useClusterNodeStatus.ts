@@ -1,5 +1,8 @@
-import { computed, onMounted, ref } from "vue";
+import { computed, onMounted, onUnmounted, ref } from "vue";
 import { cluster, type ClusterNode } from "../../../data/cluster";
+
+/** Poll Control Center for live node/component stats (ms). */
+export const CLUSTER_STATUS_REFRESH_MS = 30_000;
 
 export type NodeReadiness = "ready" | "not-ready" | "unknown";
 export type StatusSource = "live" | "cached" | "unavailable";
@@ -93,6 +96,7 @@ async function fetchJson<T>(url: string): Promise<T | null> {
 export function useClusterNodeStatus() {
   const source = ref<StatusSource>("unavailable");
   const lastUpdated = ref<string | null>(null);
+  const refreshing = ref(false);
   const remoteNodes = ref<RemoteNode[] | null>(null);
   const healthyApps = ref<number | null>(null);
   const totalApps = ref<number | null>(null);
@@ -144,45 +148,58 @@ export function useClusterNodeStatus() {
   }
 
   async function refresh() {
-    for (const url of HEALTH_URLS) {
-      const data = await fetchJson<HealthPayload>(url);
-      if (data?.nodes?.length) {
-        applyHealth(data);
-        source.value = "live";
-        return;
+    refreshing.value = true;
+    try {
+      for (const url of HEALTH_URLS) {
+        const data = await fetchJson<HealthPayload>(url);
+        if (data?.nodes?.length) {
+          applyHealth(data);
+          source.value = "live";
+          return;
+        }
       }
-    }
 
-    for (const url of REMOTE_NODES_URLS) {
-      const data = await fetchJson<NodesPayload>(url);
-      if (data?.nodes?.length) {
-        applyNodes(data);
+      for (const url of REMOTE_NODES_URLS) {
+        const data = await fetchJson<NodesPayload>(url);
+        if (data?.nodes?.length) {
+          applyNodes(data);
+          clearComponentStats();
+          source.value = "live";
+          return;
+        }
+      }
+
+      const cached = await fetchJson<NodesPayload>(CACHE_URL);
+      if (cached?.nodes?.length) {
+        applyNodes(cached);
         clearComponentStats();
-        source.value = "live";
+        source.value = "cached";
         return;
       }
-    }
 
-    const cached = await fetchJson<NodesPayload>(CACHE_URL);
-    if (cached?.nodes?.length) {
-      applyNodes(cached);
-      clearComponentStats();
-      source.value = "cached";
-      return;
+      clearRemoteNodes();
+      source.value = "unavailable";
+    } finally {
+      refreshing.value = false;
     }
-
-    clearRemoteNodes();
-    source.value = "unavailable";
   }
+
+  let refreshInterval: ReturnType<typeof setInterval> | undefined;
 
   onMounted(() => {
     void refresh();
+    refreshInterval = setInterval(() => void refresh(), CLUSTER_STATUS_REFRESH_MS);
+  });
+
+  onUnmounted(() => {
+    if (refreshInterval !== undefined) clearInterval(refreshInterval);
   });
 
   return {
     displayNodes,
     source,
     lastUpdated,
+    refreshing,
     refresh,
     readyNodeCount,
     totalNodeCount,
