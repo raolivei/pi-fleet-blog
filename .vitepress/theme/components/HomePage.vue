@@ -4,22 +4,21 @@ import HomeNarrative from "./HomeNarrative.vue";
 const startCards = [
   {
     href: "/chapters/01-the-moment-i-decided-to-own-my-infrastructure",
-    label: "Read the journey",
+    label: "Start the journey",
     title: "Chapter 1 — Own your infrastructure",
     desc: "Why self-host on ARM, what ownership means, and how Eldertree started.",
   },
   {
-    href: "/chapters/18-reusable-workflows",
-    label: "Deep dive",
-    title: "CI/CD consolidation",
-    desc: "Centralizing GitHub Actions workflows across the homelab repos.",
+    href: "/chapters/02-first-boot",
+    label: "Chapter 2",
+    title: "First Boot",
+    desc: "Power-on, base OS setup, and building the foundation.",
   },
   {
-    href: "https://docs.eldertree.xyz/runbook/",
-    label: "When something breaks",
-    title: "Eldertree runbook",
-    desc: "Procedures on docs.eldertree.xyz — not duplicated here.",
-    external: true,
+    href: "/chapters/interlude-why-we-dropped-pihole-for-bind9",
+    label: "Interlude",
+    title: "Why we dropped Pi-hole for BIND9",
+    desc: "June 2026 DNS cutover — kube-vip, ServiceLB, and the VIP story.",
   },
 ] as const;
 </script>
@@ -37,7 +36,7 @@ const startCards = [
         </p>
         <div class="home-hero__actions">
           <a class="home-btn home-btn--brand" href="/chapters/01-the-moment-i-decided-to-own-my-infrastructure">Start reading</a>
-          <a class="home-btn home-btn--ghost" href="/chapters/18-reusable-workflows">CI/CD consolidation</a>
+          <a class="home-btn home-btn--ghost" href="/chapters/02-first-boot">Chapter 2</a>
           <a class="home-btn home-btn--ghost" href="https://control.eldertree.xyz" target="_blank" rel="noopener noreferrer">Control Center</a>
         </div>
       </div>

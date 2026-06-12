@@ -22,6 +22,10 @@ export function sidebar() {
             text: "Chapter 1: The Moment I Decided to Own My Infrastructure",
             link: "/chapters/01-the-moment-i-decided-to-own-my-infrastructure",
           },
+          {
+            text: "Chapter 2: First Boot",
+            link: "/chapters/02-first-boot",
+          },
         ],
       },
       {
