@@ -26,6 +26,10 @@ export function sidebar() {
             text: "Chapter 2: First Boot",
             link: "/chapters/02-first-boot",
           },
+          {
+            text: "Chapter 11: The Control Center",
+            link: "/chapters/11-the-control-center",
+          },
         ],
       },
       {
