@@ -32,21 +32,10 @@ And Elder answers that by talking **directly to the Kubernetes API server** — 
 
 That's it. Three reads from the source of truth, mapped to green / amber / red, drawn as a topology.
 
-> 📸 *Screenshot pending — the 3-grid topology, captured live, drops in here.*
-
-<!--
-SCREENSHOT TO ADD — then uncomment the <figure> below:
-  1. Save the image to:  pi-fleet-blog/public/control-center-topology-grid.png
-  2. Capture: open https://control.eldertree.local (LAN/Tailscale), pick the "3 · Grid"
-     layout tab (or append ?topology=grid-linear), wait for the "Live (Elder)" pill,
-     then optionally click a node to show the detail card. Screenshot the topology panel.
-  3. Uncomment:
-
 <figure>
   <img src="/control-center-topology-grid.png" alt="Eldertree Control Center — the Live cluster topology in the 3-grid layout, every component green" />
   <figcaption>The Live cluster topology (3-grid layout) on a quiet day — every layer green from the Pis at the bottom to the apps on top.</figcaption>
 </figure>
--->
 
 ### The map is the OSI model
 
