@@ -12,6 +12,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ### Added
 
+- **Chapter 11: The Control Center** — [`chapters/11-the-control-center.md`](chapters/11-the-control-center.md): accurate v1 story (kube-apiserver health API, OSI topology, o11y roles, API-vs-Prometheus design), live 3-grid screenshot, v1 vs roadmap. Replaces aspirational draft on PR #28; supersedes separate interlude PR #44.
 - **Interlude** — [`chapters/interlude-why-we-dropped-pihole-for-bind9.md`](chapters/interlude-why-we-dropped-pihole-for-bind9.md): Pi-hole → BIND9 cutover (June 2026); not Chapter 2 (reserved for *First Boot*, PR #19).
 
 ### Changed
