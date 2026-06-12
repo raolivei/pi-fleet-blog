@@ -1,10 +1,19 @@
 <script setup lang="ts">
-import { Activity, ExternalLink, LayoutDashboard, Server } from "lucide-vue-next";
+import { Activity, ExternalLink, LayoutDashboard, RefreshCw, Server } from "lucide-vue-next";
 import { cluster } from "../../../data/cluster";
 import { useClusterNodeStatus, type StatusSource } from "../composables/useClusterNodeStatus";
 
-const { displayNodes, source, lastUpdated, readyNodeCount, totalNodeCount, healthyApps, totalApps } =
-  useClusterNodeStatus();
+const {
+  displayNodes,
+  source,
+  lastUpdated,
+  refreshing,
+  refresh,
+  readyNodeCount,
+  totalNodeCount,
+  healthyApps,
+  totalApps,
+} = useClusterNodeStatus();
 
 const sourceLabels: Record<StatusSource, string> = {
   live: "Live",
@@ -43,12 +52,28 @@ const secondaryLinks = [
           </p>
         </div>
 
-        <div
-          class="cluster-banner__live-pill"
-          :class="{ 'cluster-banner__live-pill--live': source === 'live' }"
-        >
-          <span class="cluster-banner__live-dot" aria-hidden="true" />
-          {{ sourceLabels[source] }}
+        <div class="cluster-banner__live-meta">
+          <div
+            class="cluster-banner__live-pill"
+            :class="{ 'cluster-banner__live-pill--live': source === 'live' }"
+          >
+            <span class="cluster-banner__live-dot" aria-hidden="true" />
+            {{ sourceLabels[source] }}
+          </div>
+          <span class="cluster-banner__auto-refresh">Auto-refresh 30s</span>
+          <button
+            type="button"
+            class="cluster-banner__refresh"
+            aria-label="Refresh cluster status"
+            :disabled="refreshing"
+            @click="refresh()"
+          >
+            <RefreshCw
+              class="cluster-banner__refresh-icon"
+              :class="{ 'cluster-banner__refresh-icon--spin': refreshing }"
+              aria-hidden="true"
+            />
+          </button>
         </div>
       </header>
 
@@ -147,8 +172,9 @@ const secondaryLinks = [
         </aside>
       </div>
 
-      <footer v-if="lastUpdated" class="cluster-banner__footer">
-        Status as of {{ lastUpdated }} UTC
+      <footer class="cluster-banner__footer">
+        <span v-if="lastUpdated">Status as of {{ lastUpdated }} UTC</span>
+        <span v-else>Cluster status unavailable — showing static manifest</span>
       </footer>
     </div>
   </section>

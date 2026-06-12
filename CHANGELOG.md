@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ### Changed
 
+- **Cluster banner** — Auto-refresh live status every 30s; manual refresh button next to Live pill.
 - **BIND9 story renumbered** — `02-why-we-dropped-pihole-for-bind9` → `interlude-why-we-dropped-pihole-for-bind9`; Chapter 2 reserved for *First Boot* (PR #19). Stub left at old URL.
 
 ### Added
