@@ -35,6 +35,10 @@ export function sidebar() {
             text: "Why We Dropped Pi-hole for BIND9",
             link: "/chapters/interlude-why-we-dropped-pihole-for-bind9",
           },
+          {
+            text: "The Control Center — Knowing From Afar",
+            link: "/chapters/interlude-the-control-center-knowing-from-afar",
+          },
         ],
       },
     ],

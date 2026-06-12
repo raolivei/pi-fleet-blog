@@ -12,6 +12,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ### Added
 
+- **Interlude** — [`chapters/interlude-the-control-center-knowing-from-afar.md`](chapters/interlude-the-control-center-knowing-from-afar.md): how `control.eldertree.local` works, the observability division of labour (Prometheus/Alertmanager/Grafana/Loki/Elder/Ollie), and why the status page reads the K8s API server directly instead of Prometheus. Registered in sidebar + chapters index; embeds 3-grid topology screenshot at `public/control-center-topology-grid.png` (to be captured).
 - **Interlude** — [`chapters/interlude-why-we-dropped-pihole-for-bind9.md`](chapters/interlude-why-we-dropped-pihole-for-bind9.md): Pi-hole → BIND9 cutover (June 2026); not Chapter 2 (reserved for *First Boot*, PR #19).
 
 ### Changed
