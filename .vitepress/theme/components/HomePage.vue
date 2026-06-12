@@ -3,23 +3,22 @@ import HomeNarrative from "./HomeNarrative.vue";
 
 const startCards = [
   {
-    href: "/chapters/01-vision",
-    label: "Read the journey",
-    title: "Chapter 1 — The Vision",
-    desc: "Why self-host on ARM, what runs on the cluster, and how the story is organized.",
+    href: "/chapters/01-the-moment-i-decided-to-own-my-infrastructure",
+    label: "Start the journey",
+    title: "Chapter 1 — Own your infrastructure",
+    desc: "Why self-host on ARM, what ownership means, and how Eldertree started.",
   },
   {
-    href: "/podcast",
-    label: "Listen",
-    title: "Building Eldertree podcast",
-    desc: "Ten episodes — hardware, HA, Vault, and the disasters in between.",
+    href: "/chapters/02-first-boot",
+    label: "Chapter 2",
+    title: "First Boot",
+    desc: "Power-on, base OS setup, and building the foundation.",
   },
   {
-    href: "https://docs.eldertree.xyz/runbook/",
-    label: "When something breaks",
-    title: "Eldertree runbook",
-    desc: "Procedures on docs.eldertree.xyz — not duplicated here.",
-    external: true,
+    href: "/chapters/interlude-why-we-dropped-pihole-for-bind9",
+    label: "Interlude",
+    title: "Why we dropped Pi-hole for BIND9",
+    desc: "June 2026 DNS cutover — kube-vip, ServiceLB, and the VIP story.",
   },
 ] as const;
 </script>
@@ -35,9 +34,9 @@ const startCards = [
           Chapters, war stories, and podcast — real failures, real fixes, no cloud rent.
         </p>
         <div class="home-hero__actions">
-          <a class="home-btn home-btn--brand" href="/chapters/01-vision">Start reading</a>
-          <a class="home-btn home-btn--ghost" href="/chapters/16-the-great-deployment-disaster-of-2026">War stories</a>
-          <a class="home-btn home-btn--ghost" href="/podcast">Audio series</a>
+          <a class="home-btn home-btn--brand" href="/chapters/01-the-moment-i-decided-to-own-my-infrastructure">Start reading</a>
+          <a class="home-btn home-btn--ghost" href="/chapters/02-first-boot">Chapter 2</a>
+          <a class="home-btn home-btn--ghost" href="https://control.eldertree.xyz" target="_blank" rel="noopener noreferrer">Control Center</a>
         </div>
       </div>
       <div class="home-hero__mark" aria-hidden="true">
