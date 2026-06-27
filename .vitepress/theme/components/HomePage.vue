@@ -5,7 +5,7 @@ const startCards = [
   {
     href: "/chapters/01-the-moment-i-decided-to-own-my-infrastructure",
     label: "Start the journey",
-    title: "Chapter 1 — Own your infrastructure",
+    title: "The Moment I Decided to Own My Infrastructure",
     desc: "Why self-host on ARM, what ownership means, and how Eldertree started.",
   },
   {
