@@ -89,7 +89,7 @@ export const cluster = {
 
 export const journeyHighlights = [
   {
-    title: "Own your infrastructure",
+    title: "The Moment I Decided to Own My Infrastructure",
     summary:
       "The AWS bill moment — why self-host on ARM, privacy over convenience, and how Eldertree started.",
     chapter: "/chapters/01-the-moment-i-decided-to-own-my-infrastructure",

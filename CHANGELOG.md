@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ### Changed
 
+- **Chapter 1 title consistency** — Home "Start here" card and the first "Featured stories" teaser now use the canonical chapter title *The Moment I Decided to Own My Infrastructure* instead of the variant *Own your infrastructure*, matching the sidebar and page heading.
 - **BIND9 story renumbered** — `02-why-we-dropped-pihole-for-bind9` → `interlude-why-we-dropped-pihole-for-bind9`; Chapter 2 reserved for *First Boot* (PR #19). Stub left at old URL.
 
 ### Added
