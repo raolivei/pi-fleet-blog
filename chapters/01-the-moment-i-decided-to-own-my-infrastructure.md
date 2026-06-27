@@ -1,159 +1,99 @@
 # Chapter 1: The Moment I Decided to Own My Infrastructure
 
-I remember the exact moment I decided to build Eldertree.
+It started with an AWS bill. Not a scary one — double digits that month — but I'd gotten into the habit of opening the billing console the way you poke a bruise. My personal finance dashboard was running there. So were a couple of half-finished side projects and a pile of experiments I kept meaning to clean up. None of it made money. All of it charged me rent.
 
-I was looking at my AWS bill—again. Not a huge number, but enough to make me pause. Enough to make me think: *I'm paying monthly rent for my own data.* My personal finance dashboard lived on someone else's servers. My learning projects, my AI experiments, my half-finished ideas—all of it sitting in a cloud I didn't control, accumulating charges, subject to terms I didn't write.
+What actually got under my skin wasn't the number, it was realizing I couldn't fully account for it. A bit of egress here, a storage tier there, a NAT gateway I'd spun up for some tutorial months earlier and never killed. My own data, sitting on hardware I'd never see, priced in a way I'd need a spreadsheet to predict.
 
-And then I started paying attention to the industry trends. The "storage wars"—and I don't mean the addictive TV show about abandoned storage units. I mean the actual battle between AWS, GCP, Azure, and everyone else fighting for cloud supremacy while datacenter costs kept climbing. Egress fees going up. Storage tiers getting more complex. Pricing models that required a PhD to understand.
+So I asked a slightly dumb question: what if I just owned the thing?
 
-Meanwhile, my data sat there accumulating monthly charges. Forever.
+Not "owned" in the marketing sense. Actual hardware I could unplug. Data that didn't leave the apartment unless I sent it somewhere on purpose. And, if I'm honest, a way to find out whether I could really run production infrastructure or whether I just knew enough to talk about it in an interview.
 
-And I thought: *What if I just... owned this?*
+I started reading about Raspberry Pis that night.
 
-Not in the theoretical sense. Not "cloud ownership" with quotes around it. Actual ownership. Hardware I could touch. Infrastructure I could reboot. Data that never left my house unless I decided otherwise.
+## The math, and the part that wasn't math
 
-On-premises wasn't just about cost. It was about putting my skills to the test. Could I actually build and maintain production infrastructure? Could I handle the operational burden? Could I architect something resilient enough to trust with real data?
+The money case was easy to make on paper. Three Raspberry Pi 5s ran me around $600 with the boring accessories, roughly half a year of the cloud setup I was replacing, except I pay it once. The whole cluster idles at less than an old incandescent bulb used to pull. No metered anything, no surprise charge because a test box stayed up over a weekend.
 
-There was only one way to find out.
+But the money was mostly an excuse. What I wanted was to understand the entire stack instead of the slice of it I touched day to day.
 
-That's when I started researching Raspberry Pis.
+You can read about Kubernetes for months and still not know it. Tutorials hand you clean problems with the answer printed at the bottom. They don't hand you the night DNS quietly stops resolving, every dashboard goes red, and you have no idea which of the seventeen moving parts is lying to you. That night teaches you more than the months did. I wanted more of those nights, on hardware that was mine, where the only person to escalate to was me.
 
-## The Ownership Question
+There was a privacy piece too. My finance data is real — real balances, real transactions — and I'd never been comfortable with it living behind someone else's "industry-standard security practices." Same for anything users might eventually trust me with. Self-hosting doesn't make that automatically safer, but at least the trade-offs become mine to make.
 
-The decision to self-host wasn't purely financial, though the math helped. Three Raspberry Pi 5s cost about $600 total—less than six months of moderate cloud hosting. They pull 5-10 watts each. No monthly bills. No surprise charges because I forgot to shut down a test instance. No complex pricing tiers. No egress fees.
+## Why Raspberry Pi
 
-In an era where cloud providers are battling over storage pricing while simultaneously raising datacenter costs, on-premises started looking less like "old school" and more like "actually viable for the right use case."
+Once I'd committed to self-hosting, the hardware question mostly answered itself: Pi 5, 8GB.
 
-But the real motivation was deeper: **I wanted to understand the whole stack.**
+It isn't the fastest thing I could have bought. A used mini PC would have out-muscled it for similar money. But the Pi hit a balance I cared about more than raw speed: cheap enough that three of them didn't hurt, quiet and low-power enough to leave running on a shelf all year, and just constrained enough to keep me honest.
 
-Reading about Kubernetes isn't the same as running it. Tutorials give you sanitized problems with known solutions. Production gives you the 3 AM panic when DNS stops resolving and you have no idea why. That's where you actually learn.
+That last part mattered more than I expected. ARM64 means not every image just works. Sometimes there's no arm64 build and you go find one, or build it yourself, and somewhere in that you finally learn what's actually inside the container you've been shipping for a year. The 8GB ceiling does the same thing from the other side. You can't run everything, so you're forced to decide what's worth running and to set real resource limits. In the cloud, the fix for "it's slow" is "give it more." On a Pi, the fix is "go find out why."
 
-And there was the privacy angle. My personal finance data—real transactions, real account balances—shouldn't live on someone else's infrastructure. User data from projects I was building deserved better than "we comply with industry-standard security practices." AI-generated content, learning experiments, half-baked ideas that might never ship—I wanted full control over all of it.
+## Why K3s
 
-Cloud providers make it easy. That's their entire value proposition. But easy comes with trade-offs: vendor lock-in, opaque pricing, someone else's roadmap, someone else's terms of service. I wanted to make different trade-offs.
+Three Pis did not need full upstream Kubernetes, and I had no interest in babysitting a control plane I'd hand-assembled. K3s was the obvious pick: Rancher's lightweight distribution, more or less built for hardware like this. One binary, ingress and a storage provisioner already wired in, embedded etcd so three nodes could do HA without a separate etcd cluster to feed and water.
 
-## Why Raspberry Pi?
+It does make decisions for you. Traefik instead of NGINX, local-path storage out of the box, an embedded datastore instead of external etcd. For a three-node cluster in my living room those were the right defaults, and the few I outgrew I swapped later. (The storage one gets its own chapter, and it isn't a happy story.)
 
-Once I decided to self-host, the hardware question became obvious: Raspberry Pi 5.
+The thing that sold me is that K3s is real Kubernetes, not a teaching toy. It's CNCF-certified, same APIs, same `kubectl`, same debugging loop. Whatever I learned here would carry straight to a "serious" cluster. It's just tuned not to fall over on 8GB of RAM.
 
-Not because it's the most powerful option—it's not. Not because ARM64 makes everything easier—it doesn't. But because it hit a sweet spot between capability, cost, and learning value.
+## What I thought I was building, versus what I built
 
-**The Pi 5 gives you:**
-- 8GB RAM (enough to run real workloads, not enough to be wasteful)
-- ARM64 architecture (forces you to think about cross-platform compatibility)
-- Gigabit Ethernet (real network performance)
-- NVMe support via PCIe (actual storage speed)
-- Low power draw (can run 24/7 without guilt)
+There was no master plan. There was one question: could I run Canopy, my finance dashboard, on a cluster of Raspberry Pis?
 
-The ARM64 constraint turned out to be a feature, not a bug. Not every container image supports ARM64. Some tools don't have ARM64 builds. You learn to check, to build from source when needed, to understand what's actually happening under the hood. It's a forcing function for deeper learning.
+Then that question had kids. Could I run more than one app? Could I survive a node dying? Could I deploy without SSHing in and pulling git by hand? Could I handle secrets like an adult instead of a `.env` file I was afraid to grep? Could I see what was actually happening, metrics and logs, the way I would in production? Could I reach the whole thing from outside without punching holes in my router?
 
-And the 8GB RAM limit? Also a feature. You can't run everything at once. You have to think about resource limits, optimize what you deploy, prioritize what actually matters. In the cloud, you just scale up. On a Pi cluster, you learn to make it fit.
+Every answer raised the next question. "A few Docker containers" turned, fairly quietly, into a GitOps-managed Kubernetes platform with HA, Vault, monitoring, and a VPN. Which is roughly how every infrastructure project I've ever touched tends to go.
 
-## Why K3s?
+The apps were the point, though, not the cluster for its own sake:
 
-Once I had the hardware, I needed to choose a Kubernetes distribution. Full upstream Kubernetes felt like overkill for three Raspberry Pis. K3s—Rancher's lightweight Kubernetes—was purpose-built for exactly this use case.
+- **Canopy** — personal finance, the reason any of this started; self-hosted because that data shouldn't live anywhere else.
+- **SwimTO** — Toronto pool schedules, a public project I keep partly so I'm learning in the open.
+- **Ollie** — a local-first assistant with a long memory.
+- **Eldertree Docs** — the runbook, treated as infrastructure rather than a drawer full of notes.
 
-**K3s gives you:**
-- Single binary installation (no complex dependencies)
-- Built-in Traefik ingress (one less thing to configure)
-- Built-in storage provisioner (start deploying immediately)
-- Embedded etcd for HA (three nodes, no separate etcd cluster)
-- ARM64 first-class support (not an afterthought)
+Plus the usual graveyard of half-finished things in various states of done.
 
-The trade-off: K3s makes some decisions for you. Traefik instead of NGINX. Local-path storage by default. SQLite or embedded etcd instead of external etcd. For a three-node homelab cluster, these were the right defaults. I could always swap them later if needed.
+## The name
 
-And here's the key insight: **K3s is real Kubernetes.** CNCF certified. Compatible with standard APIs. If you learn K3s, you've learned Kubernetes. The concepts transfer. The kubectl commands work the same. The debugging process is identical. You're not learning a toy version—you're learning the real thing, just optimized for resource-constrained environments.
+I called it Eldertree. I wanted something that sounded like it had been around a while and intended to stay: an old tree that holds up the patch of forest around it, takes the weather, and gets a little tougher each season. That was the job I was handing the cluster, to be the quiet foundation everything else gets to stand on. It also read better on a dashboard than `homelab-prod-01`.
 
-## The Vision
+## How it actually went
 
-I didn't start with a grand plan. I started with: *Can I run my personal finance dashboard on a Raspberry Pi cluster?*
+Six months on, the timeline turned out far less tidy than the goals were:
 
-That question expanded quickly:
-- Can I run multiple apps?
-- Can I make it resilient (high availability)?
-- Can I automate deployments (GitOps)?
-- Can I do secrets properly (Vault)?
-- Can I monitor it like production (Prometheus, Grafana)?
-- Can I access it remotely without punching holes in my firewall (Tailscale)?
+- **October 2025** — one Pi, one app (the US Law Severity Map). Barely a "cluster."
+- **November 2025** — K3s, Terraform, FluxCD. The boring, load-bearing layer.
+- **December 2025** — Vault, monitoring, DNS, and a long stretch of tightening screws.
+- **January 2026** — three nodes for real HA, plus Tailscale so I could reach it from anywhere.
+- **February 2026** — pulled Longhorn back out (too heavy for 8GB Pis) and finally centralized the CI/CD I'd been copy-pasting between repos.
+- **March–June 2026** — production apps, the Control Center, and a few incidents I'd rather not relive but learned the most from.
 
-Each question led to the next. Each answer raised new questions. What started as "run a few Docker containers" became "build a production-grade Kubernetes platform."
+None of that was planned in advance. Each piece showed up because the one before it broke or fell short, which I've come to think is just what building looks like when you're honest about it.
 
-**The applications I wanted to run:**
-- **Canopy** - Personal finance dashboard (private data, self-hosted by necessity)
-- **SwimTO** - Toronto pool schedules (public service, learning project)
-- **Ollie** - AI assistant with total recall (local-first by design)
-- **Eldertree Docs** - Searchable runbook (documentation as infrastructure)
-- Plus a dozen other projects in various states of completion
+## What owning it taught me
 
-**The infrastructure goals:**
-- Learn Kubernetes in production (real problems, real stakes)
-- Build resilient, maintainable systems (GitOps, monitoring, proper secrets)
-- Own the full stack (hardware to application)
-- Document everything (searchable runbook, not scattered notes)
+A few things stuck.
 
-## The Name
+Start small and let it grow. My instinct was to architect the full multi-node, HA, fully-monitored thing on day one. Good thing I didn't, or I'd have been debugging five abstractions at once instead of one. One node, then two, then the hard parts.
 
-I called it **Eldertree** because I wanted something that represented wisdom, stability, growth, and resilience. An elder tree in a forest is foundational—it supports the ecosystem around it, weathers challenges, learns from seasons, grows stronger over time.
+The breakages were the curriculum. I've got something north of 90 documented issues now, and nearly everything I actually understand traces back to one of them. The runbook at docs.eldertree.xyz is mostly just me refusing to solve the same problem twice.
 
-This cluster was meant to be exactly that: a foundational piece of infrastructure that supports other projects, learns from failures, and evolves organically.
+Write it down or relive it. Every time I skipped the note, I paid for it later, usually at a worse hour.
 
-## The Evolution
+And the big one: ownership is responsibility and freedom in the same package, and you don't get to keep only the half you like. When a node wedges itself at 3 a.m., there's nobody to page. It's me. But when I want to tear the network apart and rebuild it on a Tuesday out of pure curiosity, there's also nobody to ask. After a few months I stopped resenting the first part, because it's the price of the second.
 
-Looking back six months later, the journey wasn't linear:
+## I'm not telling you to do this
 
-**October 2025:** Started with one Pi, one project (US Law Severity Map)  
-**November 2025:** Set up K3s, Terraform, FluxCD (infrastructure phase)  
-**December 2025:** Added Vault, monitoring, DNS, optimized everything  
-**January 2026:** Expanded to three nodes for HA, added Tailscale VPN  
-**February 2026:** Simplified storage (dropped Longhorn), built reusable CI/CD workflows  
-**March-June 2026:** Deployed production apps, built the Control Center, survived multiple incidents
+To be clear, this isn't a pitch for self-hosting everything. The cloud is good at what it's good at: absorbing complexity you'd rather not think about, scaling past anything I can manage with three Pis, paying whole teams to worry about security and compliance so you don't have to. For most people, most of the time, that's the right call.
 
-Each phase taught new lessons. Each incident revealed gaps in understanding. Each solved problem made the next one clearer. The cluster evolved organically—solving problems as they arose, not following a rigid master plan.
+I just wanted the other side of the trade. I gave up effortless scale, managed databases, and anyone to call when it breaks. In return I got a real understanding of the stack, my data under my own roof, a bill that doesn't move, and the freedom to experiment without asking permission first. For what I was trying to learn, that was a deal worth making.
 
-## What I Learned About Ownership
+## Where this goes
 
-Here's what six months of owning my infrastructure taught me:
+This is Chapter 1 because it's the start, not the summary. The cluster is up. The apps are running. GitOps and monitoring work. The question just changed shape, from "can I build this?" to "how far can I push it before it pushes back?"
 
-**Starting simple was the right choice.** One node, basic setup, then grow. Don't try to build HA on day one.
-
-**Problems are learning opportunities.** Each of the 90+ documented issues taught something valuable. The runbook at docs.eldertree.xyz is the artifact of that learning.
-
-**Documentation is critical.** Without it, you repeat the same mistakes. With it, you build on previous solutions.
-
-**Iteration beats perfection.** Ship something that works, learn from it, improve it, repeat. The first version doesn't have to be the final version.
-
-**Constraints force creativity.** 8GB RAM per node? You learn to optimize. ARM64 only? You learn to build from source. Home network? You learn creative solutions for remote access.
-
-And most importantly: **Ownership means responsibility, but also freedom.** When something breaks at 3 AM, it's on me to fix it. But when I want to try something new, deploy a weird experiment, or completely redesign the network—I can. No approval needed. No terms of service to check. No vendor roadmap to wait for.
-
-That freedom is worth the responsibility.
-
-## The Trade-Off
-
-I'm not arguing everyone should self-host. Cloud providers exist for good reasons. They handle the complexity you don't want to think about. They scale effortlessly. They have entire teams dedicated to security, reliability, and compliance.
-
-But for me, the trade-off was clear: I was willing to take on that complexity in exchange for ownership, learning, and control.
-
-**What I gave up:**
-- Effortless scaling (I have three nodes, not infinite nodes)
-- Managed services (I run my own Postgres, Redis, Vault)
-- Support contracts (I am the support)
-
-**What I gained:**
-- Deep understanding of the full stack
-- Complete control over my data
-- Predictable costs (hardware is a one-time expense)
-- Freedom to experiment without permission
-- A production environment that taught me more than any tutorial could
-
-## What's Next
-
-This is Chapter 1 because it's the beginning, not the end. The cluster is running. Apps are deployed. Monitoring is in place. GitOps is working. But the journey isn't over—it's just shifted from "can I build this?" to "how far can I take this?"
-
-The rest of this blog is the story of that journey: the technical decisions, the war stories, the late-night debugging sessions, the moments when automation saved me, and the moments when I had to dig deep into systemd logs to understand why a node wouldn't boot.
-
-It's the story of choosing ownership over convenience, and finding out what that actually means in practice.
+The rest of this blog is that: the decisions, the war stories, the late nights, the times automation quietly saved me, and the times I was elbow-deep in `journalctl` trying to work out why a node wouldn't come back.
 
 ---
 
-*Next: [Chapter 2: First Boot](/chapters/02-first-boot) — the moment I ran `kubectl get nodes` for the first time and saw all three nodes ready.*
+*Next: [Chapter 2: First Boot](/chapters/02-first-boot) — the first time I ran `kubectl get nodes` and watched all three come up ready.*
