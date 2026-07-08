@@ -5,7 +5,7 @@ Welcome to the Building Eldertree blog. The old technical chapter series was con
 ## The Journey
 
 - [Chapter 1: The Moment I Decided to Own My Infrastructure](/chapters/01-the-moment-i-decided-to-own-my-infrastructure)
-- Chapter 2: First Boot — in [PR #19](https://github.com/raolivei/pi-fleet-blog/pull/19) (not yet published on main)
+- [Chapter 2: First Boot](/chapters/02-first-boot)
 
 ## Interludes
 

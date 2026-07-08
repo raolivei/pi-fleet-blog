@@ -9,12 +9,6 @@ const startCards = [
     desc: "Why self-host on ARM, what ownership means, and how Eldertree started.",
   },
   {
-    href: "/chapters/02-first-boot",
-    label: "Chapter 2",
-    title: "First Boot",
-    desc: "Power-on, base OS setup, and building the foundation.",
-  },
-  {
     href: "/chapters/interlude-why-we-dropped-pihole-for-bind9",
     label: "Interlude",
     title: "Why we dropped Pi-hole for BIND9",
