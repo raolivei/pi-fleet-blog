@@ -96,6 +96,20 @@ export const journeyHighlights = [
     tags: ["Origin story", "Self-hosting"],
   },
   {
+    title: "Making things talk",
+    summary:
+      "Dual-network Pis (WiFi management + gigabit pod traffic), the first DNS setup, kube-vip, and ExternalDNS.",
+    chapter: "/chapters/03-making-things-talk",
+    tags: ["Networking", "DNS"],
+  },
+  {
+    title: "Pi-hole → BIND9",
+    summary:
+      "Why we removed Pi-hole ~8 months in — adblock unused, sidecar complexity, and the June 2026 cutover to standalone BIND9 on the same VIP.",
+    chapter: "/chapters/interlude-why-we-dropped-pihole-for-bind9",
+    tags: ["DNS", "Simplification"],
+  },
+  {
     title: "The CI/CD consolidation",
     summary:
       "Eight repos, copy-paste workflows — centralized reusable GitHub Actions in github-workflows.",
@@ -114,20 +128,6 @@ export const journeyHighlights = [
     summary: "HA Raft survives node loss; unseal workflow documented in runbook VAULT-001.",
     runbook: "https://docs.eldertree.xyz/runbook/issues/vault/VAULT-001",
     tags: ["Vault", "Secrets"],
-  },
-  {
-    title: "Pi-hole → BIND9",
-    summary:
-      "Why we removed Pi-hole ~8 months in — adblock unused, sidecar complexity, and the June 2026 cutover to standalone BIND9 on the same VIP.",
-    chapter: "/chapters/interlude-why-we-dropped-pihole-for-bind9",
-    tags: ["DNS", "Simplification"],
-  },
-  {
-    title: "Port 53 on bare-metal K3s",
-    summary:
-      "Historical: Pi-hole vs klipper ServiceLB, kube-vip VIPs, and disabling ServiceLB — lessons BIND9 inherited.",
-    chapter: "/chapters/interlude-why-we-dropped-pihole-for-bind9",
-    tags: ["DNS", "Networking"],
   },
   {
     title: "Longhorn removed",
