@@ -30,6 +30,10 @@ export function sidebar() {
             text: "Chapter 3: Making Things Talk",
             link: "/chapters/03-making-things-talk",
           },
+          {
+            text: "Chapter 4: Keeping Secrets",
+            link: "/chapters/04-keeping-secrets",
+          },
         ],
       },
       {

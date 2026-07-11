@@ -13,6 +13,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ### Added
 
+- **Chapter 4: Keeping Secrets** — [`chapters/04-keeping-secrets.md`](chapters/04-keeping-secrets.md): the near-miss API-key commit, Vault dev → production → HA (Raft), policy-based access, automated unseal, Tailscale vs WireGuard, Cloudflare Tunnel, and TLS everywhere. Sidebar entry added after Chapter 3. Written in the human voice (not the AI-generated draft prose).
 - **Interlude** — [`chapters/interlude-why-we-dropped-pihole-for-bind9.md`](chapters/interlude-why-we-dropped-pihole-for-bind9.md): Pi-hole → BIND9 cutover (June 2026); not Chapter 2 (reserved for *First Boot*, PR #19).
 
 ### Changed
