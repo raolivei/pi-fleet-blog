@@ -34,6 +34,10 @@ export function sidebar() {
             text: "Chapter 4: Keeping Secrets",
             link: "/chapters/04-keeping-secrets",
           },
+          {
+            text: "Chapter 5: Scaling Decisions, Not YAML",
+            link: "/chapters/05-scaling-decisions-not-yaml",
+          },
         ],
       },
       {
