@@ -39,8 +39,8 @@ export function sidebar() {
             link: "/chapters/05-scaling-decisions-not-yaml",
           },
           {
-            text: "Chapter 2: First Boot",
-            link: "/chapters/02-first-boot",
+            text: "Chapter 6: Running Real Apps",
+            link: "/chapters/06-running-real-apps",
           },
         ],
       },
