@@ -1,3 +1,5 @@
+> **Legacy chapter (deep link)** — This post is kept at this URL for shared links. The blog is moving to a [new story-driven series](/chapters/01-the-moment-i-decided-to-own-my-infrastructure); this chapter is not listed in the sidebar.
+
 # Chapter 18: The Great CI/CD Consolidation
 
 _Taming the workflow wilderness with reusable GitHub Actions_

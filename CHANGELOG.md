@@ -6,12 +6,45 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## [Unreleased]
 
+### Changed
+
+- **Chapter 1 rewrite** — Reworked *The Moment I Decided to Own My Infrastructure* into a more personal, lived-in voice; trimmed the AI-generated tells (rule-of-three cadence, fragment lists, bolded aphorisms, symmetric pros/cons tables). Same facts, timeline, and structure; the *The Vision* section is now *What I thought I was building, versus what I built*.
+- **BIND9 story renumbered** — `02-why-we-dropped-pihole-for-bind9` → `interlude-why-we-dropped-pihole-for-bind9`; Chapter 2 reserved for *First Boot* (PR #19). Stub left at old URL.
+
+### Added
+
+- **Chapter 5: Scaling Decisions, Not YAML** — [`chapters/05-scaling-decisions-not-yaml.md`](chapters/05-scaling-decisions-not-yaml.md): copy-paste workflow drift across ~15 repos, FluxCD as the deploy source of truth, the `github-workflows` reusable-workflow repo (`docker-build`, `python-ci`, `static-site-pages`, `version-check`), the five over-abstracted workflows that got deleted, Flux image automation instead of a GitOps glue workflow, and the `@main` blast-radius tradeoff. Rewritten from the stale draft against the current state of `github-workflows` and `pi-fleet`; sidebar entry added after Chapter 4, and Chapters 3–5 surfaced on the chapters index.
+- **Chapter 4: Keeping Secrets** — [`chapters/04-keeping-secrets.md`](chapters/04-keeping-secrets.md): the near-miss API-key commit, Vault dev → production → HA (Raft), policy-based access, automated unseal, Tailscale vs WireGuard, Cloudflare Tunnel, and TLS everywhere. Sidebar entry added after Chapter 3. Written in the human voice (not the AI-generated draft prose).
+- **Interlude** — [`chapters/interlude-why-we-dropped-pihole-for-bind9.md`](chapters/interlude-why-we-dropped-pihole-for-bind9.md): Pi-hole → BIND9 cutover (June 2026); not Chapter 2 (reserved for *First Boot*, PR #19).
+
+### Changed
+
+- **Journey highlights** — Pi-hole → BIND9 + port-53 lessons link to interlude (not Chapter 2).
+- **Legacy archive ch.8/ch.14** — Editorial notes point to interlude; Pi-hole sections marked historical.
+- **Chapter 1 footer** — Next link → Chapter 2 *First Boot* (PR #19).
+
+- **Deploy workflow** — Build and Pages deploy on Eldertree self-hosted runners (`runs-on: self-hosted`) instead of GitHub-hosted.
+- **Podcast archived** — Move `podcast/` to `.archive/podcast/`; remove Podcast nav, sidebar, and home CTAs until the audio series is rewritten.
+- **Cluster banner node badges** — Show K8s Ready (`Ready` / `Not ready`) from Control Center instead of static scheduling tiers (`stable`/`unstable`); live pill reads **Live** / **Cached** / **Offline**.
+- **Cluster banner node list** — Topology driven by the live/cached K8s node list; `data/cluster.ts` enriches known nodes (IPs, roles) only.
+- **Cluster banner readability** — Raise contrast on node IPs, stat labels, VIP addresses, stack chips, footer timestamp, and Control Center hint text.
+- **Cluster banner (home)** — Replace flat “at a glance” strip with a featured homelab box: live node topology, stats, stack chips, and prominent Control Center CTA.
+- **Home page (LinkedIn launch)** — Hero copy matches Chapter 1 pitch; featured cards lead with Ch.1 + Ch.18 chapter links; cluster glance uses public `control.eldertree.xyz` API for live node badges; Control Center public URL in ops links; refresh `cluster-status.json` fallback.
+- **Nav cleanup** — Remove archived technical chapters (01–20) from sidebar; only the new story-driven series is listed. Legacy deep links (e.g. Ch.18) stay published but out of sidebar.
+
+### Fixed
+
+- **Cluster banner false STABLE** — Static fallback no longer marks node-2/3 as stable when the API is unreachable; down nodes from live/cached payloads show **Not ready** (red) instead of scheduling tier labels.
+- **Legacy deep link** — Republish `/chapters/18-reusable-workflows` (not in sidebar) so LinkedIn and other shared URLs keep working after the nav cleanup.
+- **Deploy workflow queued forever** — `build` used `self-hosted` but the only ARC scale set (`ollie-eldertree`) registers runners for `raolivei/ollie` only. Build on `ubuntu-latest` instead (VitePress static site; cluster-status sync no-ops without kubectl on GHA).
+
 ### Added
 
 - **Live cluster glance:** node STABLE/UNSTABLE badges refresh at runtime from `https://elder.eldertree.local/api/public/cluster/nodes`, then `/cluster-status.json`, with static fallback from [`data/cluster.ts`](data/cluster.ts). Optional refresh: [`scripts/sync-cluster-status.sh`](scripts/sync-cluster-status.sh) (kubectl).
 
 ### Changed
 
+- **Cluster at a glance:** link to Eldertree Control Center (`control.eldertree.local`, LAN/Tailscale) in the ops links row.
 - **Deploy workflow:** optional `scripts/sync-cluster-status.sh` pre-build step (no-op in GHA when kubectl/cluster unavailable; uses committed `public/cluster-status.json`).
 - **Home hero typography:** [Fraunces](https://fonts.google.com/specimen/Fraunces) display for the title, [DM Sans](https://fonts.google.com/specimen/DM+Sans) for the “Build diary” eyebrow (body unchanged).
 - **Eldertree logo:** official artwork ([`assets/logo-source.png`](assets/logo-source.png)) recolored to blog teal via [`scripts/recolor-logo.py`](scripts/recolor-logo.py); flood-fill removes white canvas/halos; brighter ramp for dark UI; [`public/logo-full.png`](public/logo-full.png) (home), [`public/logo.png`](public/logo.png) (nav/favicon).

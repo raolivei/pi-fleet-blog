@@ -2,7 +2,7 @@
 
 Narrative site for the Eldertree cluster journey — **https://blog.eldertree.xyz**
 
-Written chapters, war stories, and the **Building Eldertree** podcast. Operational runbooks live on [docs.eldertree.xyz](https://docs.eldertree.xyz); live metrics on Grafana (LAN).
+Written chapters and war stories from the Eldertree build diary. Operational runbooks live on [docs.eldertree.xyz](https://docs.eldertree.xyz); live metrics on Grafana (LAN).
 
 ## Stack
 
@@ -30,7 +30,7 @@ node scripts/sync-runbook-issues.mjs
 
 ```
 ├── chapters/           # Main blog content
-├── podcast/            # Episode scripts (index.md is published)
+├── .archive/           # Archived chapters + draft podcast (not published)
 ├── public/             # banner.svg, logo.svg, CNAME
 ├── data/cluster.ts     # Static cluster facts for home glance
 └── .vitepress/         # Theme + config
