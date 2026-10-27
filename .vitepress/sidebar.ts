@@ -38,6 +38,10 @@ export function sidebar() {
             text: "Chapter 5: Scaling Decisions, Not YAML",
             link: "/chapters/05-scaling-decisions-not-yaml",
           },
+          {
+            text: "Chapter 2: First Boot",
+            link: "/chapters/02-first-boot",
+          },
         ],
       },
       {
