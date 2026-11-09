@@ -71,8 +71,9 @@ const startCards = [
         The name reflects the stability I wanted from this foundation — an
         <strong>elder tree</strong> that weathered storms and supported everything built on top.
         <strong>Eldertree</strong> is a three-node K3s cluster on Raspberry Pi 5 hardware in a
-        portable open-frame tower. This site is the build diary; the runbook and ops consoles
-        live elsewhere.
+        portable open-frame tower. This site is the build diary; the
+        <a href="https://docs.eldertree.xyz/">Runbook</a> covers setup and operations, and the
+        <a href="https://control.eldertree.xyz/">Control Center</a> shows the live cluster.
       </p>
       <p class="home-meta-links">
         <a href="/chapters/">Browse all chapters</a>
