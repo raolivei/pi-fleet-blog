@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## [Unreleased]
 
+### Added
+
+- **Issue audit interlude** — The November 6, 2026 investigation of cancelled CI, inactive workflows, and actual failed steps; evidence-based GitHub Issue closure and the distinction between merging and deployment verification.
+
+### Fixed
+
+- **Chapter overview** — List the published Chapter 6 and identify Chapters 7–13 as the remaining chapter PRs.
+
 ### Changed
 
 - **Chapter 1 rewrite** — Reworked *The Moment I Decided to Own My Infrastructure* into a more personal, lived-in voice; trimmed the AI-generated tells (rule-of-three cadence, fragment lists, bolded aphorisms, symmetric pros/cons tables). Same facts, timeline, and structure; the *The Vision* section is now *What I thought I was building, versus what I built*.
