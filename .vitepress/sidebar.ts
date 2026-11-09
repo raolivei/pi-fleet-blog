@@ -55,6 +55,10 @@ export function sidebar() {
             text: "Why We Dropped Pi-hole for BIND9",
             link: "/chapters/interlude-why-we-dropped-pihole-for-bind9",
           },
+          {
+            text: "The Ticket Was Real. The CI Failure Wasn't.",
+            link: "/chapters/interlude-the-ticket-was-real",
+          },
         ],
       },
     ],

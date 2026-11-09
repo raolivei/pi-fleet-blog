@@ -9,6 +9,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 ### Added
 
 - **Chapter 10: Building Ollie** — Reworked the existing chapter draft around shared memory, the verified November 2026 retrieval architecture, source citations, and GitHub Issues as durable work records. Removed unsupported provider, indexing, and availability claims; kept merged code distinct from deployment verification.
+- **Issue audit interlude** — The November 6, 2026 investigation of cancelled CI, inactive workflows, and actual failed steps; evidence-based GitHub Issue closure and the distinction between merging and deployment verification.
+
+### Fixed
+
+- **Chapter overview** — List the published Chapter 6 and identify Chapters 7–13 as the remaining chapter PRs.
 
 ### Changed
 

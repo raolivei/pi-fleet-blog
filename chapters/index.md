@@ -18,6 +18,8 @@ Side stories off the main timeline (ops updates, cutovers, lessons that don’t 
 
 - [Interlude: Why We Dropped Pi-hole for BIND9](/chapters/interlude-why-we-dropped-pihole-for-bind9) — June 2026 DNS cutover; kube-vip, ServiceLB, same VIP `192.168.2.201`
 
+- [Interlude: The Ticket Was Real. The CI Failure Wasn't.](/chapters/interlude-the-ticket-was-real) — November 2026 issue audit; cancelled CI, evidence, and deciding when to close a ticket
+
 Chapters 7–9 and 11–13 remain drafted in open PRs ([#24](https://github.com/raolivei/pi-fleet-blog/pull/24)–[#26](https://github.com/raolivei/pi-fleet-blog/pull/26), [#28](https://github.com/raolivei/pi-fleet-blog/pull/28)–[#30](https://github.com/raolivei/pi-fleet-blog/pull/30)). Chapter numbers preserve the series order; drafts do not all merge in sequence. For operational procedures, see the [Eldertree runbook](https://docs.eldertree.xyz/runbook/).
 
 ## Legacy deep links (not in sidebar)
