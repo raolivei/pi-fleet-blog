@@ -1,173 +1,81 @@
 # Chapter 10: Building Ollie
 
-By March 2026, the Eldertree cluster was running smoothly. Applications deployed via GitOps. Monitoring caught issues before users noticed. Secrets lived in Vault. The infrastructure was solid.
+I had written down a lot of Eldertree by the time I started building an assistant for it. There were runbooks, project READMEs, changelogs, and notes about decisions I didn't want to make twice. Finding the right piece still meant remembering which repository I'd put it in.
 
-But I had a problem: **I couldn't remember how anything worked.**
+There was another version of the same problem in my editors. I used Cursor and Claude Code, and each session needed context: which project we were working on, how I expected changes to be made, what had already been tried. I could explain it again, or I could give the tools somewhere consistent to read it.
 
-Not the big stuff—I knew how to deploy apps, debug pods, check metrics. But the small details? "What path did I put that Cloudflare token in Vault?" "Which Grafana dashboard shows Traefik latency?" "What was the fix for that DNS issue three months ago?" "Where's the runbook entry for Pi-hole troubleshooting?"
+That was the useful idea behind Ollie. I wanted help finding my own work and carrying its context forward. Building that turned out to require more care about documents than about chat bubbles.
 
-I'd documented everything. README files, runbooks, changelogs, commit messages. The information existed. But finding it required searching through 15+ repositories, multiple doc sites, and my own memory of "I think I wrote about this somewhere."
+## Start with something the next session can read
 
-That's when I decided: the cluster needs a brain. Something that knows the entire codebase. Something that can answer questions like "How do I unseal Vault?" or "Show me the Traefik metrics dashboard" without me having to grep through repos.
+The simplest part is still one of the most useful: a shared `memory/` directory in the Ollie repository.
 
-I needed an AI assistant. Not a generic ChatGPT session. A specialized assistant trained on my workspace, my conventions, my infrastructure.
+`MEMORY.md` points to the other notes. Project files hold context that is worth carrying between sessions. Workspace notes describe conventions. `HANDOFF.md` provides a place to leave the current state and next steps when switching tools.
 
-I needed Ollie.
+Cursor reads the workspace instructions and rules. Claude Code's memory location is linked to the same directory. The tools have different ways of loading context, but I don't have to maintain two copies of every convention.
 
-## The Vision
+That removes one source of drift. It doesn't make a note current forever. A handoff from June is still a handoff from June, even if every assistant can read it in November. Sharing the file solves duplication; checking its date and evidence is still my job.
 
-Ollie is a personal AI assistant for the raolivei workspace. It indexes all documentation, code, and runbooks from ~25 repositories. You ask it a question about the infrastructure, and it answers with context from the actual docs.
+The distinction matters because the files look authoritative. A note titled “deployment complete” can outlive the deployment it describes. A plan can sit next to a runbook without looking very different in a search result.
 
-Example queries:
-- "How do I deploy Canopy?"
-- "What's the Vault unseal process?"
-- "Show me the Grafana dashboard for Traefik"
-- "Where are the Cloudflare credentials stored?"
-- "What was the fix for Pi-hole DNS resolution?"
+## Finding documents before asking for an answer
 
-It's RAG (Retrieval-Augmented Generation): find relevant documentation, pass it to an LLM as context, generate an answer grounded in actual project docs.
+Ollie adds retrieval to that shared context. It splits documentation into chunks, generates embeddings, and stores them in ChromaDB. A question retrieves relevant chunks, which the API supplies to a language model as context. That is retrieval-augmented generation, usually shortened to RAG.
 
-But Ollie needed to be more than a chatbot. It needed to be a workspace assistant: integrated with my editor (Cursor), my CLI (Claude Code), and the cluster itself (running on Eldertree).
+I am not training a model on my infrastructure each time I index it. I am building a searchable collection of source material and putting selected passages beside a question.
 
-## The Architecture
+That sounds like a small distinction until something changes. A new Git commit doesn't update an existing index by itself. A checkout that isn't available to the indexer doesn't become searchable because its name appears in a project list. And retrieving a document about a service doesn't tell me whether that service is healthy now.
 
-Ollie has three components:
+The scope needs the same honesty. In the committed implementation I checked in November 2026, the workspace indexer uses a project registry, reads a small list of root documents such as `README.md` and `CHANGELOG.md`, and walks Markdown files under each project's `docs/` directory. It doesn't ingest every source file or every document elsewhere in those repositories. A broader repository-discovery implementation exists in local work, but that isn't the same as a merged release.
 
-**Indexing** — Crawls all workspace repositories, extracts documentation (README, CLAUDE.md, runbooks, changelogs), and stores embeddings in ChromaDB. This happens locally (not in the cluster) because it needs access to all repos.
+So “Ollie knows the workspace” is an ambition. “This answer used these retrieved documents” is a claim I can inspect.
 
-**API** — FastAPI service that handles queries. Takes a question, retrieves relevant docs from ChromaDB, sends them to an LLM (Gemini, Groq, or Ollama), and returns the answer.
+## What the application actually contains
 
-**UI** — Simple Streamlit interface for interactive chat. Useful for quick questions when I don't want to switch to an editor.
+The API is FastAPI. Workspace documentation and conversation memory use separate ChromaDB collections. The repository contains a React frontend as well as an older Streamlit interface; React isn't just a future item on a roadmap.
 
-The stack:
-- **FastAPI** (API layer)
-- **ChromaDB** (vector database for embeddings)
-- **Ollama** (local LLM, runs on my Mac via Tailscale)
-- **Gemini** (cloud LLM, fast and capable)
-- **Groq** (cloud LLM, backup)
-- **Streamlit** (UI)
-- **React** (future Control Center integration)
+The chat service I checked tries Ollama first. If that request fails and an OpenRouter key is configured, it can try OpenRouter. That's the implemented fallback path. It doesn't guarantee an answer: the model can be unavailable, the fallback can fail, or the retrieved material can be wrong for the question.
 
-Ollie runs in two modes:
-1. **Local dev** — On my laptop for indexing and testing (UI :3000, API :8765)
-2. **Cluster** — Deployed to Eldertree for 24/7 availability (port-forward when needed)
+Running inference on my Mac also creates a dependency. Putting the API on Eldertree doesn't make the Mac permanently reachable or give the cluster a model it can run independently. I need to describe those pieces separately when I talk about availability.
 
-## The Multi-Provider LLM Strategy
+The data has its own lifecycle too. The core Dockerfile copies application code, not a prebuilt workspace database. The Helm template mounts persistent storage at `/data` and a read-only workspace directory for documentation. Rebuilding the image is therefore not evidence that the index was refreshed. The serving environment needs access to the intended documents and an index built from them.
 
-One lesson from building infrastructure: redundancy matters. If your primary provider goes down or rate-limits you, you need a fallback.
+The repository has an indexing command, `make index`. What matters after running it is its result: which projects and documents were available, what was indexed, and whether there were errors. A successful application build answers a different question.
 
-Ollie uses three LLM providers:
+## A source label is part of the answer
 
-**Gemini (primary)** — Google's Gemini Pro. Fast, capable, generous free tier. Handles most queries.
+In November I made a focused correction to workspace search. Project metadata needed to survive into citations, and the meaning of a returned distance needed to be clear. A smaller distance represented a closer match; an absent value needed to remain distinct from zero.
 
-**Groq (fallback)** — Fast inference on Llama models. Kicks in if Gemini is down or rate-limited.
+Those details are easy to lose behind a fluent paragraph. If the source loses its project label, checking it becomes harder. If a distance looks like a confidence score, I can give the number a meaning it doesn't have.
 
-**Ollama (local fallback)** — Runs on my M4 Mac, reachable via Tailscale. Offline capability. Slower but reliable.
+The correction was tested and merged. That establishes a change in the repository. It doesn't establish that every running copy of Ollie has it, and it doesn't turn similarity into factual accuracy.
 
-The API tries providers in order: Gemini → Groq → Ollama. If one fails, it automatically falls back to the next. No manual intervention.
+This is the tradeoff I keep coming back to with retrieval. It makes supporting material easier to inspect. It also makes stale material easier to retrieve. The answer still needs to distinguish an old incident note, a proposed fix, committed code, and a dated observation from the running system.
 
-API keys for Gemini and Groq live in Vault (`secret/openclaw/gemini`, `secret/openclaw/groq`). External Secrets syncs them to Kubernetes. The Ollama endpoint is just a URL (`http://100.x.x.x:11434` on the Tailnet).
+## When a conversation needs an issue
 
-For critical questions, Ollie can use **Grove's best-of-three orchestration**: query all three providers in parallel, use an LLM as a judge to pick the best answer, return that. More expensive (3x the API calls), but higher quality. Useful for documentation generation or complex troubleshooting.
+Shared memory helps the next assistant understand my conventions. It is a poor substitute for a work queue.
 
-## The Memory System: One Brain, Two IDEs
+On November 6, I turned 21 workspace observations into 23 GitHub Issues. One CI concern became separate investigations in pi-fleet, SwimTO, and Canopy. The tickets kept the original observations, marked what still needed revalidation, and supplied acceptance criteria. The investigation then belonged beside the code and workflow it might change.
 
-Here's where it gets interesting. I use two development tools: **Cursor** (AI-powered editor) and **Claude Code** (terminal-based Claude agent). Both are great. Both need context about my workspace. But they don't share memory by default.
+That gave the next session a concrete place to continue. It could read the question, collect evidence, and update the issue instead of trusting a summary that said something was broken.
 
-Cursor loads context from `.cursor/rules/` and memory files you specify.  
-Claude Code loads context from `~/.claude/projects/<project>/memory/`.  
+The [pi-fleet CI ticket](https://github.com/raolivei/pi-fleet/issues/328) is a good example. Its initial summary needed investigation before anyone could decide whether it needed a patch. The separate [audit interlude](/chapters/interlude-the-ticket-was-real) follows the evidence and the different decisions it led to. The important point here is that the tickets allowed different outcomes.
 
-The problem: maintaining two separate memory systems is a nightmare. You update a convention in Cursor, forget to update it in Claude Code, and now your AI assistants give you conflicting advice.
+For a confirmed bug, I want the evidence and reproduction to lead to a focused PR, review and checks, merge, verification in the target environment, and closure against the acceptance criteria. The audit showed that I haven't enforced that last boundary consistently. Some tickets closed through a merge; other work still needed deployment verification. I am making that distinction explicit rather than treating a merged PR as proof that the running behavior changed.
 
-The solution: **one shared memory folder, two symlinks**.
+Issues carry unfinished work across sessions and assistants. Memory carries the context for doing it. Keeping both useful takes more than saving the conversation.
 
-I created `ollie/memory/` as the canonical memory location. It holds:
+## What I would build first again
 
-- `MEMORY.md` — Index of all memories
-- `HANDOFF.md` — Cross-tool session bridge (update when switching Cursor ↔ Claude)
-- `user_ollie_persona.md` — Ollie's identity and tone
-- `project_*.md` — Active project state and conventions
-- `workspace_*.md` — Workspace-wide patterns (Git workflow, testing standards, K8s conventions)
+I would start with the shared notes and a narrow, inspectable retrieval path. Both make the existing documentation more useful, and both let me see where the gaps are.
 
-Then I symlinked it:
+I would be slower to promise complete coverage or automatic freshness. A project registry, an index, and a running service are different things. The practical test is whether I can trace an answer back to material that supports it, then verify the parts that describe today's system.
 
-**Cursor**: Load `AGENTS.md` + `.cursor/rules/ollie-persona.mdc` (which includes memory files)  
-**Claude Code**: Symlink `~/.claude/projects/-Users-roliveira-WORKSPACE-raolivei/memory` → `ollie/memory/`  
+Ollie is useful when it shortens that path. It can help me find a runbook, recover the reasoning behind a decision, or prepare the next investigation. I still need the [runbook](https://docs.eldertree.xyz/) for procedures, GitHub Issues for work that needs an outcome, and the [Control Center](https://control.eldertree.xyz/) for the operational view.
 
-Now both tools read from the same memory folder. One update, both IDEs get it. No drift. No conflicts. Just shared context.
-
-The `HANDOFF.md` file acts as a session bridge: when I switch from Cursor to Claude Code (or vice versa), I update HANDOFF with the current state ("working on SwimTO login flow, fixed OAuth redirect, next: test error handling"). The next tool picks up where the other left off.
-
-It's like passing notes between two versions of yourself working in parallel.
-
-## The OpenClaw Companion
-
-While building Ollie (the workspace assistant), I also deployed **OpenClaw** (the cluster agent) to Eldertree. OpenClaw is a Telegram bot that provides cluster ops, code review, and GitHub actions—basically, an AI assistant that lives on the cluster and can interact with it directly.
-
-OpenClaw uses the same multi-provider LLM setup as Ollie. Same Vault secrets, same fallback chain, same Grove orchestration for best-of-three answers.
-
-The difference: Ollie knows your workspace and answers documentation questions. OpenClaw can actually operate on the cluster (check pod status, review code, trigger deployments).
-
-They're complementary. Ollie is the reference librarian. OpenClaw is the operator on call.
-
-## The Indexing Workflow
-
-Here's how Ollie stays up to date:
-
-1. **Index workspace** — Run `cd ollie && make index` to crawl all repos and update ChromaDB
-2. **Commit memory updates** — Update `ollie/memory/*.md` files when conventions change
-3. **Redeploy if needed** — If API changes, push to GitHub, CI/CD rebuilds image, FluxCD deploys
-
-The indexing happens locally (my laptop has access to all repos, including private ones). The ChromaDB database gets packaged into the Docker image and deployed to the cluster. When Ollie API receives a query, it searches the pre-indexed docs.
-
-Reindexing is manual (for now). I run `make index` after major doc changes. Future work: automate reindexing on a schedule or trigger it from a webhook.
-
-## The Moment It Worked
-
-The first time I asked Ollie "How do I unseal Vault?" and it replied with the exact command from the runbook—`./scripts/operations/unseal-vault.sh`—plus context about why Vault seals and when it happens, I felt vindicated.
-
-I didn't have to search. I didn't have to remember. I just asked. And it knew.
-
-That's the value of RAG: it's not guessing based on general knowledge. It's retrieving the exact documentation I wrote, the conventions I use, the runbooks I maintain. It's my second brain, trained on my infrastructure.
-
-## The Lessons
-
-Here's what building Ollie taught me:
-
-**RAG is more reliable than pure LLM queries.** ChatGPT might hallucinate a plausible-sounding answer. Ollie retrieves actual docs and grounds the answer in them. If it doesn't know, it says so.
-
-**Multi-provider redundancy is worth it.** Gemini is great until it rate-limits you. Groq is fast until it's down. Ollama is always available but slower. Having all three means Ollie always works.
-
-**One memory, many tools is the right model.** Maintaining separate memory systems is unsustainable. Shared memory + symlinks = single source of truth.
-
-**Indexing needs to be easy.** If reindexing is a pain, you won't do it, and Ollie will fall out of date. `make index` is one command. That's sustainable.
-
-**AI assistants are multiplicative, not additive.** You don't save 10 minutes searching. You save 10 minutes *every time* you need that information. Over a month, that's hours. Over a year, that's days.
-
-**Local LLM fallback is underrated.** Ollama on my Mac means Ollie works even when internet is down or APIs are rate-limited. It's slower, but reliable.
-
-**The cluster is a deployment target, not the indexing location.** Indexing requires access to all repos (including private ones). That happens on my laptop. The API + ChromaDB deploy to the cluster for 24/7 availability.
-
-## The Vision Forward
-
-Ollie is version 0.4 right now. Here's what's next:
-
-**Control Center integration** — A web UI on the cluster that ties together Grafana, Prometheus, Ollie chat, and cluster topology. One place for all operations.
-
-**Proactive suggestions** — Instead of just answering questions, Ollie could suggest improvements: "Your SwimTO database hasn't been backed up in 7 days" or "Traefik latency is higher than usual."
-
-**Self-upgrade capability** — OpenClaw has a META endpoint that triggers image rebuilds via GitHub Actions. Ollie could upgrade itself when new features are ready.
-
-**Voice interface** — Integration with Qwen3-TTS (voice cloning) for audio interactions. Ask Ollie questions while cooking or away from the keyboard.
-
-But even at v0.4, Ollie is useful. I use it daily. It answers questions faster than I can search. It knows the codebase better than I remember it. It's the assistant I wish I'd built six months ago.
-
-The cluster has a brain now. And that brain has memory. And that memory is shared across tools. And it all just works.
-
-That's the dream, isn't it? Build infrastructure so good that you forget it exists. Build assistants so helpful that you wonder how you worked without them.
-
-Ollie is that assistant. And the cluster is that infrastructure.
+I wanted less repeated explanation. The better result is having somewhere durable to put the explanation, and a way to check whether it is still true.
 
 ---
 
-*Next: [Chapter 11: The Control Center](/chapters/11-the-control-center) - When observability, AI, and topology meet in one interface.*
+*Next: Chapter 11, The Control Center — drafted in [PR #28](https://github.com/raolivei/pi-fleet-blog/pull/28).*

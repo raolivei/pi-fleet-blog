@@ -1,10 +1,10 @@
 /** Static Eldertree cluster manifest — source: pi-fleet/docs/ELDERTREE.md
  *
- * ClusterGlance badge semantics (see useClusterNodeStatus.ts):
- * - Live: K8s node Ready=True → "stable"; Ready=False → "unstable".
- * - Fallback chain: Elder GET /api/public/cluster/nodes → public/cluster-status.json → tiers below.
- * - Static tiers here reflect operational intent (node-1 deprioritized / soft-tainted), not live Ready.
- *   Refresh cluster-status.json locally: scripts/sync-cluster-status.sh (requires kubectl + LAN cluster).
+ * ClusterGlance (see useClusterNodeStatus.ts):
+ * - Node list comes from the Control Center / K8s API when live or cached — new cluster nodes appear automatically.
+ * - Entries here enrich known nodes (IPs, roles); unknown ids still render id + Ready badge only.
+ * - Offline fallback: manifest nodes with "Unknown" readiness.
+ * - Refresh cluster-status.json: scripts/sync-cluster-status.sh (requires kubectl + LAN cluster).
  */
 
 export type NodeTier = "stable" | "unstable";
@@ -60,7 +60,7 @@ export const cluster = {
   vips: [
     { label: "API", ip: "192.168.2.100", purpose: "kube-vip HA" },
     { label: "Ingress", ip: "192.168.2.200", purpose: "Traefik *.eldertree.local" },
-    { label: "DNS", ip: "192.168.2.201", purpose: "Pi-hole LB" },
+    { label: "DNS", ip: "192.168.2.201", purpose: "BIND9 LB" },
   ] satisfies ClusterVip[],
   stack: [
     "K3s HA (3× control-plane)",
@@ -68,13 +68,13 @@ export const cluster = {
     "Traefik ingress",
     "Vault HA (Raft)",
     "External Secrets Operator",
-    "Pi-hole + external-dns",
+    "BIND9 + external-dns",
     "Cloudflare Tunnel",
     "Prometheus / Grafana / Loki",
   ],
   storage: {
     active: ["local-path", "local-path-nvme (Vault)"],
-    retired: "Longhorn (removed Feb 2026 — see ch.12)",
+    retired: "Longhorn (removed Feb 2026)",
   },
   apps: [
     "canopy",
@@ -89,52 +89,62 @@ export const cluster = {
 
 export const journeyHighlights = [
   {
-    title: "Pi-hole vs K3s ServiceLB",
-    summary: "Port 53 conflict between Pi-hole and klipper-lb — resolved with kube-vip and disabling ServiceLB.",
-    chapter: "/chapters/14-troubleshooting",
-    tags: ["DNS", "Networking"],
+    title: "The Moment I Decided to Own My Infrastructure",
+    summary:
+      "The AWS bill moment — why self-host on ARM, privacy over convenience, and how Eldertree started.",
+    chapter: "/chapters/01-the-moment-i-decided-to-own-my-infrastructure",
+    tags: ["Origin story", "Self-hosting"],
   },
   {
-    title: "Longhorn removed",
-    summary: "Distributed storage was resource-heavy on 8GB Pis; Vault uses Raft + local-path-nvme instead.",
-    chapter: "/chapters/12-storage-persistence",
-    tags: ["Storage"],
+    title: "Making things talk",
+    summary:
+      "Dual-network Pis (WiFi management + gigabit pod traffic), the first DNS setup, kube-vip, and ExternalDNS.",
+    chapter: "/chapters/03-making-things-talk",
+    tags: ["Networking", "DNS"],
   },
   {
-    title: "Vault seal after reboot",
-    summary: "HA Raft survives node loss; unseal workflow documented in runbook VAULT-001.",
-    chapter: "/chapters/07-secrets-management",
-    tags: ["Vault", "Secrets"],
+    title: "Pi-hole → BIND9",
+    summary:
+      "Why we removed Pi-hole ~8 months in — adblock unused, sidecar complexity, and the June 2026 cutover to standalone BIND9 on the same VIP.",
+    chapter: "/chapters/interlude-why-we-dropped-pihole-for-bind9",
+    tags: ["DNS", "Simplification"],
   },
   {
-    title: "Tailscale routing",
-    summary: "Subnet routes without advertising K8s CIDRs — remote access without breaking Flannel.",
-    chapter: "/chapters/17-the-tailscale-treachery",
-    tags: ["Networking", "Remote access"],
+    title: "The CI/CD consolidation",
+    summary:
+      "Eight repos, copy-paste workflows — centralized reusable GitHub Actions in github-workflows.",
+    chapter: "/chapters/18-reusable-workflows",
+    tags: ["CI/CD", "GitHub Actions"],
   },
   {
     title: "HA node failure cascade",
-    summary: "node-1 NotReady triggered Multi-Attach (historical Longhorn), Vault failover, and ESO sync issues — HA-001 runbook.",
-    chapter: "/chapters/14-troubleshooting",
+    summary:
+      "node-1 NotReady triggered Multi-Attach (historical Longhorn), Vault failover, and ESO sync issues.",
     runbook: "https://docs.eldertree.xyz/runbook/issues/ha/HA-001",
     tags: ["HA", "Node"],
   },
   {
-    title: "Deployment disaster 2026",
-    summary: "Cascading failures across the cluster — war story with recovery steps.",
-    chapter: "/chapters/16-the-great-deployment-disaster-of-2026",
-    tags: ["Incident", "GitOps"],
+    title: "Vault seal after reboot",
+    summary: "HA Raft survives node loss; unseal workflow documented in runbook VAULT-001.",
+    runbook: "https://docs.eldertree.xyz/runbook/issues/vault/VAULT-001",
+    tags: ["Vault", "Secrets"],
   },
   {
-    title: "Reusable CI workflows",
-    summary: "Centralized github-workflows for docker-build and static-site-pages.",
-    chapter: "/chapters/18-reusable-workflows",
-    tags: ["CI/CD"],
+    title: "Longhorn removed",
+    summary: "Distributed storage was resource-heavy on 8GB Pis; Vault uses Raft + local-path-nvme instead.",
+    runbook: "https://docs.eldertree.xyz/runbook/",
+    tags: ["Storage"],
+  },
+  {
+    title: "Tailscale routing",
+    summary: "Subnet routes without advertising K8s CIDRs — remote access without breaking Flannel.",
+    runbook: "https://docs.eldertree.xyz/runbook/",
+    tags: ["Networking", "Remote access"],
   },
   {
     title: "node-1 deprioritized",
     summary: "Soft taint and Flux reconciler steer new workloads to node-2/3 after intermittent freezes.",
-    chapter: "/chapters/15-future-plans-scaling",
+    runbook: "https://docs.eldertree.xyz/runbook/",
     tags: ["Node", "Scheduling"],
   },
 ] as const;
