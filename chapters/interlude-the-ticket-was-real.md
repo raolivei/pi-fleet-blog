@@ -22,7 +22,7 @@ The [workflow configuration at that commit](https://github.com/raolivei/pi-fleet
 
 I closed the investigation with the run links and the explanation. No corrective PR was needed. The separate, broader runner and GitOps tickets stayed separate.
 
-Writing a patch just to satisfy the ticket's original wording would have made the system worse. The issue had done its job by giving the question somewhere to be answered.
+Writing a patch just to satisfy the ticket's original wording would have answered the wrong question. The issue had done its job by giving the question somewhere to be answered.
 
 ## A quiet pipeline can be doing its job
 

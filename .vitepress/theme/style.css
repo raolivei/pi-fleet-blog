@@ -371,6 +371,22 @@
   color: var(--vp-c-text-2);
 }
 
+.home-prose a {
+  color: var(--vp-c-brand-3);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.dark .home-prose a {
+  color: var(--vp-c-brand-1);
+}
+
+.home-prose a:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
 .home-meta-links {
   margin: 0.75rem 0 0;
   font-size: 0.9rem;
@@ -638,18 +654,6 @@
 
 .VPSidebar .VPSidebarItem.is-active > .item > .text {
   color: var(--vp-c-brand-1);
-}
-
-/* ============================================================================
- * Footer
- * ========================================================================== */
-
-.VPFooter {
-  border-top: 1px solid var(--vp-c-divider);
-}
-
-.VPFooter .message {
-  font-size: 0.875rem;
 }
 
 /* ============================================================================
