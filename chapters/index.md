@@ -10,6 +10,7 @@ Welcome to the Building Eldertree blog. The old technical chapter series was con
 - [Chapter 4: Keeping Secrets](/chapters/04-keeping-secrets)
 - [Chapter 5: Scaling Decisions, Not YAML](/chapters/05-scaling-decisions-not-yaml)
 - [Chapter 6: Running Real Apps](/chapters/06-running-real-apps)
+- [Chapter 14: The Ticket Was Real. The CI Failure Wasn't.](/chapters/14-the-ticket-was-real) — November 2026 issue audit; cancelled CI, evidence, and deciding when to close a ticket
 
 ## Interludes
 
@@ -17,9 +18,8 @@ Side stories off the main timeline (ops updates, cutovers, lessons that don’t 
 
 - [Interlude: Why We Dropped Pi-hole for BIND9](/chapters/interlude-why-we-dropped-pihole-for-bind9) — June 2026 DNS cutover; kube-vip, ServiceLB, same VIP `192.168.2.201`
 
-- [Interlude: The Ticket Was Real. The CI Failure Wasn't.](/chapters/interlude-the-ticket-was-real) — November 2026 issue audit; cancelled CI, evidence, and deciding when to close a ticket
 
-Chapters 7–13 are drafted in open PRs ([#24](https://github.com/raolivei/pi-fleet-blog/pull/24)–[#30](https://github.com/raolivei/pi-fleet-blog/pull/30)). For operational procedures, see the [Eldertree runbook](https://docs.eldertree.xyz/runbook/).
+Chapter numbers are reserved for the existing series. Chapters 7–13 are drafted in open PRs ([#24](https://github.com/raolivei/pi-fleet-blog/pull/24)–[#30](https://github.com/raolivei/pi-fleet-blog/pull/30)). For operational procedures, see the [Eldertree runbook](https://docs.eldertree.xyz/runbook/).
 
 ## Legacy deep links (not in sidebar)
 
