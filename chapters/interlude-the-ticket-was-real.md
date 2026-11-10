@@ -1,65 +1,67 @@
 # Interlude: The Ticket Was Real. The CI Failure Wasn't.
 
-One line in my Eldertree backlog said that four of the last five pi-fleet CI runs had passed. It sat beside similar concerns about SwimTO and a quieter one about Canopy: no workflow activity since June.
+I managed to put a working CI pipeline on my fix list.
 
-That sounded like three broken pipelines. It turned out to be three different questions.
+The summary said four of the last five pi-fleet runs had passed. I turned that into a GitHub Issue asking me to investigate the failure, fix the cause, and get a green run.
 
-On November 6, 2026, I took 21 observations from my workspace review and turned them into 23 GitHub Issues. The CI item became three tickets, one in each repository. I wanted the investigation beside the code it might change, rather than buried in a conversation about the whole workspace.
+Reasonable enough. Except I hadn't checked whether anything had actually failed.
 
-Opening the tickets was the easy part. The useful work started when I checked whether their premises were true.
+This was part of a bigger cleanup on November 6, 2026. I'd collected 21 observations about the Eldertree workspace and turned them into 23 issues. One concern about CI became three tickets, because pi-fleet, SwimTO, and Canopy each needed their own investigation. Keeping everything in one long conversation wasn't going to help the next time I picked it up.
 
-## Four successes and a cancellation
+Getting the work out of chat was useful. Calling it all broken was getting ahead of myself.
 
-The [pi-fleet investigation](https://github.com/raolivei/pi-fleet/issues/328) started with that four-out-of-five summary. The issue asked for the actual runs, their failed jobs, and a distinction between code, runner, and infrastructure problems. Those were sensible questions. Its acceptance criteria also asked for a correction and a green run, which already leaned too far toward assuming a defect existed.
+## The fifth run
 
-The sample contained four successful runs and one cancelled run. None had a conclusion of `failure`.
+The [pi-fleet ticket](https://github.com/raolivei/pi-fleet/issues/328) asked me to separate a code problem from a runner or infrastructure problem. But its acceptance criteria already wanted a correction. I'd left room to investigate which thing was broken, without really leaving room for nothing to be broken.
 
-The [cancelled run](https://github.com/raolivei/pi-fleet/actions/runs/40901997358) was created on October 29 at 15:28:55 UTC. The validation and version-check jobs were cancelled before they ran any steps; the build was skipped. A [second run](https://github.com/raolivei/pi-fleet/actions/runs/40901998313), created one second later for the same commit, passed validation, the version check, and the build.
+Then I opened the runs.
 
-That changed the job. I no longer needed to find the broken code. I needed to understand why an earlier execution had been replaced.
+Four successes. One cancellation. No `failure` in that sample.
 
-The [workflow configuration at that commit](https://github.com/raolivei/pi-fleet/blob/344700ed75d9a9a398e435bec0f94ef7f7a59a40/.github/workflows/build-openclaw-arm64.yml) groups concurrent runs by workflow and Git ref, and enables cancellation of older runs for pull-request events. The timing was consistent with that behavior. I didn't have independent proof of the cancellation's exact cause, so the conclusion stopped there: this sample showed a cancelled execution followed by a successful one for the same code, not a code or runner failure requiring a fix.
+The [cancelled run](https://github.com/raolivei/pi-fleet/actions/runs/40901997358), from October 29, hadn't even executed its validation or version-check steps. The build was skipped. A [second run](https://github.com/raolivei/pi-fleet/actions/runs/40901998313) started one second later, against the exact same commit, and passed validation, the version check, and the build.
 
-I closed the investigation with the run links and the explanation. No corrective PR was needed. The separate, broader runner and GitOps tickets stayed separate.
+There was already a green run. I just hadn't looked at it closely enough.
 
-Writing a patch just to satisfy the ticket's original wording would have answered the wrong question. The issue had done its job by giving the question somewhere to be answered.
+The [workflow at that commit](https://github.com/raolivei/pi-fleet/blob/344700ed75d9a9a398e435bec0f94ef7f7a59a40/.github/workflows/build-openclaw-arm64.yml) groups runs by workflow and Git ref, and allows newer PR runs to cancel older ones. The timing fits that explanation. I couldn't independently prove the exact reason for the cancellation, but I could establish that this wasn't evidence of a failed build needing a patch.
 
-## A quiet pipeline can be doing its job
+So I put the run links and the explanation in the issue and closed it. No PR. The broader runner and GitOps issues stayed open; answering this particular question didn't answer those.
 
-[Canopy's ticket](https://github.com/raolivei/canopy/issues/106) needed a different check. Its most recent main-branch commit was from June 23. The corresponding [push build](https://github.com/raolivei/canopy/actions/runs/28061279412) had passed. At the November audit, there were no later PRs, the three workflows were active, and their triggers didn't include a periodic schedule.
+I'd written acceptance criteria that could have sent me looking for a code change to justify a bad summary. Checking the runs saved me from following through on that.
 
-There hadn't been a new push or PR that called for another run.
+## The other tickets didn't get the same answer
 
-I closed that investigation too. I was careful about what the result meant: it explained the lack of activity. It didn't prove that a runner had been tested again in November, or that the next build would pass.
+[Canopy's CI ticket](https://github.com/raolivei/canopy/issues/106) was about silence: nothing had run since June. Its latest main-branch commit was from June 23, and the [build for that push](https://github.com/raolivei/canopy/actions/runs/28061279412) had passed. At the audit, there were no later PRs. The three workflows were active, and none had a periodic schedule.
 
-I can get useful evidence from an old green build. I can't quietly turn it into a fresh health check.
+There hadn't been a new push or PR to trigger anything. I closed that investigation too, with that explanation. It didn't tell me whether a runner would work if I pushed something in November. I hadn't tested that.
 
-## Some tickets really do need fixes
+[SwimTO](https://github.com/raolivei/swimTO/issues/321) was different. Its [Web E2E run](https://github.com/raolivei/swimTO/actions/runs/41191135899) failed while installing Playwright browsers. In a separate [build run](https://github.com/raolivei/swimTO/actions/runs/41191135906), the API's build-and-push step failed while the web build passed.
 
-The [SwimTO investigation](https://github.com/raolivei/swimTO/issues/321) stayed open. Its evidence was different: one [Web E2E run](https://github.com/raolivei/swimTO/actions/runs/41191135899) failed while installing Playwright browsers. In a separate [build run](https://github.com/raolivei/swimTO/actions/runs/41191135906), the API's build-and-push step failed while the web build passed.
+Those needed more work. I had the failed steps, but I didn't yet have their causes or a tested correction. A passing version check elsewhere wasn't going to fix either of them. The ticket stayed open.
 
-Those were actual failed steps. The audit established where they failed, but didn't establish their detailed causes or deliver a validated correction. Passing version checks and unrelated successful runs couldn't answer those questions.
+Same original concern about CI. Different evidence, different work to do.
 
-That ticket needed more investigation. Closing it alongside the other two would have turned a useful audit into housekeeping theater.
+## Why I bother with the issues
 
-## What the issues kept that the conversation couldn't
+I use AI assistants across this workspace, and a conversation can cover a lot of ground. We find something odd, discuss a possible cause, look at another repo, and suddenly the original problem is several screens back. The next session gets a summary. Somewhere along the way, “this might be broken” can become “fix this bug.”
 
-The original tickets carried their source observations, stated that those observations still needed revalidation, and supplied acceptance criteria. The follow-up comments recorded the evidence and the decision. A later session could pick up SwimTO's unresolved steps without reconstructing why the ticket existed. It could also see why pi-fleet's investigation had ended without a patch.
+For this cleanup, the issues kept the original observations and explicitly said they still needed checking. They had acceptance criteria. As I investigated, I added the evidence and the decision beside the code it concerned.
 
-That is how I want GitHub Issues to work across my repositories. A conversation helps me notice a problem and explore explanations. The issue preserves the question, what I know, what I'm guessing, and what evidence would let me stop.
+That gives me somewhere to continue. I don't have to reconstruct why SwimTO is still on the list, or wonder whether the pi-fleet ticket was closed because somebody fixed it or because there was no failure to fix. The explanation is there.
 
-The audit also exposed a weaker boundary in that workflow: a merge can close a ticket before the running application has been checked. I encountered merged work and a deployment still running an older image. That observation was enough to keep deployment verification outstanding; it wasn't evidence that the fix had failed.
+I also found a different kind of unfinished work: a correction had been merged, but the deployment I checked was still running an older image. The code had moved forward. That environment hadn't caught up. I kept deployment verification outstanding.
 
-For a code change, the sequence I want to make explicit is observation, evidence and reproduction, an issue with acceptance criteria, investigation, a focused PR, review and checks, merge, deployment verification, then closure. That is a standard I'm tightening, not a claim that every past ticket followed it. A PR proves what was proposed. A merge proves what reached the branch. Neither tells me what image is running or whether the original behavior has changed there.
+That's a gap I want to be more consistent about. For a confirmed bug, I want the observation and reproduction in the issue, a focused PR, review and checks, then a merge. After that, I still need to check the target environment and the behavior that started the whole thing before I call it finished.
 
-An investigation can finish earlier. If the evidence establishes expected behavior, closure needs a clear explanation, not a ceremonial code change.
+I haven't followed that sequence perfectly. Some tickets closed automatically when their PRs merged. The audit made it pretty clear why I shouldn't treat that as the end of every investigation.
 
-## The result was a more honest backlog
+## What I actually finished
 
-At the end of the November 6 audit, two investigations were newly closed, two tickets had already closed through a merge, and 19 remained open. Those are the results of that dated audit, not a live count of today's backlog.
+By the end of the November 6 audit, I'd closed two investigations. Two other tickets had already closed through a merge. Nineteen remained open.
 
-I hadn't fixed 23 problems. I'd separated work that needed a correction from work that needed evidence, and from concerns that the evidence had already explained.
+That's the count from that audit, not today's backlog. And it certainly wasn't 23 fixes.
 
-The next improvement is small: write investigation criteria that allow either a demonstrated defect or a documented explanation. “Identify the failed run” is the wrong starting point when I haven't established that a run failed.
+But the next session had a better starting point. The real failures were still there, with evidence attached. The cancelled run had an explanation. The merged work still needing a deployment check hadn't quietly disappeared into a claim that everything was done.
 
-The detailed operational procedures still belong in the [runbook](https://docs.eldertree.xyz/). This part belongs in the diary because it changed how I decide what work to do. Before I let a ticket tell me to fix something, I need to know what actually happened.
+I'll change how I write investigation tickets after this. Ask what happened and what would establish the answer. Leave room to find expected behavior. Don't ask for a fix before I've established a bug.
+
+The commands and recovery procedures belong in the [runbook](https://docs.eldertree.xyz/). This one belongs here because I nearly gave myself a repair job on something that was working, and the issue history is what lets me explain why I stopped.

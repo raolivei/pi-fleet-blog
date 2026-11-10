@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## [Unreleased]
 
+### Changed
+
+- Rework the November issue-audit interlude in a more direct, personal voice, retaining the dated evidence and limits of each conclusion.
+
 ### Added
 
 - **Issue audit interlude** — The November 6, 2026 investigation of cancelled CI, inactive workflows, and actual failed steps; evidence-based GitHub Issue closure and the distinction between merging and deployment verification.
