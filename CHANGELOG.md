@@ -8,6 +8,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ### Changed
 
+- Promote the November issue-audit story to Chapter 14, preserving the reserved Chapters 7–13. Move its sidebar and overview entry into The Journey; keep a moved-page link at the published interlude URL.
+
+### Changed
+
 - Rework the November issue-audit interlude in a more direct, personal voice, retaining the dated evidence and limits of each conclusion.
 
 ### Added

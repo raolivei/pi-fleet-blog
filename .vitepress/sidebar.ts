@@ -42,6 +42,10 @@ export function sidebar() {
             text: "Chapter 6: Running Real Apps",
             link: "/chapters/06-running-real-apps",
           },
+          {
+            text: "Chapter 14: The Ticket Was Real. The CI Failure Wasn't.",
+            link: "/chapters/14-the-ticket-was-real",
+          },
         ],
       },
       {
@@ -50,10 +54,6 @@ export function sidebar() {
           {
             text: "Why We Dropped Pi-hole for BIND9",
             link: "/chapters/interlude-why-we-dropped-pihole-for-bind9",
-          },
-          {
-            text: "The Ticket Was Real. The CI Failure Wasn't.",
-            link: "/chapters/interlude-the-ticket-was-real",
           },
         ],
       },
