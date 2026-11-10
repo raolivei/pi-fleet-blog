@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## [Unreleased]
 
+### Added
+
+- Link the cluster banner to the confirmed public Grafana sign-in page.
+
+### Fixed
+
+- Remove LAN-only links, hostnames, and API fallbacks from public homepage widgets; replace the Chapter 2 hero shortcut with Browse chapters.
+
 ### Changed
 
 - Promote the November issue-audit story to Chapter 14, preserving the reserved Chapters 7–13. Move its sidebar and overview entry into The Journey; keep a moved-page link at the published interlude URL.
