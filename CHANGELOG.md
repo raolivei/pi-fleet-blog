@@ -20,6 +20,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ### Changed
 
+- **Eldertree navigation** — Link the home page’s Runbook and Control Center references to their public sites; add shared Blog, Runbook, and Control Center footer navigation on every page, including chapters with a sidebar.
 - **Chapter 1 rewrite** — Reworked *The Moment I Decided to Own My Infrastructure* into a more personal, lived-in voice; trimmed the AI-generated tells (rule-of-three cadence, fragment lists, bolded aphorisms, symmetric pros/cons tables). Same facts, timeline, and structure; the *The Vision* section is now *What I thought I was building, versus what I built*.
 - **BIND9 story renumbered** — `02-why-we-dropped-pihole-for-bind9` → `interlude-why-we-dropped-pihole-for-bind9`; Chapter 2 reserved for *First Boot* (PR #19). Stub left at old URL.
 

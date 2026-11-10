@@ -60,11 +60,6 @@ export default defineConfig({
     search: {
       provider: "local",
     },
-
-    footer: {
-      message: "Building Eldertree — a self-hosted Kubernetes build diary",
-      copyright: "Copyright © 2026 Rafael Oliveira",
-    },
   },
 
   markdown: {
