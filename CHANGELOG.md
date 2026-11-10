@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## [Unreleased]
 
+### Fixed
+
+- Remove LAN-only links, hostnames, and API fallbacks from public homepage widgets; replace the Chapter 2 hero shortcut with Browse chapters.
+
 ### Added
 
 - **Chapter 10: Building Ollie** — Reworked the existing chapter draft around shared memory, the verified November 2026 retrieval architecture, source citations, and GitHub Issues as durable work records. Removed unsupported provider, indexing, and availability claims; kept merged code distinct from deployment verification.
