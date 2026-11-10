@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## [Unreleased]
 
+### Fixed
+
+- Remove LAN-only links, hostnames, and API fallbacks from public homepage widgets; replace the Chapter 2 hero shortcut with Browse chapters.
+
 ### Changed
 
 - **Eldertree navigation** — Link the home page’s Runbook and Control Center references to their public sites; add shared Blog, Runbook, and Control Center footer navigation on every page, including chapters with a sidebar.
