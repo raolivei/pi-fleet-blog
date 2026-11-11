@@ -74,7 +74,7 @@ const out = {
     problems:
       "Commits whose subject/body match fix|broken|issue|problem|error|bug|crash|fail (heuristic).",
     features: "feat: commits plus add|implement|create|setup|deploy|enable in subject.",
-    chapter: "/chapters/14-troubleshooting",
+    chapter: "/chapters/01-the-moment-i-decided-to-own-my-infrastructure",
   },
 };
 

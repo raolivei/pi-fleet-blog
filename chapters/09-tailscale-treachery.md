@@ -1,212 +1,101 @@
 # Chapter 9: The Tailscale Treachery
 
-"Let me just verify the SwimTO deployment real quick."
+The most useful detail in the January 20 troubleshooting notes is where the application worked.
 
-Famous. Last. Words.
+SwimTO's API could reach PostgreSQL when they were on the same node. Put them on different nodes and the connection timed out. That gave the investigation a direction that a database error alone hadn't supplied.
 
-It was January 20, 2026. Evening. The deployment from a few days ago should have been stable by now. I'd fixed all the issues (see Chapter 8 for that saga). The pods showed "Running." The services showed "Active." Everything looked healthy in that deceptive way Kubernetes has mastered—like a cat sitting next to a knocked-over vase, pretending nothing happened.
+There were several problems around that deployment, including DNS and ingress symptoms. It would have been easy to keep changing application settings until one of them appeared to help. The difference between same-node and cross-node traffic was a better clue: something about the path between machines needed attention.
 
-But when I tried to actually use the app? The API was stuck in an eternal loop of `CrashLoopBackOff`, desperately trying to connect to PostgreSQL like a text message left on read.
+## The route I wasn't looking at
 
-Here we go again.
+Tailscale had just joined the cluster's networking. The January 20 Ansible setup configured the nodes as subnet routers, advertising networks that a remote client should be able to reach. It also enabled `--accept-routes` on those nodes.
 
-## The Database URL Debacle
+Those are different settings. Advertising a route offers a path to other devices. Accepting routes lets a device use paths advertised by peers. With several routers advertising overlapping networks, enabling both can lead a node to send traffic through another router even when it has a local path it should use instead.
 
-First suspect: the `DATABASE_URL`. It's always the environment variables.
+The [same-day troubleshooting record](https://github.com/raolivei/swimTO/commit/285927e) identifies conflicting routes in table 52, Tailscale's policy-routing table. The entries covered the default K3s pod and service ranges:
 
-The logs showed:
-
-```python
-sqlalchemy.exc.OperationalError: could not connect to server: Connection timed out
-```
-
-I checked the secret. The URL looked fine: `postgres-service.swimto.svc.cluster.local`. Service DNS name, not a pod IP. That's correct.
-
-But the connection was timing out. Not failing immediately (wrong credentials, wrong host). Timing out. That means the TCP connection isn't completing. Network issue.
-
-I tried `kubectl exec` into the API pod and curled the PostgreSQL service. Timeout. DNS resolution worked fine—the name resolved to the service ClusterIP. But the connection timed out.
-
-Then I did what any reasonable engineer would do: started scheduling pods on specific nodes to isolate the problem.
-
-- API on node-2, PostgreSQL on node-3? **Timeout.**
-- API on node-3, PostgreSQL on node-3? **Works perfectly.**
-
-Wait. Same-node communication works. Cross-node communication fails.
-
-This wasn't a database problem. This wasn't a DNS problem (well, it was related, but as a symptom). This was a **networking problem**. The kind that makes you question your life choices at 9 PM on a Tuesday.
-
-## The Cross-Node Conspiracy
-
-I SSH'd into node-2. Time to go deeper.
-
-```bash
-ip route show
-```
-
-Normal routes. Flannel (K3s's default CNI) looked fine. The VXLAN interface existed. Pod CIDR routes were there. Nothing obviously wrong.
-
-But cross-node traffic was broken. So something was intercepting packets destined for other nodes' pod IPs.
-
-Then a hunch. Check the policy routing tables.
-
-```bash
-ip route show table 52
-```
-
-And there it was. The smoking gun.
-
-```
+```text
 10.42.0.0/16 dev tailscale0
 10.43.0.0/16 dev tailscale0
 ```
 
-Tailscale. My beloved Tailscale, the VPN that makes remote access magical, had decided that the K3s pod network (`10.42.0.0/16`) and service network (`10.43.0.0/16`) looked interesting and **claimed them for itself**.
+I had been thinking about the extra access the VPN gave me. These routes were a reminder that it could also change where the nodes sent their own traffic.
 
-Every packet destined for a pod or service on another node was being hijacked and sent through the Tailscale interface instead of Flannel's VXLAN tunnel.
-
-It's like your GPS routing you through a cornfield because technically it's shorter on the map, ignoring the fact that there's no road.
-
-## The Routing Table Lesson
-
-Here's what was happening:
-
-1. SwimTO API pod on node-2 tries to connect to PostgreSQL service (`10.43.x.x`)
-2. Kernel checks the routing tables
-3. Finds a route in table 52 (Tailscale's policy routing table): `10.43.0.0/16 dev tailscale0`
-4. Sends packet to Tailscale interface
-5. Tailscale has no idea what to do with it (it's not a Tailscale peer)
-6. Packet dropped
-7. Connection timeout
-
-Meanwhile, same-node traffic worked because it never hit the routing table—localhost communication stays local.
-
-Tailscale adds these routes automatically when you configure it as a subnet router (which I did, to allow remote access to the cluster networks). The intent is good: advertise these subnets to other Tailscale peers so they can reach the cluster.
-
-The problem: Tailscale assumed it should route ALL traffic to those subnets, including traffic originating from within the cluster. That's not what I wanted. Internal cluster traffic should use Flannel. Only external (Tailscale peer) traffic should use the VPN.
-
-## The Surgical Strike
-
-The fix was almost anticlimactic:
+Checking the main routing table wasn't enough. Policy rules can select another table, so the relevant inspection was:
 
 ```bash
+ip rule show
+ip route show table 52
+```
+
+The recorded diagnosis was that those entries interfered with the K3s path between nodes. Flannel's cross-node networking and Tailscale were no longer operating on the separate traffic I had intended.
+
+The same-node success narrowed the failure. Those pods still had separate network namespaces and used the node's networking; they weren't communicating over localhost. Colocation avoided the failing path between hosts. That was enough to make the host routing worth investigating before changing the database configuration again.
+
+## The workaround I wrote down
+
+The immediate fix in the January notes was to remove the conflicting table-52 entries:
+
+```bash
+# Historical workaround for the default K3s CIDRs in this incident.
 sudo ip route del 10.42.0.0/16 table 52
 sudo ip route del 10.43.0.0/16 table 52
 ```
 
-Two commands. Hours of debugging for two commands.
+The notes also recorded a boot-time systemd service that waited for startup and deleted those routes again. It included a 30-second delay. That was an attempt to keep the workaround in place after a restart, rather than relying on remembering two commands.
 
-I ran them on all three nodes. Tested cross-node communication. It worked. API connected to PostgreSQL. Pods could talk to each other. The cluster was whole again.
+It was still a workaround. A timed deletion doesn't control every later change a networking daemon might make, and it leaves the unwanted route configuration underneath. I wouldn't present that service as a general way to integrate Kubernetes with Tailscale.
 
-But these routes would come back after a reboot—Tailscale is persistent like that. So I needed a systemd service to delete them automatically on boot.
+The later Ansible configuration takes a more direct approach: it keeps the pod and service CIDRs out of the advertised routes and disables route acceptance on the cluster's subnet-router nodes. Remote clients can use the intended ingress path without asking the nodes to import overlapping routes to their own cluster networks.
 
-```bash
-cat <<EOF | sudo tee /etc/systemd/system/fix-tailscale-k3s-routes.service
-[Unit]
-Description=Fix Tailscale routes that conflict with k3s
-After=tailscaled.service k3s.service
+That distinction is the part I would keep if I had to set it up again. The useful remote-access feature was real. So was the extra routing behaviour I had enabled alongside it.
 
-[Service]
-Type=oneshot
-ExecStart=/bin/bash -c "sleep 30 && ip route del 10.42.0.0/16 table 52 2>/dev/null || true; ip route del 10.43.0.0/16 table 52 2>/dev/null || true"
-RemainAfterExit=yes
+## Then there were the HTTP routes
 
-[Install]
-WantedBy=multi-user.target
-EOF
+The January troubleshooting record didn't end at database connectivity. It also documents three problems higher up the request path: stripping the API prefix, sending the OAuth callback to the frontend, and matching the API's trailing slashes.
 
-sudo systemctl daemon-reload
-sudo systemctl enable fix-tailscale-k3s-routes.service
-```
+These belonged to different layers. Fixing the host route couldn't correct an HTTP path, even if both failures reached me as an application that didn't work.
 
-Yes, there's a `sleep 30` in there. Yes, it's a hack. But it works. Tailscale and K3s start up, the routes get added, then 30 seconds later the service deletes them. Kubernetes and Tailscale coexist peacefully.
-
-Is it elegant? No. Does it work? Yes. At 9 PM on a Tuesday, "it works" is the most beautiful phrase in the English language.
-
-## The Plot Twist: It's Not Over
-
-Network fixed. Pods talking to each other. Database connected. Time to test the full app.
-
-I opened the browser. Navigated to `https://swimto.eldertree.local`. Clicked "Login with Google."
-
-```
-Login Failed
-```
-
-*Why. Why does the universe do this.*
-
-I checked the browser console:
-
-```
-GET https://swimto.eldertree.local/api/auth/google-url 404 Not Found
-```
-
-The ingress! The Traefik IngressRoute was routing `/api/auth`, but the middleware wasn't stripping the `/api` prefix correctly. The API was receiving `/api/auth/google-url` instead of `/auth/google-url`.
-
-I created a proper `stripPrefix` middleware:
+The frontend requested API endpoints under `/api`. The backend routes didn't include that prefix, so ingress needed to remove it before forwarding the request. The middleware in the runbook used Traefik's `stripPrefix`:
 
 ```yaml
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
   name: strip-api-prefix
+  namespace: swimto
 spec:
   stripPrefix:
     prefixes:
       - /api
 ```
 
-Applied it. Tested again. Google OAuth worked. Redirects back to the app.
+That describes the path transformation. The ingress also needed to reference the middleware; creating an unused middleware object wouldn't change a request.
 
-```
-Login Failed
-```
+OAuth had a separate destination problem. The `/auth/callback` page belonged to the frontend, which handled the browser returning from Google. Routing that page to the API produced the wrong response. The runbook records adding an explicit frontend path for it.
 
-*WHAT. NOW.*
+The callback needed the right destination and matching rule. Moving entries around in the YAML wasn't enough: Traefik's [default router priority comes from rule length](https://doc.traefik.io/traefik/v3.3/routing/routers/#priority), and explicit priority can override it. A literal `/api` prefix wouldn't match `/auth/callback` in the first place. I had to check the rules actually selected for each request, including the frontend fallback.
 
-This time, the `/auth/callback` endpoint was being routed to the API instead of the frontend. The ingress path order matters—Traefik matches routes top to bottom. I needed an explicit route for `/auth/callback` pointing to the frontend, placed before the `/api` catch-all.
+## One slash, after a deliberate change
 
-Fixed the order. Tested again. Login worked!
+The slash problem has a particularly clear commit trail.
 
-I clicked around. Checked the schedule page.
+Earlier on January 20, I [disabled FastAPI's automatic slash redirects](https://github.com/raolivei/swimTO/commit/94812b124252796a38ef961093c9c33a18cfdb60) to address auth requests whose 307 redirects were causing browser/CORS trouble. FastAPI normally redirects a slash mismatch; the strict behaviour here followed that explicit application setting.
 
-```
-404 Not Found
-```
+Later that day, requests to facilities and schedules exposed another mismatch. The routers registered their base endpoints with `"/"`, while the frontend called them without the trailing slash. With automatic redirects disabled, those requests returned 404s.
 
-You have got to be kidding me.
+The [v0.7.3 fix](https://github.com/raolivei/swimTO/commit/c98ffd0c630b7294286ecd8a6e2a3122f55c087b) changed the base route definitions from `"/"` to `""`, matching the frontend's requests. It didn't make every possible spelling of a URL equivalent. It made these two sides agree.
 
-The API routes were defined with trailing slashes (`/facilities/`, `/schedule/`), but the frontend was calling them without (`/facilities`, `/schedule`). FastAPI is strict about trailing slashes by default.
+That sequence explains more than saying FastAPI was strict by default. An earlier fix had changed behaviour, and the remaining route definitions hadn't caught up.
 
-I changed the route definitions from `"/"` to `""` (which makes them match without trailing slashes).
+## The difference that mattered
 
-Deployed. Tested. **It worked.**
+Looking back, I can separate the investigation into manageable pieces. Cross-node database access pointed toward the host network. The table-52 entries explained a route conflict. API 404s needed an ingress-path check. The OAuth callback needed the right service. The later 404s needed route definitions consistent with the application's redirect setting.
 
-## The Aftermath
+The same January 20 record contains all of them, but that doesn't make them one bug with one clever solution. It was several pieces of the request path disagreeing with one another.
 
-Final tally of issues fixed in one debugging session:
-
-1. **Tailscale routing table conflict** — Routes in table 52 intercepting k3s traffic
-2. **Traefik middleware** — `/api` prefix not being stripped correctly
-3. **Ingress path routing** — `/auth/callback` going to wrong service
-4. **API route definitions** — Trailing slash mismatches
-
-Time from "let me verify" to "it works": Several hours.  
-Lines of code changed: Maybe 20.  
-Routing tables inspected: 3.  
-Lessons learned: At least 1.  
-
-## The Moral
-
-When same-node communication works but cross-node fails, check your VPN routing tables. Tailscale and K3s can coexist peacefully, but they need boundaries. Like roommates who both want to use the bathroom at 7 AM.
-
-Also, always check the ingress path routing. And the middleware. And the trailing slashes. And... you know what, just check everything. Networking issues are rarely just one thing. They're layers of things, stacked on top of each other, each one hiding the next.
-
-But when you finally isolate the root cause—when you see that route in table 52 and realize "that's it, that's the problem"—there's a specific satisfaction that comes from understanding the system deeply enough to fix it.
-
-You're not just applying patches. You're understanding how the kernel routes packets, how Tailscale configures policy routing, how Flannel expects internal traffic to flow. You're understanding the system.
-
-And that understanding is what makes you a good operator.
+What I want from the next investigation is the same useful distinction that started this one: a concrete difference between the case that works and the case that fails. Here, knowing where the pods ran was more useful than another look at the database connection string.
 
 ---
 
-*Next: [Chapter 10: Building Ollie](/chapters/10-building-ollie) - When your cluster gets a brain, and that brain needs memory.*
+*Next: [Chapter 10: Building Ollie](https://github.com/raolivei/pi-fleet-blog/pull/27) — finding the documentation again when the details stop fitting in my head.*
