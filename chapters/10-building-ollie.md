@@ -60,7 +60,7 @@ On November 6, I turned 21 workspace observations into 23 GitHub Issues. One CI 
 
 That gave the next session a concrete place to continue. It could read the question, collect evidence, and update the issue instead of trusting a summary that said something was broken.
 
-The [pi-fleet CI ticket](https://github.com/raolivei/pi-fleet/issues/328) is a good example. Its initial summary needed investigation before anyone could decide whether it needed a patch. The separate [audit interlude](/chapters/interlude-the-ticket-was-real) follows the evidence and the different decisions it led to. The important point here is that the tickets allowed different outcomes.
+The [pi-fleet CI ticket](https://github.com/raolivei/pi-fleet/issues/328) is a good example. Its initial summary needed investigation before anyone could decide whether it needed a patch. The separate [Chapter 14](/chapters/14-the-ticket-was-real) follows the evidence and the different decisions it led to. The important point here is that the tickets allowed different outcomes.
 
 For a confirmed bug, I want the evidence and reproduction to lead to a focused PR, review and checks, merge, verification in the target environment, and closure against the acceptance criteria. The audit showed that I haven't enforced that last boundary consistently. Some tickets closed through a merge; other work still needed deployment verification. I am making that distinction explicit rather than treating a merged PR as proof that the running behavior changed.
 
@@ -78,4 +78,4 @@ I wanted less repeated explanation. The better result is having somewhere durabl
 
 ---
 
-*Next: Chapter 11, The Control Center — drafted in [PR #28](https://github.com/raolivei/pi-fleet-blog/pull/28).*
+*Next: [Chapter 11: The Control Center](https://github.com/raolivei/pi-fleet-blog/pull/28) — a place to start checking the cluster, with clear limits on what its health signals establish.*

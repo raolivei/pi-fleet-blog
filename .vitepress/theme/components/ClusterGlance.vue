@@ -21,6 +21,7 @@ const readinessLabels = {
 const secondaryLinks = [
   { label: "Runbook", href: "https://docs.eldertree.xyz/runbook/" },
   { label: "Project docs", href: "https://docs.eldertree.xyz/project" },
+  { label: "Grafana", href: "https://grafana.eldertree.xyz/" },
 ] as const;
 </script>
 

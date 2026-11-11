@@ -6,13 +6,45 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## [Unreleased]
 
+### Changed
+
+- **Chapter 10: Building Ollie** — Correct the story against dated implementation and incident evidence; preserve the documented experience without unsupported scenes, guarantees, or recovery claims.
+
+### Changed
+
+- **Chapter 9: The Tailscale Treachery** — Correct the story against dated implementation and incident evidence; preserve the documented experience without unsupported scenes, guarantees, or recovery claims.
+
+### Changed
+
+- **Chapter 8: The Great Deployment Disaster** — Correct the story against dated implementation and incident evidence; preserve the documented experience without unsupported scenes, guarantees, or recovery claims.
+
+### Changed
+
+- **Chapter 7: Watching It All** — Correct the story against dated implementation and incident evidence; preserve the documented experience without unsupported scenes, guarantees, or recovery claims.
+
+### Fixed
+
+- Correct the published build chronology, Vault/ESO and tunnel descriptions, reusable-workflow history, application ownership and scaling claims. Distinguish configured recovery from verified results and historical deployment from current serving state. Keep the November story's one-second comparison tied to run creation timestamps.
+- Use the confirmed public Grafana entry point where dashboard access is relevant.
+
+### Added
+
+- Link the cluster banner to the confirmed public Grafana sign-in page.
+
 ### Fixed
 
 - Remove LAN-only links, hostnames, and API fallbacks from public homepage widgets; replace the Chapter 2 hero shortcut with Browse chapters.
 
+### Changed
+
+- Promote the November issue-audit story to Chapter 14, preserving the reserved Chapters 7–13. Move its sidebar and overview entry into The Journey; keep a moved-page link at the published interlude URL.
+
+### Changed
+
+- Rework the November issue-audit interlude in a more direct, personal voice, retaining the dated evidence and limits of each conclusion.
+
 ### Added
 
-- **Chapter 10: Building Ollie** — Reworked the existing chapter draft around shared memory, the verified November 2026 retrieval architecture, source citations, and GitHub Issues as durable work records. Removed unsupported provider, indexing, and availability claims; kept merged code distinct from deployment verification.
 - **Issue audit interlude** — The November 6, 2026 investigation of cancelled CI, inactive workflows, and actual failed steps; evidence-based GitHub Issue closure and the distinction between merging and deployment verification.
 
 ### Fixed
