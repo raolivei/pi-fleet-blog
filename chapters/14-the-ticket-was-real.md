@@ -18,7 +18,7 @@ Then I opened the runs.
 
 Four successes. One cancellation. No `failure` in that sample.
 
-The [cancelled run](https://github.com/raolivei/pi-fleet/actions/runs/40901997358), from October 29, hadn't even executed its validation or version-check steps. The build was skipped. A [second run](https://github.com/raolivei/pi-fleet/actions/runs/40901998313) started one second later, against the exact same commit, and passed validation, the version check, and the build.
+The [cancelled run](https://github.com/raolivei/pi-fleet/actions/runs/40901997358), from October 29, hadn't even executed its validation or version-check steps. The build was skipped. A [second run](https://github.com/raolivei/pi-fleet/actions/runs/40901998313) was created one second later, against the exact same commit, and passed validation, the version check, and the build.
 
 There was already a green run. I just hadn't looked at it closely enough.
 

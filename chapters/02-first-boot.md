@@ -14,7 +14,7 @@ The initial setup worked fine. SSH connected. Packages installed. System updated
 
 So the real goal was: **boot from NVMe via PCIe.**
 
-NVMe gives you 10-20x better random I/O performance. Lower latency. Faster boots. Better suited for Kubernetes workloads—especially things like Vault, PostgreSQL, and persistent volumes that actually matter.
+NVMe was a better fit for the sustained writes I was asking of the storage, especially from Vault, PostgreSQL, and other persistent workloads. The exact speedup depends on the drive, card, and workload; the reason to make the move was reliability as much as speed.
 
 The process sounded straightforward: clone the SD card to NVMe, update the boot configuration, reboot. Easy, right?
 
@@ -26,31 +26,29 @@ And if root is locked (which it often is by default), and you don't have a wired
 
 I learned this the hard way.
 
-The first node booted into emergency mode. Panic set in. I scrambled for a USB keyboard. Found one. Plugged it in. Bluetooth keyboard didn't work (of course not—Bluetooth drivers aren't loaded yet). Wired keyboard worked. Unlocked root. Fixed the fstab. Rebooted.
+A bad filesystem entry can leave a node in emergency mode, needing recovery from a local console before the normal boot can continue. That was exactly the kind of setup problem I wanted the automation to handle, including checking the boot configuration after copying the filesystem.
 
 It worked. But I knew this wasn't scalable. I couldn't do this for every node. And I definitely couldn't do this remotely.
 
-So I built an Ansible playbook: `setup-nvme-boot.yml`. It handles everything:
+The automation grew out of those setup and migration problems. The Ansible playbook `setup-nvme-boot.yml` captures the process:
 
-- Clones the OS from SD to NVMe (using rsync, not dd—important)
-- Updates fstab with correct NVMe PARTUUIDs
+- Copies the root filesystem from SD to NVMe with rsync; the boot partition has its own copy step
+- Updates fstab and the boot configuration for the NVMe partitions
 - Sets the ESP flag on the boot partition (`parted /dev/nvme0n1 set 1 esp on`)
 - Updates cmdline.txt to point to the NVMe root partition
 - Unlocks root and sets a password (emergency access)
 - Disables PAM faillock (prevents account lockouts)
 - Disables password expiration (prevents surprise lockouts)
 
-Run the playbook. Reboot. Boot from NVMe. No emergency mode. No manual intervention. No wired keyboard needed.
-
-This became the standard process for all three nodes. And it worked every time.
+The point was to make the next migration repeatable, with the boot and account checks written down instead of left in my head. I still had to verify the result after rebooting. A successful Ansible run and a Pi actually booting from the intended disk are two separate checks.
 
 ## The First `kubectl get nodes`
 
-With the OS booting from NVMe, the next step was K3s.
+Storage setup and node automation kept evolving. The first milestone was simpler: get K3s running on one Pi.
 
 I'd already decided on K3s over full Kubernetes—lightweight, ARM64-optimized, single binary, built-in components. Perfect for Raspberry Pis. But deciding is different from installing.
 
-The Ansible playbook `install-k3s.yml` handled the installation. Single node first. Embedded etcd. No fancy HA setup yet—just get it working.
+The Ansible playbook `install-k3s.yml` handled the installation. Single node first. No fancy HA setup yet—just get it working. The three-member etcd control plane came later.
 
 I ran the playbook. Watched the output scroll by. Packages installing. Services starting. Kubeconfig being written.
 
@@ -61,16 +59,11 @@ export KUBECONFIG=~/.kube/config-eldertree
 kubectl get nodes
 ```
 
-And there it was:
-
-```
-NAME     STATUS   ROLES                  AGE   VERSION
-node-1   Ready    control-plane,master   30s   v1.33.5+k3s1
-```
+What mattered in the output was one node reporting `Ready`. The node names and K3s version changed as the setup grew; that first result was not a record of the later three-node cluster.
 
 **Ready.**
 
-That single word meant: the control plane is running, the kubelet is healthy, the node can schedule pods. It worked.
+That single word meant the node was reporting healthy enough for normal scheduling. It was a useful first check, not proof that DNS, storage, ingress, or an application worked end to end.
 
 I'd built a Kubernetes cluster on a Raspberry Pi.
 
@@ -91,12 +84,12 @@ I deployed a test nginx pod. It started. I created a service. It got a ClusterIP
 
 **The cluster wasn't just running—it was working.**
 
-## The First Week
+## Growing the Foundation
 
-By the end of the first week (November 13, 2025), I had:
+The first working node did not arrive with the finished three-node setup attached. Node provisioning, NVMe migration, and HA work accumulated over the following weeks and months. The foundation grew to include:
 
-- Three nodes booting from NVMe (node-1, node-2, node-3)
-- K3s installed on all three (single control plane initially)
+- Repeatable node setup and NVMe boot automation
+- K3s growing from one control plane to a three-node cluster
 - Cert-manager for TLS certificates
 - Prometheus and Grafana for monitoring
 - FluxCD for GitOps (all configuration in Git)
@@ -108,9 +101,9 @@ The cluster wasn't perfect. There were resource limit issues (8GB RAM goes fast)
 
 ## What I Learned About Starting
 
-Here's what that first week taught me:
+Here's what getting that foundation working taught me:
 
-**Automation from day one pays off immediately.** The Ansible playbooks I built for node setup and NVMe boot worked on all three nodes. No manual steps. No copy-pasting commands. Run the playbook, walk away, come back to a working node.
+**Automation pays off when you repeat the work.** The node setup and NVMe playbooks let me carry the fixes forward. They did not remove the need to check a new node, but they stopped every rebuild from beginning with the same search through old commands.
 
 **Start simple, then grow.** Single node first. Get it working. Understand it. Then add HA. Then add complexity. Trying to build everything at once is a recipe for confusion.
 
