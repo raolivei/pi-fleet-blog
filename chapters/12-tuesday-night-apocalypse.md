@@ -1,147 +1,81 @@
 # Chapter 12: The Tuesday Night Apocalypse
 
-May 26, 2026. 6:33 PM.
+On Tuesday, May 26, 2026, node-1 hung. It answered pings, but SSH connections failed and Kubernetes couldn't rely on it. A manual reboot brought it back.
 
-I was making dinner when my phone buzzed. Prometheus alert: **"NodeDown - node-1"**. Not the notification you want while stirring pasta.
+I'd added a hardware watchdog that afternoon. The point was to avoid another incident like February's, when node-1 had remained stuck for days until a power cycle. Now I had automation intended to recover a frozen node, and I was still recovering it myself.
 
-I opened the laptop. Kubernetes dashboard showed node-1 as NotReady. SSH failed—connection reset. But the node responded to ping. It was alive... technically. Just completely unresponsive.
+The first useful discovery was a small one: `watchdog.service` being active didn't mean my watchdog daemon had control of the hardware.
 
-This wasn't the first time. In February, node-1 had hung for four days straight. Pingable but dead. No SSH. No services. No kubelet. Just a blinking cursor at the TTY asking for credentials I couldn't provide remotely. Manual power cycle was the only fix.
+## Running without the device
 
-That incident prompted Issue #153: **implement hardware watchdog**. A safety net. If the node hangs, the watchdog detects it and triggers a reboot automatically. No manual intervention. No four-day outages.
+After the reboot around 18:33 EDT, the watchdog log reported that it couldn't open `/dev/watchdog`: the device was busy.
 
-I'd deployed the watchdog that morning. Eight hours ago. Full Ansible playbook, tested on all three nodes, verified with `lsof /dev/watchdog`. It worked perfectly.
+Raspberry Pi OS had a systemd drop-in, `40-rpi-enable-watchdog.conf`, that enabled systemd's own use of the hardware watchdog. Systemd had claimed the device before the separate watchdog daemon could open it. My service could show as running while the checks I'd configured weren't controlling that timer.
 
-Except now node-1 was hung. Again.
+I disabled the conflicting configuration on node-1, rebooted, and checked the device owner. This time, `lsof /dev/watchdog` showed the watchdog daemon holding it.
 
-## The First Fix
+That was evidence of a specific repair. It was easy to give it a bigger meaning: the watchdog was fixed, so the node was protected.
 
-I physically rebooted node-1. Held the power button. Waited. It came back online. Kubernetes marked it Ready. Pods rescheduled. Crisis averted.
+There was another mistake in the initial investigation. I thought node-2 and node-3 didn't have the same conflict. The follow-up on May 27 found the drop-in on **all three nodes**. The [corrected incident record](https://github.com/raolivei/pi-fleet/blob/6a9608ff0511f56a6de11f2318060abfcec813fb/docs/NODE-1-HANG-ROOT-CAUSE-2026-05-26.md#L40) keeps both the initial conclusion and its correction. The correction matters more than the tidy version of the story.
 
-But why didn't the watchdog work?
+## It happened again
 
-I SSH'd into node-1 and checked: `systemctl status watchdog`. Active. Running. But then I checked device access: `lsof /dev/watchdog`. Nothing. The daemon was running but didn't have the device open.
+Later that evening, node-1 hung again. Its last recorded kubelet heartbeat was around 21:59 EDT. It could still answer ICMP on one network path, but SSH failed and the node stopped reporting healthy Kubernetes status. The hardware watchdog didn't restart it.
 
-That's when I found it: `/usr/lib/systemd/system.conf.d/40-rpi-enable-watchdog.conf`. A systemd configuration file specific to Raspberry Pi OS that enables systemd's built-in watchdog. It claims `/dev/watchdog` before my userspace daemon can access it.
+The surviving node's logs supplied another observation: node-3 had recorded failed peer pings earlier that evening. Those entries weren't proof of what happened inside node-1, and their timestamps preceded the final kubelet heartbeat. They were part of the investigation, not an explanation by themselves.
 
-Node-2 and node-3 didn't have this file. Node-1 did. That's why the watchdog worked on two nodes but not the one that needed it most.
+Node-1 needed another manual reboot, around 13:26 EDT on May 27. Then I hit the limit of the available evidence: **the journal from the hung boot hadn't been retained**.
 
-The fix: delete the conflicting config, reboot, verify device access. This time, `lsof /dev/watchdog` showed PID 2054—my watchdog daemon. Success.
+I couldn't read that missing journal and conclude that the watchdog daemon had frozen, crashed, or kept feeding the timer. I couldn't establish the exact sequence that prevented the reset. The [second-incident notes](https://github.com/raolivei/pi-fleet/blob/6a9608ff0511f56a6de11f2318060abfcec813fb/docs/NODE-1-HANG-2026-05-26-SECOND.md) record the symptoms and the missing evidence. They don't turn a plausible explanation into a confirmed cause.
 
-I ran verification tests. Load spike tests. Network isolation tests. The watchdog responded correctly: when the node was in trouble, it rebooted automatically. When peers were unreachable, it stayed up (correct behavior—only reboot if the local node is broken).
+That gap changed what I could honestly call the next round of work. I had weaknesses to address. I didn't have a complete explanation for the second failure.
 
-Perfect. Fixed. Time to finish dinner.
+## What the timer does, and what the checks decide
 
-## The Second Hang
+The distinction between the daemon and the hardware is important here.
 
-Three hours later. 9:59 PM.
+The BCM2835 watchdog is a hardware timer. A userspace daemon periodically feeds it. If the timer is armed and those keepalives stop, the timer is intended to expire and reset the machine. The [Linux watchdog API](https://docs.kernel.org/watchdog/watchdog-api.html) describes that arrangement. The timer doesn't need the daemon to notice its own freeze first.
 
-Another alert: **"NodeDown - node-1"**.
+The health checks answer a different question: should the daemon keep feeding the timer while the machine is still running? A node can have working network responses and a manageable load average while a service I depend on has failed. A check that never looks at that service can miss the problem.
 
-*You have got to be kidding me.*
+Before the May 27 hardening, this configuration had no custom application check for k3s, kubelet health, or the API listener. Adding those checks closed a real gap. It didn't prove that this gap alone caused the second hang.
 
-I opened the laptop. Same symptoms: NotReady, SSH fails, ping works. Node-1 was hung again. Three hours after I fixed the watchdog. Three hours after verification tests passed.
+## The changes I could verify
 
-I checked the logs from node-3 (which stayed healthy):
+The [hardening PR](https://github.com/raolivei/pi-fleet/pull/184) made the checks more explicit and dealt with the systemd conflict across the cluster.
 
-```
-May 26 21:11:23 node-3 watchdog[6090]: no response from ping (target: 10.0.0.1)
-May 26 21:11:33 node-3 watchdog[6090]: no response from ping (target: 10.0.0.1)
-[repeated for ~10 minutes]
-```
+I added a health script that checks three things: whether the k3s service is active, whether the local kubelet health endpoint responds, and whether the API port is listening. A failure returns an unsuccessful result to the watchdog daemon. These are useful local checks; an open port still isn't proof that an application works for its users.
 
-Node-3's watchdog detected node-1 was unreachable. It logged it. But it didn't reboot itself—correct behavior. Node-3's job is to watch itself, not reboot when a peer fails.
+I also changed the ping targets so each node checked its peers instead of including itself. In this configuration, losing all peers is a reason to consider the local node isolated. That is a recovery policy, not a guarantee that a reboot will repair the network or explain which part failed.
 
-But node-1's watchdog should have detected the hang. It should have rebooted automatically. It didn't.
+The Ansible work disabled the conflicting systemd watchdog configuration, installed the health script, and added journal-persistence settings. The verification script checked the drop-in and device ownership as well as service status. Monitoring rules covered the watchdog service being down and a node reporting unhealthy Kubernetes status while metrics remained reachable.
 
-Why?
+The recorded validation was concrete: the playbook ran across all three nodes, the verification script passed, the health script returned success on each node, and the configured ping targets contained peers rather than self-pings. The PR also records rolling reboots of node-3 and node-2. All three machines were control-plane and etcd members; none was a disposable test worker.
 
-## The Forensic Analysis
+Those checks showed that the deployed setup matched the intended design. They didn't measure how quickly it would recover from the next real hang.
 
-The next morning, I manually rebooted node-1 again (power cycle, no other choice). Then I collected the logs from the previous boot:
+The configuration used a five-second daemon interval and a 15-second hardware timeout, with a separate timeout for the health test. Those are configuration values. They aren't a measurement of how long it takes for Kubernetes, storage, and applications to become useful again after a failure.
 
-```bash
-journalctl --boot=-1 | tail -200
-```
+## What September added to the story
 
-The kubelet stopped posting status at 21:59:06. Kubernetes marked the node NotReady 41 seconds later. But the watchdog daemon? Silent. No errors. No warnings. No "triggering reboot" messages.
+This chapter would be shorter if the May changes had ended node trouble permanently. They didn't establish that, and later incidents made the limits clearer.
 
-The hang was subtle. ICMP worked (node-3 could ping it). But userspace services froze. Kubelet stopped. SSH stopped. The watchdog daemon probably stopped too, or at least stopped checking health.
+On September 15, all three nodes became unreachable at different points during a wider incident. The [incident record](https://github.com/raolivei/pi-fleet/blob/5b20d95245f4410608bc3c4a565cff0ed4fcac1d/docs/POE-POWER-INCIDENT-2026-09-15.md) points toward a shared power problem. That called for a different investigation from May's confirmed configuration conflict. A watchdog can't keep a machine running when its power disappears. During that investigation, I disabled it across the cluster to remove another source of reboots.
 
-That's the problem with userspace watchdogs: they're userspace. If the OS hangs in a way that keeps the network stack alive but freezes processes, the watchdog daemon freezes too. It can't detect a hang it's part of.
+September also exposed an uncomfortable detail about the logging fix. The May playbook had set `Storage=persistent`, but an OS drop-in overrode that setting. Writing the desired value into a configuration file hadn't proved that persistent logging was actually working. The later fix checked the effective configuration and the journal's actual storage path.
 
-I needed a better design.
+That was the same lesson again, one layer deeper. First I had trusted a running service without checking the device. Then I had trusted a logging setting without checking where the logs went.
 
-## The Fix (For Real This Time)
+## The part I would repeat
 
-I made several changes:
+The useful outcome of May 26–27 was a set of specific improvements: correct device ownership, checks for services that mattered, verification across all nodes, and a better record of what remained unknown.
 
-**1. K3s health check** — Added a custom script that checks if k3s is running and healthy. If it's not, the watchdog triggers a reboot. This catches kubelet failures before they become hangs.
+I would keep those improvements. I would drop the claim that a green verification script means the next hang is solved.
 
-**2. Peer-only ping checks** — Changed the ping targets. Each node now pings only its peers, not itself. If you can't reach your peers, you're probably network-isolated—reboot. This prevents the "node is pingable but dead" scenario.
+The watchdog is one recovery mechanism. Its value depends on the timer being armed, the checks covering the failure I care about, and the machine still having the power and hardware it needs to recover. The [runbook](https://docs.eldertree.xyz/) is where the operating procedure belongs. The diary needs to preserve the reason for it, including the part where my first conclusion was wrong.
 
-**3. Persistent journald logs** — Enabled persistent logging so boot logs survive reboots. Forensic analysis requires data.
-
-**4. Prometheus alerts** — Added alerts for unexpected reboots, OOM kills, and high memory pressure. If the watchdog triggers, I'll know why.
-
-**5. Systemd conflict prevention** — Added Ansible tasks to detect and remove the conflicting systemd watchdog config on all nodes (not just node-1).
-
-The new watchdog configuration looks like this:
-
-```bash
-# watchdog-k3s-health.sh (runs every 10 seconds)
-if ! systemctl is-active --quiet k3s; then
-  echo "k3s not running, watchdog will trigger reboot"
-  exit 1
-fi
-```
-
-If k3s stops, the watchdog notices within 10 seconds and reboots the node. No more "hung but technically alive" state.
-
-The deployment went cluster-wide via Ansible. All three nodes got the updated configuration. All three nodes verified with `lsof /dev/watchdog`. All three nodes showing their watchdog daemon holding the device.
-
-## The Test
-
-I needed to verify this actually worked. So I simulated a kubelet failure on node-2 (the least critical node—node-1 and node-3 are control plane):
-
-```bash
-sudo systemctl stop k3s
-```
-
-Within 10 seconds, the watchdog detected it. Within 15 seconds, the node rebooted. By the time the node came back online, k3s restarted automatically, kubelet rejoined the cluster, pods rescheduled.
-
-Total outage: ~60 seconds. Zero manual intervention. The watchdog worked.
-
-## The Reflection
-
-Looking back at that Tuesday night, here's what I learned:
-
-**"Service running" doesn't mean "system protected."** The watchdog daemon showed as active both times node-1 hung. But the first time, it didn't have device access. The second time, it probably froze along with the rest of userspace. You have to verify the watchdog is actually functioning, not just running.
-
-**Userspace watchdogs have limits.** If the hang is deep enough (kernel-level deadlock, hardware issue), a userspace daemon can't detect it. You need kernel-level or hardware-level protection. But for most hangs (kubelet failures, service crashes), userspace is enough.
-
-**Health checks need to be explicit.** Pinging the network interface isn't enough. Check the critical services: k3s, kubelet, API server. If they're dead, reboot. Don't wait for a full system hang.
-
-**Automation earns trust through failure.** The watchdog failed twice before it worked. That's not a reason to abandon it—it's a reason to improve it. Each failure teaches you what wasn't covered. Each fix makes the system more resilient.
-
-**Logs are forensics gold.** Without persistent journald logs from the previous boot, I wouldn't have known what failed or when. Always keep logs across reboots.
-
-**Redundancy matters.** Multiple independent health checks (ping, k3s status, memory pressure) are better than a single check. If one misses the issue, another might catch it.
-
-## The Aftermath
-
-Since the fix on May 27, node-1 hasn't hung again. Neither have node-2 or node-3. The watchdog sits quietly in the background, checking health every few seconds, ready to reboot if something goes wrong.
-
-It's invisible infrastructure. You don't think about it when it works. You're grateful for it when it saves you.
-
-And that's the whole point of automation: build systems that handle failures without you. Build monitoring that catches issues before they become outages. Build watchdogs that reboot nodes before you even notice.
-
-The Tuesday night apocalypse was rough. Two hangs in one evening. Manual reboots. Late-night debugging. But the result? A cluster that can recover from failures automatically. A system that's more resilient than it was before.
-
-Node-1 used to hang for four days. Now it reboots itself in 15 seconds.
-
-That's progress.
+Node-1 answered a ping while the services I needed were unavailable. Later, a service answered “active” while it didn't own the device. Neither answer was false. I had asked each one to tell me more than it could.
 
 ---
 
-*Next: [Chapter 13: What's Next](/chapters/13-whats-next) - Reflections on the journey, lessons learned, and where the cluster goes from here.*
+*Next: [Chapter 13: What's Next](https://github.com/raolivei/pi-fleet-blog/pull/30) — what I want from the platform now, and what still needs evidence.*
