@@ -5,14 +5,8 @@ const startCards = [
   {
     href: "/chapters/01-the-moment-i-decided-to-own-my-infrastructure",
     label: "Start the journey",
-    title: "Chapter 1 — Own your infrastructure",
+    title: "The Moment I Decided to Own My Infrastructure",
     desc: "Why self-host on ARM, what ownership means, and how Eldertree started.",
-  },
-  {
-    href: "/chapters/02-first-boot",
-    label: "Chapter 2",
-    title: "First Boot",
-    desc: "Power-on, base OS setup, and building the foundation.",
   },
   {
     href: "/chapters/interlude-why-we-dropped-pihole-for-bind9",
@@ -31,11 +25,12 @@ const startCards = [
         <h1 class="home-hero__title">Building Eldertree</h1>
         <p class="home-hero__subtitle">A Raspberry Pi Kubernetes journey</p>
         <p class="home-hero__tagline">
-          Chapters, war stories, and podcast — real failures, real fixes, no cloud rent.
+          I was paying monthly rent for my own data — so I bought three Raspberry Pi&nbsp;5s and
+          built Kubernetes in my living room. This is the story of choosing ownership over convenience.
         </p>
         <div class="home-hero__actions">
           <a class="home-btn home-btn--brand" href="/chapters/01-the-moment-i-decided-to-own-my-infrastructure">Start reading</a>
-          <a class="home-btn home-btn--ghost" href="/chapters/02-first-boot">Chapter 2</a>
+          <a class="home-btn home-btn--ghost" href="/chapters/">Browse chapters</a>
           <a class="home-btn home-btn--ghost" href="https://control.eldertree.xyz" target="_blank" rel="noopener noreferrer">Control Center</a>
         </div>
       </div>
@@ -70,28 +65,20 @@ const startCards = [
 
     <HomeNarrative />
 
-    <section class="home-section home-section--compact" aria-labelledby="podcast-heading">
-      <h2 id="podcast-heading" class="home-section__title">Podcast</h2>
-      <p class="home-prose">
-        <strong>Building Eldertree</strong> is a documentary-style audio series (10 episodes)
-        that follows the same arc as the written chapters. See the
-        <a href="/podcast">podcast page</a> for the episode list.
-      </p>
-      <p class="home-meta-links">
-        <a href="/chapters/">Browse all chapters</a>
-        <span aria-hidden="true">·</span>
-        <a href="https://github.com/raolivei/pi-fleet">pi-fleet on GitHub</a>
-      </p>
-    </section>
-
     <section class="home-section home-section--compact" aria-labelledby="why-heading">
       <h2 id="why-heading" class="home-section__title">Why Eldertree?</h2>
       <p class="home-prose">
         The name reflects the stability I wanted from this foundation — an
         <strong>elder tree</strong> that weathered storms and supported everything built on top.
         <strong>Eldertree</strong> is a three-node K3s cluster on Raspberry Pi 5 hardware in a
-        portable open-frame tower. This site is the build diary; the runbook and ops consoles
-        live elsewhere.
+        portable open-frame tower. This site is the build diary; the
+        <a href="https://docs.eldertree.xyz/">Runbook</a> covers setup and operations, and the
+        <a href="https://control.eldertree.xyz/">Control Center</a> shows the live cluster.
+      </p>
+      <p class="home-meta-links">
+        <a href="/chapters/">Browse all chapters</a>
+        <span aria-hidden="true">·</span>
+        <a href="https://github.com/raolivei/pi-fleet">pi-fleet on GitHub</a>
       </p>
     </section>
   </div>

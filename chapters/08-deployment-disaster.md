@@ -1,274 +1,88 @@
 # Chapter 8: The Great Deployment Disaster
 
-It started, as all good disasters do, with a simple question: *"Why isn't SwimTO deploying?"*
+The January 15–16 commit history is a fairly good account of how a deployment can be broken in several places at once.
 
-That was January 16, 2026. Morning. Coffee in hand. I'd merged a PR to SwimTO the night before—just a small fix, nothing fancy. The GitHub Actions workflow ran green. The Docker image built successfully. The `pi-fleet` GitOps repository should have updated automatically with the new image tag. FluxCD should have reconciled. Pods should have restarted.
+SwimTO's pipeline was supposed to build an image, tell the infrastructure repository which tag to use, and let Flux reconcile the change. That description fits in a sentence. The fixes spread across two repositories and several different layers of the system.
 
-Except none of that happened.
+The annoying part was that each fix was small. There was no giant design error to remove and be done with. There was a JSON value passed as a string, a StorageClass definition missing required fields, and a web container that couldn't write where nginx expected to write. Getting past one exposed the next.
 
-The pods were still running the old image. No update. No restart. Nothing.
+## The message between repositories
 
-I checked the workflow logs. Green checkmarks. I checked GHCR. New image, tagged correctly. I checked the `pi-fleet` repo. No new commit.
+At the time, SwimTO used GitHub's `repository_dispatch` API to request an image update in `pi-fleet`. The receiving workflow took a project, a component and an image tag, then opened a PR changing the corresponding deployment manifest.
 
-That's when I knew: this was going to be one of those days.
+The January 15 fixes show the trouble at that boundary. The caller was passing `client_payload` through `gh api` as a string when the API expected an object. One attempt changed the CLI's `-f` flag to `-F`. That still didn't produce the intended request, so the [next change supplied a JSON body through standard input](https://github.com/raolivei/swimTO/commit/bfb853ad638a6fe5ca9e354d6bee803df72b01c3).
 
-## Act I: The JSON That Wasn't
-
-The SwimTO deployment workflow uses a GitHub repository dispatch event to trigger an update in `pi-fleet`. The idea is simple: after building the image, fire a webhook to `pi-fleet` with the new image tag. A workflow there creates a PR updating the Kubernetes manifest.
-
-Except the webhook wasn't working. The error message in the logs:
-
-```
-For 'properties/client_payload', "{\"project\":\"swimto\"...}" is not an object.
-```
-
-Ah. Of course. JSON.
-
-The problem: GitHub CLI's `-f` flag treats everything as a string. Even when you lovingly craft your JSON with escaped quotes like you're defusing a bomb. The payload was being sent as a string, not an object.
-
-**Fix attempt #1:** Change `-f` to `-F` (which handles JSON values).
-
-I pushed the fix. Reran the workflow. Still broken. Different error, same problem.
-
-Turns out, shell quoting and the GitHub CLI have a complicated relationship. The single quotes around the JSON were being interpreted in ways that would make a parser cry.
-
-**Fix attempt #2:** Use a heredoc.
+A static example of the payload the receiving workflow expected looks like this:
 
 ```bash
-gh api repos/raolivei/pi-fleet/dispatches --method POST --input - <<EOF
+gh api repos/raolivei/pi-fleet/dispatches --method POST --input - <<'JSON'
 {
   "event_type": "deploy-image",
   "client_payload": {
     "project": "swimto",
-    "image": "ghcr.io/raolivei/swimto-api:v0.5.2"
+    "component": "api",
+    "image_tag": "v0.5.4"
   }
 }
-EOF
+JSON
 ```
 
-Heredocs don't care about quoting. They're a boundary. Everything inside is literal. This is how civilized people handle JSON in shell scripts.
+The field names mattered as much as the JSON shape. The workflow required `component` and `image_tag`; sending a complete image reference under a different field wouldn't satisfy its validation.
 
-Third try. The dispatch finally worked. Progress!
+The quoted delimiter in this static example prevents shell expansion. The real workflow inserted the version produced by an earlier job, so it also had to account for how that value entered the request. A heredoc made the body easier to read. It didn't absolve the caller of understanding shell expansion or JSON encoding.
 
-## Act II: The StorageClass Catastrophe
+This was a new deployment arrangement, still being put together in January. It hadn't run unchanged for months and then mysteriously stopped. The history is messier, and more familiar: I was connecting the pieces while finding out where the assumptions between them didn't match.
 
-With the webhook fixed, surely the deployment would work now, right?
+## A patch that was being applied as a resource
 
-*Narrator voice: It did not.*
+The next recorded infrastructure fix came just after midnight on January 16. Flux couldn't complete its dry-run because the `local-path` StorageClass definition lacked a `provisioner`.
 
-FluxCD showed the SwimTO kustomization as "Not Ready" with a delightfully unhelpful message:
+The filename called it a patch. The Kustomization listed it under `resources`.
 
-```
-StorageClass/local-path dry-run failed: provisioner: Required value
-updates to provisioner are forbidden
-```
+That distinction explained why a small file changing a default-storage annotation was being validated as a StorageClass resource. Its name didn't change what Kustomize and Kubernetes did with it. [The fix](https://github.com/raolivei/pi-fleet/commit/942bf533861150bdacf65a9b91100b690e15f780) supplied `provisioner: rancher.io/local-path`, along with the other resource fields.
 
-Translation: "Your YAML is bad and you should feel bad."
+This wasn't an argument for copying a full object into every patch. It was a mistake in how this particular file was composed and applied. Looking at the little YAML file in isolation had hidden the important part: where it entered the build.
 
-I dug into the `pi-fleet` manifests. Someone (definitely not me, surely) had created a patch for the `local-path` StorageClass that was missing the `provisioner` field. Because Kubernetes requires that field. Because of course it does.
+## Nginx needed somewhere to write
 
-The patch looked like this:
+The web container had a more ordinary problem. It ran as a non-root user, while nginx expected writable cache, PID and temporary directories.
 
-```yaml
-apiVersion: storage.k8s.io/v1
-kind: StorageClass
-metadata:
-  name: local-path
-# ... missing provisioner field
-```
+The [January 16 deployment change](https://github.com/raolivei/pi-fleet/commit/47444d9d7bc7d8552377eb3ebccc764b5ec60b90) mounted `emptyDir` volumes at `/var/cache/nginx`, `/var/run` and `/tmp`. Those were runtime files, so there was no reason to keep them on a persistent volume. The container could stay non-root and still have the writable paths it needed.
 
-Kubernetes saw this and said: "You're trying to update a StorageClass, but you're not specifying the provisioner, which is required and immutable." Fair point, Kubernetes. Fair point.
+An `emptyDir` lasts for the life of its Pod, including container restarts inside that Pod. A replacement Pod gets a new one. That was the behaviour these directories needed.
 
-**Fix #3:** Add the missing `provisioner: rancher.io/local-path` field.
+Registry authentication was another part of getting images into the cluster. On January 15, I added a GHCR login before the pipeline's image-verification step. The Kubernetes deployments also needed their own pull credentials. Authenticating the build job didn't authenticate a node pulling the resulting image; those were separate places to check when the image existed but couldn't be used.
 
-Pushed the fix. FluxCD reconciled. The StorageClass was happy. Resources started appearing.
+Nor does a final list of running pods establish that every application flow was correct. The OAuth and route fixes that followed on January 20 get their own chapter. There was still work between “the containers start” and a working login.
 
-We were making progress. Slowly. Painfully. But progress nonetheless.
+## June brought a different kind of deployment problem
 
-## Act III: The Authentication Apocalypse
+In early June, I tried moving GitHub Actions builds onto Eldertree. Ollie's multiple images were putting pressure on hosted runner storage, and the cluster offered native ARM64 builds and local NVMe space. The old runner guide described roughly 116GB available per node at that point. It seemed a reasonable place to do the work.
 
-Pods were now being created! Celebration! Confetti! I could almost hear the sound of success.
+My first version managed the runner lifecycle in a Kubernetes deployment. Registration state and workspace persistence immediately became awkward.
 
-Then I checked the pod status:
+Mounting a volume over `/home/runner` hid the runner binaries already present in the image. Moving the workspace mount avoided that, but the registration files needed separate handling. The [June 4 fix](https://github.com/raolivei/pi-fleet/commit/5b1613812b3f7b88f590a9b67b28f886f7ea94fc) records 139-plus restarts while dealing with that arrangement. I had wanted somewhere to build containers and ended up maintaining the machine that was supposed to build them.
 
-```
-ImagePullBackOff
-Error: 403 Forbidden
-```
+I then replaced the manual deployment with [Actions Runner Controller](https://github.com/raolivei/pi-fleet/pull/215). ARC manages runner scale sets and ephemeral runner pods, with a listener handling queued work. An individual runner can execute its job and disappear, rather than carrying its registration through the restart behaviour of my long-lived deployment.
 
-*Record scratch.*
+That was a better fit, but it still had to be installed into this cluster.
 
-The GHCR Personal Access Token had expired. All four applications using it (SwimTO, Pitanga, OpenClaw, docs) simultaneously decided they couldn't pull images anymore. Because of course they all used the same token. And of course it expired on the same day I was debugging something completely unrelated.
+The controller and Ollie scale set were defined as HelmReleases managed by Flux. The initial scale set allowed zero to three runners and used Docker-in-Docker. Repository registration, the authentication secret, controller identity and Kubernetes permissions were part of the configuration. Two short `helm install` commands wouldn't have described what I deployed.
 
-The ExternalSecret was pointing to `secret/canopy/ghcr-token` in Vault. Why `canopy`? Who knows. Historical reasons. The kind of path that made sense six months ago and now just confuses everyone.
+And the first commit wasn't the end. On June 5, I added a missing permission to create runner pods. Another fix corrected the controller service-account name used in the runner RoleBinding. The mismatch had blocked JIT secret and pod creation, as well as cleanup. The scale-set chart being installed didn't mean it could already provision a working runner.
 
-I generated a new PAT in GitHub (read:packages, write:packages), updated Vault, forced the ExternalSecrets to refresh.
+I had removed a registration lifecycle I didn't want to maintain. I hadn't removed networking, permissions, scheduling or the need to run an actual build through the result.
 
-**Fix #4:** New token, correct path, secrets synced.
+## Following the change all the way through
 
-Images started pulling! Progress! Surely this was the last issue.
+These were different incidents, months apart, but they exposed the same weakness in how I checked my work.
 
-*Narrator voice: It was not.*
+The application build could succeed while the dispatch body was wrong. A manifest could look plausible while the Kustomization applied it in an unexpected way. A runner controller could exist while its permissions prevented it from creating a runner.
 
-## Act IV: The Nginx Nemesis
+I needed to follow the handoff: built image, accepted deployment request, changed manifest, successful reconciliation, ready workload, then the application flow I actually cared about. For CI, that meant watching a queued job acquire a runner and finish, rather than stopping at the Helm release.
 
-Status check:
-- **swimto-postgres:** Running ✅
-- **swimto-redis:** Running ✅
-- **swimto-api:** Running ✅
-- **swimto-web:** CrashLoopBackOff ❌
-
-So close.
-
-I checked the logs:
-
-```
-nginx: [emerg] mkdir() "/var/cache/nginx/client_temp" failed (13: Permission denied)
-```
-
-Right. Security best practices. The container runs as non-root (UID 1000), which is good. But nginx wants to write to cache directories, which don't exist and aren't writable, which is bad.
-
-The fix: add emptyDir volumes for nginx's cache directories.
-
-```yaml
-volumes:
-  - name: nginx-cache
-    emptyDir: {}
-  - name: nginx-run
-    emptyDir: {}
-  - name: nginx-tmp
-    emptyDir: {}
-
-volumeMounts:
-  - name: nginx-cache
-    mountPath: /var/cache/nginx
-  - name: nginx-run
-    mountPath: /var/run
-  - name: nginx-tmp
-    mountPath: /tmp
-```
-
-EmptyDir volumes are ephemeral storage created when the pod starts and deleted when the pod stops. Perfect for temp files. Nginx gets writable directories. The container stays non-root. Everyone's happy.
-
-**Fix #5:** EmptyDir volumes for nginx.
-
-I pushed the fix. Waited for FluxCD to reconcile. Watched the pods restart.
-
-All green.
-
-## Act V: The Resurrection
-
-After five fixes, four PRs to `pi-fleet`, three PRs to `swimTO`, two expired tokens, and a partridge in a pear tree, the final status:
-
-| Service       | Status      |
-|---------------|-------------|
-| postgres      | ✅ Running  |
-| redis         | ✅ Running  |
-| swimto-api    | ✅ Running  |
-| swimto-web    | ✅ Running  |
-
-The cluster lived. The deployment worked. The pipeline was whole again.
-
-I tested the app. Login worked. Google OAuth worked. Pool schedules loaded. Everything functional.
-
-It was done.
-
-## The Tally
-
-Looking back at the debugging session:
-
-| Metric                                  | Value      |
-|-----------------------------------------|------------|
-| PRs created                             | 7          |
-| PRs merged                              | 7          |
-| Root causes discovered                  | 5          |
-| Times I questioned my career choices    | 12         |
-| Times FluxCD said "Not Ready"           | Lost count |
-| Hours spent                             | Too many   |
-| Coffee consumed                         | Not enough |
-| Current pod status                      | Green ✅   |
-
-## The Lessons (Learned the Hard Way)
-
-**JSON in shell scripts is a war crime.** Seriously. Use heredocs. Always. The 30 seconds you save with inline JSON will cost you 30 minutes of debugging escaped quotes.
-
-**Kubernetes patches need to be valid resources.** If you're creating a patch that Kubernetes treats as a full resource, it needs all required fields. "It's just a patch" doesn't exempt you from schema validation.
-
-**Tokens expire.** Set calendar reminders. Or use something that auto-rotates. Or just accept that you'll be debugging this again in 90 days. (I chose acceptance.)
-
-**Nginx and non-root containers are frenemies.** They'll work together, but only if you provide the right emptyDir offerings. Treat it like a sacrifice to the container gods.
-
-**"Quick fix" is a myth.** Every quick fix has three more fixes hiding behind it, waiting to jump out and yell "surprise!"
-
-**Automation is only as good as your last edge case.** The workflow worked perfectly for months. Then one small assumption (JSON serialization) broke, and the whole pipeline stopped.
-
-## Act V: The Runner Rebellion (June 2026)
-
-Fast-forward five months. SwimTO is stable. The deployment pipeline is humming. I'm feeling cocky.
-
-"You know what this cluster needs?" I thought. "Self-hosted GitHub Actions runners."
-
-The motivation was solid: Ollie's multi-service Docker builds were hitting storage limits on GitHub-hosted runners. Six services building in parallel, each pulling base images, caching layers—it adds up fast. The solution seemed obvious: run the builds on Eldertree, where I have 116GB NVMe storage per node.
-
-So I wrote a deployment. Manual runner registration, Docker-in-Docker sidecar, persistent volume for the workspace. Deploy it. Watch it start.
-
-`CrashLoopBackOff`.
-
-**Attempt 1:** Mount path conflict. The PVC was mounted at `/home/runner`, which overwrote the runner binaries (`config.sh`, `run.sh`) from the image. The pod started, couldn't find its own scripts, and died.
-
-*Fix:* Mount at `/home/runner/work` instead. Keep the binaries, persist the workspace.
-
-**Attempt 2:** Config not persisting. The runner registered successfully on first boot, but every restart lost the registration. The `.runner` and `.credentials` files weren't in the workspace directory—they lived in `/home/runner`.
-
-*Fix:* Add volume mount for `/home/runner`. Except that brings us back to Attempt 1's problem.
-
-**Attempt 3-17:** Various permutations of mount paths, init containers, symlinks, and shell script debugging. Each one fixed one issue and created two new ones. By restart #139, I'd seen every possible combination of "No such file or directory" and "Cannot connect to server, because config files are missing."
-
-This was the moment of clarity: **I was fighting the tool, not solving the problem.**
-
-### The ARC Solution
-
-Professional organizations don't manually manage runners. They use **Actions Runner Controller (ARC)**—GitHub's official solution for auto-scaling ephemeral runners in Kubernetes.
-
-The architecture is elegant:
-- **Controller** (one per cluster): Watches the GitHub job queue
-- **Listener** (one per repo/org): Provisions runner pods on demand
-- **Runner pods** (ephemeral): Execute one job, then delete themselves
-
-No persistent state. No mount conflicts. No manual registration. Runners scale from 0 to N based on queue depth, then disappear when idle.
-
-I deleted my 155-line manual deployment. Replaced it with two Helm charts:
-
-```bash
-# Controller
-helm install arc-controller \
-  oci://ghcr.io/actions/actions-runner-controller-charts/gha-runner-scale-set-controller
-
-# Runner scale set (Ollie)
-helm install ollie-runners \
-  oci://ghcr.io/actions/actions-runner-controller-charts/gha-runner-scale-set \
-  --set minRunners=0 \
-  --set maxRunners=3
-```
-
-Five minutes later: controller running, listener running, ready to auto-provision runners.
-
-The difference:
-- **Manual approach:** 139 restarts, 3 hours debugging, persistent failure
-- **ARC approach:** 2 Helm commands, 5 minutes, production-ready
-
-Sometimes the right solution is admitting you shouldn't build it yourself.
-
-**Fighting the tool means you picked the wrong tool.** When you're on restart #139 of a manual deployment, it's not a bug—it's a sign. Use the official solution, not your clever workaround.
-
-## Epilogue
-
-As I write this, SwimTO hums along quietly. Pods running. Images pulling. Secrets... secreting? The pipeline is automated. The deployment is GitOps-driven. Everything is as it should be.
-
-Until the next token expires.
-
-*See you in 90 days.*
+The commits are mostly a few lines each. Reading them together makes the work look much smaller than it felt. But they also show why there wasn't one fix that could have finished the whole thing.
 
 ---
 
-*Next: [Chapter 9: The Tailscale Treachery](/chapters/09-tailscale-treachery) - When the VPN decided Kubernetes traffic looked interesting and claimed it for itself.*
+*Next: [Chapter 9: The Tailscale Treachery](https://github.com/raolivei/pi-fleet-blog/pull/26) — when reaching the database depended on which node the application landed on.*
