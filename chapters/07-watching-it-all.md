@@ -1,151 +1,61 @@
 # Chapter 7: Watching It All
 
-The first time monitoring saved me, I was asleep.
+A working application is a surprisingly poor way to tell whether you have working infrastructure.
 
-It was 2 AM on a Tuesday in April 2026. My phone buzzed. Half-awake, I looked at the screen: **"Alertmanager: BlackboxProbeFailing - swimto.eldertree.xyz"**. The synthetic check had failed. The URL wasn't responding.
+SwimTO could serve a page while something underneath it was running out of space. A pod could be ready while the public hostname was broken. And a dashboard could look reassuring because the thing it was supposed to measure wasn't being scraped at all.
 
-I grabbed my laptop, connected to Tailscale, opened Grafana. The dashboard told the story immediately: SwimTO's API pod had OOMKilled (out of memory). The database connection pool had leaked, memory usage climbed, Kubernetes killed the pod. The pod restarted automatically (that's what health checks do), but for about 90 seconds, the site was down.
+By April 2026, Eldertree had Prometheus and Grafana, along with enough dashboards to make finding the right one a small task of its own. The missing piece was knowing what those dashboards actually covered. Installing monitoring had been easier than checking whether it answered the questions I needed it to answer.
 
-I hadn't noticed. My users hadn't complained yet. But the monitoring caught it. Alert fired. I investigated. I patched the leak, bumped the memory limit, deployed the fix. By morning, it was a non-event.
+The [April 29 observability changes](https://github.com/raolivei/pi-fleet/pull/160) were an attempt to close that gap. Traefik scraping, synthetic checks, log collection, a dashboard inventory. Less exciting than adding another application, but increasingly necessary as the existing ones acquired users.
 
-That's the moment I became religious about observability.
+## What the stack could tell me
 
-## What You Can't See, You Can't Fix
+Prometheus collected the numbers: node resources, Kubernetes object state, application metrics, and the exporters configured for services such as PostgreSQL, Redis and Vault. Grafana gave me somewhere to read them; the [public Grafana entry point](https://grafana.eldertree.xyz) is available now. Pushgateway handled metrics from batch work that might finish before Prometheus came around to scrape it.
 
-Before monitoring, debugging meant: user reports a problem, you SSH into the cluster, run kubectl commands, check logs, guess at what happened, maybe find the issue, maybe not. It's reactive, slow, and you only see the current state—not what led to the failure.
+Those tools weren't interchangeable. A deployment's available replica count told me something different from its request latency. Node memory usage could explain pressure without identifying which request caused it. Getting a useful picture meant putting several signals next to one another, then following the one that looked wrong.
 
-After monitoring, debugging means: alert fires, you open Grafana, the dashboard shows exactly what happened, when it happened, and what metrics spiked or dropped. It's proactive, fast, and you see the history.
+Alerting added another distinction I needed to get right. Prometheus evaluates the alert rules. Alertmanager receives the firing alerts and handles grouping and delivery through configured notification receivers. Having an alert visible in Prometheus doesn't establish that a notification reached a phone. That last part needs its own configuration and test.
 
-The difference is enormous.
+The same applied to timing. The April work initially used 30-second scrapes, then [changed the interval to 60 seconds](https://github.com/raolivei/pi-fleet/pull/161) to reduce load on the Pis. I gave up some detail between samples in exchange for doing less work on machines with 8GB of RAM. A minute was a reasonable compromise for the cluster, but it meant I couldn't expect the graphs to reconstruct every short interruption.
 
-## The Monitoring Stack
+## The URL was a separate question
 
-Eldertree's observability stack has five core components:
+The part I had been missing was outside the application process.
 
-**Prometheus** — Metrics collection and storage (7-day retention, 8GB persistent volume)  
-**Grafana** — Visualization and dashboards  
-**Pushgateway** — Metrics push endpoint for batch jobs  
-**Loki** — Log aggregation (for when metrics aren't enough)  
-**Alertmanager** — Alerting rules and notifications
+An API can be healthy while users get a certificate error. Kubernetes can have the right endpoints while DNS points somewhere else. Traefik can route traffic correctly and still sit behind a broken public tunnel configuration. None of those failures requires the application pod to crash.
 
-Deployed in the `observability` namespace. Managed by Helm. Monitored by... itself.
+Blackbox exporter gave Prometheus another way to look. It requested the configured URLs and reported whether the checks passed, how long they took, and which HTTP status came back. The exporter ran inside the cluster, so this was a check from that location through the public hostname, not an independent monitor on someone else's network. Still, it exercised more of the path than looking at a ready pod.
 
-Prometheus scrapes metrics from:
-- Kubernetes API (via kube-state-metrics)
-- Node hardware (via node-exporter)
-- Applications (via `/metrics` endpoints)
-- Traefik (ingress metrics)
-- Vault (seal status, request latency)
-- PostgreSQL (database stats)
-- Redis (cache hit rates)
-- Pi-hole (DNS queries, ad blocking)
+The public targets included SwimTO and Pitanga. Internal dashboards had a separate module with relaxed certificate verification. That made those checks useful for reachability, but they couldn't prove certificate trust was correct when verification was disabled.
 
-Every 15 seconds, Prometheus scrapes these endpoints and stores the metrics. Grafana queries Prometheus and renders dashboards. Alertmanager evaluates rules and fires alerts.
+The original `BlackboxProbeFailing` rule waited five minutes before firing. That matters. A short blip could appear in the probe metrics without becoming a firing alert. I wanted the rule to avoid treating every brief interruption as something requiring attention; I couldn't then describe it as a detector for every interruption.
 
-It's a closed loop: the cluster monitors itself.
+Nor was an HTTP probe a test of the whole product. A successful response didn't prove that Google login worked, that pool schedules were current, or that a user could save a favourite. It answered a narrower question, and that was useful enough to keep.
 
-## The Dashboards That Matter
+## Fixing the dashboards I already had
 
-I built several dashboards, but these are the ones I actually use:
+Traefik was a good example of the gap between having a metrics feature and having usable metrics. The April pass added a static scrape for its Prometheus endpoint and exposed the metrics port in the K3s Traefik configuration. Until the scrape path was wired correctly, an ingress dashboard couldn't tell me much about the traffic actually passing through it.
 
-**Pi Fleet Overview** — Cluster-wide health at a glance. Node status, pod count, resource usage, Vault seal status, Traefik request rate. The first thing I check every morning.
+Grafana had its own housekeeping problem. Its dashboard sidecar was searching every namespace for labelled ConfigMaps. I scoped that search to `observability`, where I could control the dashboard collection, instead of letting unrelated charts decide what appeared in the list.
 
-**Hardware Health** — Raspberry Pi-specific metrics. CPU temperature, throttling status, memory usage, disk I/O. When a node starts thermal throttling (65°C+), I know to check airflow.
+I also added an inventory in `DASHBOARDS.md`. That sounds like documentation work you do after the interesting part. In practice, being able to identify the maintained dashboard was part of making the monitoring usable.
 
-**Traefik Ingress Metrics** — HTTP requests per second, response codes, latency percentiles. When response times spike, I know where to look (usually database queries).
+The Eldertree Ops Home dashboard became a way into the collection. From there I could follow a probe failure to ingress metrics, or a resource problem to the node and workload views. The hardware dashboard had a different job: temperatures, memory, disk and throttling signals. Rising temperature was a reason to investigate cooling; it wasn't evidence that throttling had started. Raspberry Pi's documented thermal limits are around 80–85°C, rather than the much lower temperature at which I might choose to pay attention.
 
-**Vault Health** — Seal status, leadership, request latency, token expirations. If Vault is sealed, nothing works. This dashboard catches it immediately.
+## Keeping the logs long enough to use them
 
-**Eldertree Ops Home** — The hub. Links to all other dashboards, plus high-signal stats: Blackbox probe success rate, Traefik request rate, SwimTO user count. The dashboard I keep open in a browser tab.
+The same April changes added Loki and Promtail. Promtail collected pod logs and sent them to Loki; Grafana could then query those logs alongside the metrics.
 
-The key is: **each dashboard answers a specific question**. "Is the cluster healthy?" "Is the hardware okay?" "Are services responding?" Don't build dashboards for the sake of dashboards. Build them to answer questions.
+That made an investigation less dependent on whether a particular pod still existed when I looked. It didn't make the logs a guaranteed explanation. I still had to have collected the relevant messages, kept them, and know roughly where to search. A graph could narrow the time window considerably.
 
-## The Missing Piece: Synthetic Monitoring
+Storage put a limit on how far back any of this worked. In April, Prometheus was configured for seven days of retention on an 8Gi volume. That was a disk constraint, not a declaration that a week of history would always be enough.
 
-Prometheus is excellent at telling you whether **pods, nodes, and Services** are healthy. Traefik can tell you request rates and status codes at the edge. Application metrics tell you what the app is doing.
+On June 1, I [changed the desired configuration](https://github.com/raolivei/pi-fleet/pull/200) to 90 days of metrics on a 64Gi NVMe volume, with a 58GB size cap, and 30 days of Loki logs. The accompanying runbook included a volume migration; changing a retention value in Git wasn't enough to complete it. The earlier seven-day setup belongs to this part of the story, rather than to an undated description of Eldertree today. So does Pi-hole's place in the metric collection, before the later BIND9 cutover.
 
-But none of that answers: **"Is the public URL actually working?"**
+I came out of that work with a more useful monitoring system and a less tidy definition of “monitored.” I could see resource history, search collected logs, and check configured URLs. I still needed to test notification delivery and cover the application flows a probe couldn't see.
 
-A Deployment can be green, the Service can exist, Traefik can be routing traffic, but if DNS is misconfigured or a cert is wrong or a Cloudflare rule is blocking traffic, users can't reach the app. You need a probe that walks the same path a browser does.
-
-That's where Blackbox exporter comes in.
-
-Blackbox does synthetic monitoring: it makes HTTP(S) requests to URLs on a schedule and produces pass/fail metrics. If `probe_success` is 0, something is wrong with reachability or HTTP semantics—not necessarily with the pod itself, but with the entire stack (DNS, TLS, ingress, tunnels, etc.).
-
-I deployed Blackbox in the `observability` namespace with two sets of checks:
-
-**Public URLs** (swimto.eldertree.xyz, pitanga.cloud) — Uses the normal `http_2xx` module. If the probe fails, the public URL is broken.
-
-**Internal URLs** (grafana.eldertree.local, prometheus.eldertree.local) — Uses a relaxed TLS profile (self-signed CA). If the probe fails, internal services aren't responding.
-
-Prometheus scrapes Blackbox in "prober" mode: the metrics live on the Blackbox job, but the target is the actual URL. Alertmanager has a rule: `BlackboxProbeFailing` fires when `probe_success` is 0 for more than 2 minutes.
-
-That's how I caught the SwimTO outage at 2 AM. The synthetic check failed. Alert fired. I fixed it before most users woke up.
-
-## The Observability Sprint (April 2026)
-
-By April 2026, monitoring was good but not great. Prometheus worked. Grafana had dashboards. But there were gaps:
-
-- Traefik metrics weren't being scraped properly (service annotations missed)
-- Grafana's sidecar was importing dashboards from every namespace (chaos)
-- No log aggregation (had to kubectl logs every time)
-- No synthetic checks (couldn't tell if public URLs actually worked)
-- Dashboard inventory was a mess (which dashboards were canonical?)
-
-So I spent a weekend closing the gaps. The result:
-
-**Blackbox synthetic monitoring** — Deployed, configured, alerts wired up. Now I know if public URLs break.
-
-**Traefik scrape config fixed** — Added static `additionalScrapeConfigs` for Traefik's native Prometheus endpoint. Ingress metrics now flow correctly.
-
-**Grafana sidecar scoped** — Changed `searchNamespace` from `ALL` to `observability` only. No more random vendor dashboards polluting the dashboard list.
-
-**Loki and Promtail deployed** — Logs now flow to Loki. Grafana can query logs alongside metrics. One place for observability.
-
-**Dashboard audit** — Wrote `DASHBOARDS.md` as a real inventory. Fixed broken PromQL queries. Documented which labels to use (Traefik v3 label names matter).
-
-**Eldertree Ops Home** — Built a lightweight hub dashboard with links and high-signal stats. The landing page for troubleshooting.
-
-After that sprint, the observability story was complete. Metrics, logs, alerts, synthetic checks, dashboards. If something breaks, I'll know. If it's already broken, I'll see why.
-
-## The Lessons
-
-Here's what six months of monitoring taught me:
-
-**Monitoring is essential from day one.** Don't wait until production. Deploy Prometheus and Grafana with the first app. You'll catch issues early.
-
-**Raspberry Pi-specific metrics matter.** CPU temperature and throttling status are critical on Pis. If a node hits 85°C, it throttles. Performance tanks. Monitor it.
-
-**Persistent storage for Prometheus is critical.** Seven-day retention fits in 8GB. That's enough to see trends and debug issues from "yesterday." Ephemeral metrics are useless.
-
-**Grafana dashboards save significant time.** The first time something breaks, you spend 20 minutes building a dashboard. Every time after, you open the dashboard. It pays for itself.
-
-**Blackbox answers "is the URL alive?"** — not "is my code correct?" It's complementary. You want both Blackbox and application metrics.
-
-**Loki complements Prometheus.** Metrics tell you *what* happened. Logs tell you *why*. You need both.
-
-**Alerting is about signal, not noise.** Too many alerts and you ignore them. Too few and you miss critical issues. Tune thresholds. Test alerts. Make sure they fire for real problems.
-
-**Grafana's sidecar is powerful and dangerous.** Always scope `searchNamespace` to the namespace you own. Otherwise, vendor charts can pollute your dashboard list.
-
-**Document your dashboards.** When you have 10+ dashboards, you'll forget which one does what. Write an inventory. Link to it from the main dashboard.
-
-**Monitor the monitors.** Prometheus scrapes itself. Grafana has uptime checks. If monitoring fails, you need to know.
-
-## The Feeling
-
-There's a specific feeling that comes from good observability. It's confidence.
-
-When something breaks (and things always break), you don't panic. You don't guess. You don't waste time searching logs or running kubectl commands blindly. You open Grafana, look at the dashboard, see the spike or drop, drill down, and fix it.
-
-That's the difference between "I hope this works" and "I know this works." Monitoring gives you visibility. Visibility gives you control. Control gives you confidence.
-
-And when the alert fires at 2 AM and you fix the issue before most users even notice? That's when you realize: the infrastructure works. The automation works. The observability works.
-
-You built a system that watches itself, alerts when something's wrong, and gives you the tools to fix it.
-
-That's production-ready.
+That was enough progress to matter. When the next deployment misbehaved, there would be more to work with than its current pod status.
 
 ---
 
-*Next: [Chapter 8: The Great Deployment Disaster](/chapters/08-deployment-disaster) - When everything decided to break simultaneously, and the lessons from debugging it all.*
+*Next: [Chapter 8: The Great Deployment Disaster](https://github.com/raolivei/pi-fleet-blog/pull/25) — the deployment problems that made those extra signals worth having.*

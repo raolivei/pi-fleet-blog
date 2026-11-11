@@ -1,17 +1,8 @@
 {
-  "updated": "2026-06-01T15:56:55Z",
+  "updated": "2026-06-07T20:53:46Z",
   "nodes": [
-    {
-      "id": "node-1",
-      "ready": true
-    },
-    {
-      "id": "node-2",
-      "ready": true
-    },
-    {
-      "id": "node-3",
-      "ready": true
-    }
+    { "id": "node-1", "ready": true },
+    { "id": "node-2", "ready": true },
+    { "id": "node-3", "ready": true }
   ]
 }
