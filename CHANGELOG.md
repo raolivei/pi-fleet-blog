@@ -8,6 +8,31 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ### Changed
 
+- **Chapter 9: The Tailscale Treachery** — Correct the story against dated implementation and incident evidence; preserve the documented experience without unsupported scenes, guarantees, or recovery claims.
+
+### Changed
+
+- **Chapter 8: The Great Deployment Disaster** — Correct the story against dated implementation and incident evidence; preserve the documented experience without unsupported scenes, guarantees, or recovery claims.
+
+### Changed
+
+- **Chapter 7: Watching It All** — Correct the story against dated implementation and incident evidence; preserve the documented experience without unsupported scenes, guarantees, or recovery claims.
+
+### Fixed
+
+- Correct the published build chronology, Vault/ESO and tunnel descriptions, reusable-workflow history, application ownership and scaling claims. Distinguish configured recovery from verified results and historical deployment from current serving state. Keep the November story's one-second comparison tied to run creation timestamps.
+- Use the confirmed public Grafana entry point where dashboard access is relevant.
+
+### Added
+
+- Link the cluster banner to the confirmed public Grafana sign-in page.
+
+### Fixed
+
+- Remove LAN-only links, hostnames, and API fallbacks from public homepage widgets; replace the Chapter 2 hero shortcut with Browse chapters.
+
+### Changed
+
 - Promote the November issue-audit story to Chapter 14, preserving the reserved Chapters 7–13. Move its sidebar and overview entry into The Journey; keep a moved-page link at the published interlude URL.
 
 ### Changed

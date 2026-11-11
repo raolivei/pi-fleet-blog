@@ -8,7 +8,7 @@ And then you spend a Tuesday night staring at connection timeouts, wondering if 
 
 ## The Dual Network Setup
 
-The Eldertree cluster has two networks. Not because I'm fancy—because I had to work with what I had.
+The network I was building around had two segments. Not because I'm fancy—because I had to work with what I had. The addresses below describe that earlier layout, rather than a promise that the network never changed.
 
 **Network 1: WiFi (192.168.2.0/24)**
 - Management access
@@ -31,7 +31,9 @@ It's not the most elegant setup. But it works. And more importantly, it taught m
 
 ## The DNS Journey
 
-I wanted local service discovery. Type `vault.eldertree.local` in my browser and reach Vault. Type `grafana.eldertree.local` and see metrics. No IP addresses to remember. No bookmarks to maintain. Just DNS.
+This part of the story is the Pi-hole-plus-BIND setup. In June 2026 I replaced it with standalone BIND9; the [DNS cutover interlude](/chapters/interlude-why-we-dropped-pihole-for-bind9) covers that change. Pi-hole is not the cluster's current DNS service.
+
+I wanted local service discovery: reach Vault or a dashboard by name instead of remembering its address. That was the local DNS problem at the time. Grafana now also has a [public entry point](https://grafana.eldertree.xyz/); that is a different access path from the internal names in this earlier setup.
 
 The obvious solution: **Pi-hole.**
 
@@ -51,9 +53,9 @@ kubectl get pods -n pi-hole
 
 Output: `1/2 Ready`
 
-One out of two containers ready. That's the problem with multi-container pods—Kubernetes won't route traffic until **all** containers pass readiness probes. The Pi-hole container was fine. The BIND sidecar container wasn't.
+One out of two containers ready. A pod's readiness depends on its containers being ready; a failed BIND readiness check could keep the whole pod out of the Service's ready endpoints even while Pi-hole was running.
 
-BIND handles the custom `.eldertree.local` zone. Without it, Pi-hole can resolve public domains (google.com works fine), but anything local just returns `SERVFAIL`.
+BIND handled the custom `.eldertree.local` zone. Without it, Pi-hole can resolve public domains (google.com works fine), but anything local just returns `SERVFAIL`.
 
 I checked the service endpoints:
 
@@ -63,17 +65,17 @@ kubectl get endpoints -n pi-hole pi-hole
 
 No endpoints. Zero. The service existed, the LoadBalancer IP existed (192.168.2.201), but Kubernetes wasn't routing traffic to the pod because the pod wasn't "ready."
 
-No endpoints = no traffic. Even if the pod is running. Even if DNS is listening on port 53. If Kubernetes doesn't consider the pod ready, the service is dead.
+The normal Service path had no ready backend to send queries to. A process listening inside a pod does not, by itself, make that pod available through its Service.
 
-I tested DNS directly from inside the pod:
+I tested the internal name directly from inside the pod. With the pod name and DNS name set in shell variables, the check is:
 
 ```bash
-kubectl exec -n pi-hole <pod-name> -c pihole -- nslookup vault.eldertree.local 127.0.0.1
+kubectl exec -n pi-hole "$PIHOLE_POD" -c pihole -- nslookup "$INTERNAL_DNS_NAME" 127.0.0.1
 ```
 
 `SERVFAIL`. DNS was running, but the BIND zone wasn't loaded.
 
-The fix? **Wait.** The init container needed time to finish configuring BIND. The BIND container needed time to load the zone file. The readiness probe needed time to pass. Eventually, the pod went `2/2 Ready`, endpoints appeared, and DNS worked again.
+The `1/2 Ready` result put the problem in the running application containers, after the regular init containers had completed. BIND needed to finish startup and load its zone before its readiness check passed. Once the pod reached `2/2 Ready`, ready endpoints appeared and the Service could send it traffic.
 
 But my Mac's DNS cache still had stale entries. So I flushed it:
 
@@ -87,9 +89,9 @@ And then everything worked.
 
 **DNS is deceptively simple until it isn't.** It's "just" name resolution. Until you have multi-container pods with init containers and readiness probes and service endpoints and client-side caching all interacting in ways that aren't obvious.
 
-**Service endpoints are the source of truth.** If `kubectl get endpoints` shows nothing, traffic isn't routing. Full stop. Doesn't matter if the pod exists. Doesn't matter if DNS is listening. No endpoints = no service.
+**Check the Service's ready endpoints.** A running pod and a working Service are different things. If there are no ready backends, check the selector, readiness conditions, and startup failures before blaming the network.
 
-**Readiness probes gate traffic.** Kubernetes won't add a pod to service endpoints until all containers pass readiness probes. A single failing container blocks the entire pod.
+**Readiness probes gate normal Service traffic.** One failing container check can leave the whole pod unready. That tells me where traffic is being withheld; it does not, on its own, tell me why the check failed.
 
 **Client-side caching hides problems.** When DNS starts working again, your machine might not notice. Flush the cache. Always flush the cache.
 
@@ -103,17 +105,17 @@ On bare metal, you don't get magic. You get nothing. Unless you bring your own L
 
 Enter **kube-vip.**
 
-kube-vip provides virtual IPs (VIPs) for services using ARP. When you create a LoadBalancer service, kube-vip assigns it an IP from a pool and announces that IP on the network. Any device on the network can reach that IP, and kube-vip routes traffic to the appropriate pods.
+kube-vip can advertise virtual IPs (VIPs) on the local network using ARP. Address assignment needs the corresponding configuration; a LoadBalancer Service alone does not guarantee an address will appear. Advertising that address and forwarding Service traffic to pods are different jobs.
 
-I use three VIPs:
+The configured VIP layout in this part of the build was:
 
 - **192.168.2.100** - Kubernetes API server (HA control plane)
 - **192.168.2.200** - Traefik ingress (HTTP/HTTPS for all apps)
 - **192.168.2.201** - Pi-hole DNS
 
-Every application in the cluster routes through Traefik at .200. Every DNS query goes to Pi-hole at .201. The API server lives at .100. Clean. Simple. Works.
+The idea was to keep the entry points separate: ingress at .200, local DNS at .201, and the API at .100. Whether those endpoints were reachable still depended on the controllers, routing, and the nodes behind them.
 
-The cluster originally used MetalLB, but kube-vip does double duty—it handles both the API VIP and LoadBalancer services. Less complexity. Fewer moving parts.
+The cluster originally used MetalLB. Moving the LoadBalancer role to kube-vip was meant to put it alongside the API VIP under one component. Fewer moving parts, but still something I had to test rather than infer from a configured address.
 
 ## ExternalDNS: Automation That Actually Saves Time
 
@@ -121,9 +123,9 @@ Manually creating DNS records is tedious. Add a new service. Update Pi-hole conf
 
 ExternalDNS automates this.
 
-Point ExternalDNS at your DNS provider (Cloudflare for public domains, RFC2136 for Pi-hole). Create an Ingress resource in Kubernetes. ExternalDNS sees the Ingress, extracts the hostname, and automatically creates a DNS record.
+Point ExternalDNS at the DNS provider. In that setup, RFC2136 updates went to the BIND server alongside Pi-hole; Pi-hole itself was not the RFC2136 authoritative server. Public Cloudflare records had their own configuration. Create an Ingress resource in Kubernetes. ExternalDNS sees the Ingress, extracts the hostname, and automatically creates a DNS record.
 
-Deploy Grafana with an Ingress for `grafana.eldertree.local`. ExternalDNS creates the DNS record. Done. No manual steps.
+Add an internal application hostname to an Ingress, and ExternalDNS can create the corresponding record in the configured zone. I no longer had to hand-edit the zone for every service.
 
 It's one of those tools that feels like magic when it works. And when it doesn't work, you remember why automation is hard—because it's just code, and code has bugs, and now you're debugging why a DNS record didn't get created instead of just creating it manually.
 

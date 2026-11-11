@@ -11,7 +11,7 @@ export type NodeTier = "stable" | "unstable";
 
 export interface ClusterNode {
   id: string;
-  hostname: string;
+  hostname?: string;
   wlan0: string;
   eth0: string;
   tier: NodeTier;
@@ -34,7 +34,6 @@ export const cluster = {
   nodes: [
     {
       id: "node-1",
-      hostname: "node-1.eldertree.local",
       wlan0: "192.168.2.101",
       eth0: "10.0.0.1",
       tier: "unstable",
@@ -42,7 +41,6 @@ export const cluster = {
     },
     {
       id: "node-2",
-      hostname: "node-2.eldertree.local",
       wlan0: "192.168.2.102",
       eth0: "10.0.0.2",
       tier: "stable",
@@ -50,7 +48,6 @@ export const cluster = {
     },
     {
       id: "node-3",
-      hostname: "node-3.eldertree.local",
       wlan0: "192.168.2.103",
       eth0: "10.0.0.3",
       tier: "stable",
@@ -59,7 +56,7 @@ export const cluster = {
   ] satisfies ClusterNode[],
   vips: [
     { label: "API", ip: "192.168.2.100", purpose: "kube-vip HA" },
-    { label: "Ingress", ip: "192.168.2.200", purpose: "Traefik *.eldertree.local" },
+    { label: "Ingress", ip: "192.168.2.200", purpose: "Traefik ingress" },
     { label: "DNS", ip: "192.168.2.201", purpose: "BIND9 LB" },
   ] satisfies ClusterVip[],
   stack: [
@@ -125,8 +122,8 @@ export const journeyHighlights = [
   },
   {
     title: "Vault seal after reboot",
-    summary: "HA Raft survives node loss; unseal workflow documented in runbook VAULT-001.",
-    runbook: "https://docs.eldertree.xyz/runbook/issues/vault/VAULT-001",
+    summary: "Vault sealing and recovery checks, documented in runbook VAULT-001.",
+    runbook: "https://docs.eldertree.xyz/runbook/issues/storage/VAULT-001",
     tags: ["Vault", "Secrets"],
   },
   {

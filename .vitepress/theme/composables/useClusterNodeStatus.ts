@@ -38,12 +38,10 @@ const MANIFEST_BY_ID = Object.fromEntries(
 const REMOTE_NODES_URLS: string[] = [
   import.meta.env.VITE_CLUSTER_STATUS_URL,
   "https://control.eldertree.xyz/api/public/cluster/nodes",
-  "https://elder.eldertree.local/api/public/cluster/nodes",
 ].filter((url): url is string => Boolean(url));
 
 const HEALTH_URLS: string[] = [
   "https://control.eldertree.xyz/api/public/cluster/health",
-  "https://elder.eldertree.local/api/public/cluster/health",
 ].filter((url): url is string => Boolean(url));
 
 function readyToReadiness(ready: boolean): NodeReadiness {
