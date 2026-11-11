@@ -122,8 +122,8 @@ export const journeyHighlights = [
   },
   {
     title: "Vault seal after reboot",
-    summary: "HA Raft survives node loss; unseal workflow documented in runbook VAULT-001.",
-    runbook: "https://docs.eldertree.xyz/runbook/issues/vault/VAULT-001",
+    summary: "Vault sealing and recovery checks, documented in runbook VAULT-001.",
+    runbook: "https://docs.eldertree.xyz/runbook/issues/storage/VAULT-001",
     tags: ["Vault", "Secrets"],
   },
   {
