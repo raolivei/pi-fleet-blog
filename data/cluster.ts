@@ -11,7 +11,7 @@ export type NodeTier = "stable" | "unstable";
 
 export interface ClusterNode {
   id: string;
-  hostname: string;
+  hostname?: string;
   wlan0: string;
   eth0: string;
   tier: NodeTier;
@@ -34,7 +34,6 @@ export const cluster = {
   nodes: [
     {
       id: "node-1",
-      hostname: "node-1.eldertree.local",
       wlan0: "192.168.2.101",
       eth0: "10.0.0.1",
       tier: "unstable",
@@ -42,7 +41,6 @@ export const cluster = {
     },
     {
       id: "node-2",
-      hostname: "node-2.eldertree.local",
       wlan0: "192.168.2.102",
       eth0: "10.0.0.2",
       tier: "stable",
@@ -50,7 +48,6 @@ export const cluster = {
     },
     {
       id: "node-3",
-      hostname: "node-3.eldertree.local",
       wlan0: "192.168.2.103",
       eth0: "10.0.0.3",
       tier: "stable",
@@ -59,7 +56,7 @@ export const cluster = {
   ] satisfies ClusterNode[],
   vips: [
     { label: "API", ip: "192.168.2.100", purpose: "kube-vip HA" },
-    { label: "Ingress", ip: "192.168.2.200", purpose: "Traefik *.eldertree.local" },
+    { label: "Ingress", ip: "192.168.2.200", purpose: "Traefik ingress" },
     { label: "DNS", ip: "192.168.2.201", purpose: "BIND9 LB" },
   ] satisfies ClusterVip[],
   stack: [
@@ -89,11 +86,25 @@ export const cluster = {
 
 export const journeyHighlights = [
   {
-    title: "Own your infrastructure",
+    title: "The Moment I Decided to Own My Infrastructure",
     summary:
       "The AWS bill moment — why self-host on ARM, privacy over convenience, and how Eldertree started.",
     chapter: "/chapters/01-the-moment-i-decided-to-own-my-infrastructure",
     tags: ["Origin story", "Self-hosting"],
+  },
+  {
+    title: "Making things talk",
+    summary:
+      "Dual-network Pis (WiFi management + gigabit pod traffic), the first DNS setup, kube-vip, and ExternalDNS.",
+    chapter: "/chapters/03-making-things-talk",
+    tags: ["Networking", "DNS"],
+  },
+  {
+    title: "Pi-hole → BIND9",
+    summary:
+      "Why we removed Pi-hole ~8 months in — adblock unused, sidecar complexity, and the June 2026 cutover to standalone BIND9 on the same VIP.",
+    chapter: "/chapters/interlude-why-we-dropped-pihole-for-bind9",
+    tags: ["DNS", "Simplification"],
   },
   {
     title: "The CI/CD consolidation",
@@ -114,20 +125,6 @@ export const journeyHighlights = [
     summary: "HA Raft survives node loss; unseal workflow documented in runbook VAULT-001.",
     runbook: "https://docs.eldertree.xyz/runbook/issues/vault/VAULT-001",
     tags: ["Vault", "Secrets"],
-  },
-  {
-    title: "Pi-hole → BIND9",
-    summary:
-      "Why we removed Pi-hole ~8 months in — adblock unused, sidecar complexity, and the June 2026 cutover to standalone BIND9 on the same VIP.",
-    chapter: "/chapters/interlude-why-we-dropped-pihole-for-bind9",
-    tags: ["DNS", "Simplification"],
-  },
-  {
-    title: "Port 53 on bare-metal K3s",
-    summary:
-      "Historical: Pi-hole vs klipper ServiceLB, kube-vip VIPs, and disabling ServiceLB — lessons BIND9 inherited.",
-    chapter: "/chapters/interlude-why-we-dropped-pihole-for-bind9",
-    tags: ["DNS", "Networking"],
   },
   {
     title: "Longhorn removed",

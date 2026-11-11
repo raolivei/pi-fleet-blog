@@ -8,11 +8,63 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ### Changed
 
+- **Chapter 11: The Control Center** — Correct the story against dated implementation and incident evidence; preserve the documented experience without unsupported scenes, guarantees, or recovery claims.
+
+### Changed
+
+- **Chapter 10: Building Ollie** — Correct the story against dated implementation and incident evidence; preserve the documented experience without unsupported scenes, guarantees, or recovery claims.
+
+### Changed
+
+- **Chapter 9: The Tailscale Treachery** — Correct the story against dated implementation and incident evidence; preserve the documented experience without unsupported scenes, guarantees, or recovery claims.
+
+### Changed
+
+- **Chapter 8: The Great Deployment Disaster** — Correct the story against dated implementation and incident evidence; preserve the documented experience without unsupported scenes, guarantees, or recovery claims.
+
+### Changed
+
+- **Chapter 7: Watching It All** — Correct the story against dated implementation and incident evidence; preserve the documented experience without unsupported scenes, guarantees, or recovery claims.
+
+### Fixed
+
+- Correct the published build chronology, Vault/ESO and tunnel descriptions, reusable-workflow history, application ownership and scaling claims. Distinguish configured recovery from verified results and historical deployment from current serving state. Keep the November story's one-second comparison tied to run creation timestamps.
+- Use the confirmed public Grafana entry point where dashboard access is relevant.
+
+### Added
+
+- Link the cluster banner to the confirmed public Grafana sign-in page.
+
+### Fixed
+
+- Remove LAN-only links, hostnames, and API fallbacks from public homepage widgets; replace the Chapter 2 hero shortcut with Browse chapters.
+
+### Changed
+
+- Promote the November issue-audit story to Chapter 14, preserving the reserved Chapters 7–13. Move its sidebar and overview entry into The Journey; keep a moved-page link at the published interlude URL.
+
+### Changed
+
+- Rework the November issue-audit interlude in a more direct, personal voice, retaining the dated evidence and limits of each conclusion.
+
+### Added
+
+- **Issue audit interlude** — The November 6, 2026 investigation of cancelled CI, inactive workflows, and actual failed steps; evidence-based GitHub Issue closure and the distinction between merging and deployment verification.
+
+### Fixed
+
+- **Chapter overview** — List the published Chapter 6 and identify Chapters 7–13 as the remaining chapter PRs.
+
+### Changed
+
+- **Eldertree navigation** — Link the home page’s Runbook and Control Center references to their public sites; add shared Blog, Runbook, and Control Center footer navigation on every page, including chapters with a sidebar.
+- **Chapter 1 rewrite** — Reworked *The Moment I Decided to Own My Infrastructure* into a more personal, lived-in voice; trimmed the AI-generated tells (rule-of-three cadence, fragment lists, bolded aphorisms, symmetric pros/cons tables). Same facts, timeline, and structure; the *The Vision* section is now *What I thought I was building, versus what I built*.
 - **BIND9 story renumbered** — `02-why-we-dropped-pihole-for-bind9` → `interlude-why-we-dropped-pihole-for-bind9`; Chapter 2 reserved for *First Boot* (PR #19). Stub left at old URL.
 
 ### Added
 
-- **Chapter 11: The Control Center** — [`chapters/11-the-control-center.md`](chapters/11-the-control-center.md): accurate v1 story (kube-apiserver health API, OSI topology, o11y roles, API-vs-Prometheus design), live 3-grid screenshot, v1 vs roadmap. Replaces aspirational draft on PR #28; supersedes separate interlude PR #44.
+- **Chapter 5: Scaling Decisions, Not YAML** — [`chapters/05-scaling-decisions-not-yaml.md`](chapters/05-scaling-decisions-not-yaml.md): copy-paste workflow drift across ~15 repos, FluxCD as the deploy source of truth, the `github-workflows` reusable-workflow repo (`docker-build`, `python-ci`, `static-site-pages`, `version-check`), the five over-abstracted workflows that got deleted, Flux image automation instead of a GitOps glue workflow, and the `@main` blast-radius tradeoff. Rewritten from the stale draft against the current state of `github-workflows` and `pi-fleet`; sidebar entry added after Chapter 4, and Chapters 3–5 surfaced on the chapters index.
+- **Chapter 4: Keeping Secrets** — [`chapters/04-keeping-secrets.md`](chapters/04-keeping-secrets.md): the near-miss API-key commit, Vault dev → production → HA (Raft), policy-based access, automated unseal, Tailscale vs WireGuard, Cloudflare Tunnel, and TLS everywhere. Sidebar entry added after Chapter 3. Written in the human voice (not the AI-generated draft prose).
 - **Interlude** — [`chapters/interlude-why-we-dropped-pihole-for-bind9.md`](chapters/interlude-why-we-dropped-pihole-for-bind9.md): Pi-hole → BIND9 cutover (June 2026); not Chapter 2 (reserved for *First Boot*, PR #19).
 
 ### Changed
