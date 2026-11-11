@@ -1,119 +1,69 @@
 # Chapter 13: What's Next
 
-It's June 2026. Seven months since I flashed the first SD card. Seven months since that first `kubectl get nodes` showed "Ready" and I realized this might actually work.
+I first drafted this chapter in June 2026, about seven months after the first Eldertree setup. I was trying to take stock: three Raspberry Pis, applications, deployment automation, monitoring, and a growing collection of notes about what had broken.
 
-The cluster is running. Three Raspberry Pi 5s, humming quietly in my living room, serving production applications, surviving node failures, recovering from hangs, deploying updates automatically. It's infrastructure that mostly takes care of itself.
+By November, the incidents had made the next priorities more specific. I had tools for deployment, monitoring, and recovery. I also had examples of why their presence wasn't enough: a watchdog that hadn't restarted a hung node, a logging setting that hadn't produced the expected logs, and applications whose desired configuration differed from their running state.
 
-But "what's next" isn't really about adding more features. It's about looking back at what worked, what didn't, and what patterns emerged from seven months of building and operating this thing.
+The work is still worth writing about. It just needs a less convenient ending.
 
-## The Patterns That Emerged
+## What I would keep
 
-Here's what I learned about building infrastructure:
+I would keep the infrastructure in code. Ansible gives me a repeatable way to configure the nodes. Flux reconciles Kubernetes resources from Git. The shared charts and workflows save me from rebuilding the same deployment setup for each application.
 
-**Start simple, then add complexity.** I started with one node, K3s, and a test nginx pod. No HA. No GitOps. No monitoring. Just: does it work? Once it worked, I added a second node. Then a third. Then high availability. Then Vault. Then GitOps. Each addition built on a solid foundation.
+They also leave a record I can inspect when my memory is wrong. A commit can tell me when a setting entered the repository. A PR can preserve the reason for it and the checks performed. Neither establishes that every machine received the change, but both give the investigation somewhere to start.
 
-If I'd tried to build everything at once—three-node HA cluster with Vault, monitoring, GitOps, applications, and autoscaling—I would have drowned in complexity. Small steps let you understand each piece before adding the next.
+I would keep the division between tools. Traefik handles ingress. BIND9 now provides the LAN DNS service that earlier chapters describe using Pi-hole. Vault and External Secrets handle secret storage and synchronization. Prometheus, [Grafana](https://grafana.eldertree.xyz/), and the logging stack let me investigate behavior over time. KEDA has configured scaling rules for particular workloads; it doesn't remove the need to understand their resource use.
 
-**Automation from day one pays off forever.** The Ansible playbooks I built for node setup, NVMe boot, and K3s installation saved me hours every time I added a node or recovered from a failure. The GitOps setup with FluxCD meant deployments happened automatically. The reusable CI/CD workflows meant new projects could plug in with minimal setup.
+The Control Center gives me another view of that system. Its first tracked SPA implementation arrived on June 1. The [operating guide added that day](https://github.com/raolivei/pi-fleet/blob/c60db92/docs/CONTROL_CENTER.md) describes the node and workload view, with links into the tools I use to investigate further.
 
-Every hour spent on automation in November paid dividends in every month after. The ROI is absurd.
+That view is useful because it reduces the work of finding the next question. A Ready node or a healthy-looking workload still doesn't establish that a request can travel through every dependency and reach the user. I need to check that path too.
 
-**Explicit configuration beats defaults.** Kubernetes has defaults for storage classes, resource limits, network policies. I learned to ignore them and be explicit. Specify `storageClassName: local-path`. Set resource requests and limits. Define network interfaces for MetalLB. Defaults work until they don't, and when they fail, you waste time debugging "why did Kubernetes choose *that* value?"
+And I would keep writing things down. The shared notes behind Ollie help carry conventions and project context between sessions. The retrieval service helps find supporting documents. GitHub Issues hold investigations and unfinished work that need an outcome. Those jobs overlap, but each has a reason to exist.
 
-**Monitoring is essential, not optional.** Every time I caught an issue via Prometheus alert before it became a user-visible outage, I felt vindicated. The SwimTO API OOMKill at 2 AM? Caught by monitoring. The node-1 hang? Detected within seconds. Synthetic checks failing? Alert fired.
+## The distinctions I want to keep making
 
-Without monitoring, you're flying blind. With it, you see problems before they become disasters.
+The first is between a configuration and its effect.
 
-**Secrets belong in Vault.** Not in Git. Not in environment variables. Not in a password manager you manually copy-paste from. In Vault, synced to Kubernetes via External Secrets, with policy-based access control. The near-miss with the API key in November taught me this. I'm glad I learned it early.
+In May, setting up the watchdog involved checking more than whether the daemon was running. It needed to own the hardware device. Later, the logging investigation showed that setting `Storage=persistent` hadn't been enough either: an OS override prevented the intended result. The effective configuration and the stored journal mattered more than the line I'd written.
 
-**High availability is about eliminating single points of failure.** Three-node etcd. Kube-vip VIP for API access. Vault Raft replication. Hardware watchdog for node hangs. Each one removes a failure mode. Not everything needs HA (I removed Longhorn), but critical infrastructure does.
+The same applies to secrets. Vault is the source of truth, and External Secrets synchronizes values into Kubernetes Secrets for applications to consume. Some applications receive those values through environment-variable references. Saying that secrets must never appear in environment variables would misdescribe my own setup. The important distinction is between putting a value directly into source code or a manifest and referencing a Secret at runtime. That delivery method still needs appropriate care; using Vault doesn't make every access boundary correct automatically.
 
-**Test your assumptions.** The watchdog worked in tests but failed during real hangs. The ingress routing worked for simple cases but broke with trailing slashes. The Tailscale routes looked fine until cross-node traffic broke. Testing assumptions means: actually break things and see if your mitigations work.
+The second distinction is between having deployed something and having it running now.
 
-**Documentation is for future you.** Every time I wrote a runbook entry or updated a README, I thought "I'll remember this." I never did. Three months later, I'd search my own docs to remember how to unseal Vault or fix DNS. Write it down. Future you will thank present you.
+Canopy is a good example. It wasn't simply “coming soon” throughout this period. Its [public routing work was committed in February](https://github.com/raolivei/pi-fleet/commit/31aa2de01666b702e2b043a4e9728d9afb454300), and there was further [Flux deployment work in June](https://github.com/raolivei/pi-fleet/commit/e2026db9e523cc27e85611f34c671267535b3a21). At the November review, its API, frontend, and Redis Deployments existed but were scaled to zero, while PostgreSQL was Ready.
 
-**Troubleshooting is pattern recognition.** After debugging 92 problems across 212 commits, I started recognizing patterns. Pod in CrashLoopBackOff? Check logs, then resource limits, then secrets. Cross-node networking broken? Check routes, then firewall, then CNI config. DNS failing? Check Pi-hole, then CoreDNS, then ExternalDNS. Patterns speed up debugging.
+Those observations describe different states. Deployment manifests don't prove that an application was continuously available. Scaled-down Deployments don't mean it was never deployed. I also can't infer from that state alone that resource pressure was the reason.
 
-**Failures are learning opportunities.** The deployment disaster in January taught me about JSON serialization in shell scripts. The Tailscale routing issue taught me about policy routing tables. The watchdog failures taught me about userspace vs kernel-level protection. Every failure left the system better than before.
+The third distinction is between a useful mitigation and a guarantee.
 
-## The Lessons from Seven Months
+Three control-plane and etcd members give the cluster redundancy. They still share dependencies, including power and networking. The September incident affected all three nodes and led to the watchdog being disabled during investigation. That belongs alongside the May hardening story. Leaving it out would make the platform look simpler and more dependable than the record supports.
 
-If I were starting over, here's what I'd do differently:
+## The next work I want to earn
 
-**Set resource limits from day one.** I spent too much time debugging "resource limits higher than node capacity" errors because I didn't set them upfront. Define limits early, tune later.
+I want recovery to be something I can demonstrate for a defined failure, rather than infer from the presence of backups and automation.
 
-**Document architecture decisions in ADRs (Architecture Decision Records).** I have commit messages and PRs, but a dedicated "why we chose X over Y" document would have been useful. Why K3s instead of full Kubernetes? Why Vault instead of Sealed Secrets? Write it down while the reasoning is fresh.
+A useful recovery exercise needs a scope: which data, which services, which surviving hardware, and which checks establish that the result works. It also needs a record of what happened. Until I have that, a recovery-time estimate is a target, not an achievement. I don't want a timed claim in the blog to substitute for a restore test.
 
-**Test reboots before they're forced.** Every major change should include a "reboot all nodes and verify" step. I learned this the hard way during the SD card recovery incident. Test the failure modes before they happen in production.
+I want deployment verification to be more consistent too. A merged PR establishes what reached a branch. A published image establishes what became available to deploy. The running version and its observed behavior answer later questions. Keeping those steps visible makes an issue more useful to the next person—or assistant—who picks it up.
 
-**Automate Vault unsealing earlier.** I typed the unseal keys manually way too many times before automating it. If you're doing something repetitive, automate it.
+For Canopy, that means starting from its actual deployment and data state before deciding what to run next. It means checking the application, migrations, dependencies, and resource needs together. Autoscaling can be part of the answer, but it can't make those decisions for me.
 
-**Build the Control Center sooner.** Having one interface for all operations is transformative. I wish I'd built it in January instead of April.
+For the cluster, I want to investigate shared failure modes as carefully as individual services. Adding another replica doesn't help if both copies depend on the same unavailable resource. Another node could add capacity, but a fourth control-plane member wouldn't increase the number of failures a three-member etcd cluster can tolerate: [both tolerate one unavailable member](https://etcd.io/docs/v3.6/faq/#what-is-failure-tolerance). Capacity and quorum are separate reasons to change the hardware.
 
-But honestly? I wouldn't change much. The mistakes were part of the learning. The detours taught me things I wouldn't have learned otherwise. The infrastructure is better because it evolved through real problems, not hypothetical ones.
+Security work needs the same specificity. Policies, credentials, application access, and network reachability each need verification at the layer they control. Adding another tool is useful only when it addresses a defined problem and I can check the result.
 
-## What's Actually Next
+There are still experiments I'd like to explore, including voice interaction for Ollie. I can keep those as experiments without putting them on the critical path for making the existing services dependable.
 
-So, what's next for Eldertree?
+## A platform I can use and question
 
-**Enhanced security.** Network policies to isolate namespaces. Pod security standards to restrict container capabilities. Maybe even a service mesh (Linkerd?) for mTLS between services. Security layers, not just perimeter defense.
+The goal is still to run applications on infrastructure I understand well enough to operate. That includes being able to explain why it works, where it has failed, and what I haven't demonstrated yet.
 
-**Disaster recovery plan.** I have backups. I have runbooks. But I don't have a documented, tested recovery procedure for "the entire cluster burned down." That's next. Document it, test it, sleep better.
+The [Control Center](https://control.eldertree.xyz/) is a starting point for current status. The [runbook](https://docs.eldertree.xyz/) holds procedures. This blog holds the decisions and investigations behind them. I want those views to support each other without pretending that any one of them is the whole system.
 
-**Canopy deployment.** The personal finance dashboard has been "coming soon" for months. It's resource-heavy, which is why it's not deployed yet. But with better autoscaling (KEDA), it should fit. Time to make it real.
+I can build more applications on Eldertree while continuing to improve it. I don't need to declare the foundation finished first. I do need to leave the next investigation a usable trail: the observation, the evidence, the change, and the result of checking it.
 
-**Voice interface for Ollie.** Integration with Qwen3-TTS for voice interactions. Ask questions while away from the keyboard. It's a nice-to-have, but it would be fun.
-
-**Expand the application portfolio.** More apps mean more learning. More edge cases. More opportunities to improve the platform. I have ideas. Time to build them.
-
-**Maybe add a fourth node?** Three nodes is good for HA. Four nodes gives more capacity and better load distribution. But it also means more complexity. We'll see.
-
-But honestly? The cluster is in a good place. It runs apps. It survives failures. It deploys automatically. It monitors itself. The infrastructure is solid.
-
-The goal now is to *use* the infrastructure, not just build it. Run more applications. Serve more users. Solve real problems. That's the whole point of building a platform: to enable things you haven't thought of yet.
-
-## The Meta Lesson
-
-Seven months ago, I wanted to learn Kubernetes, own my infrastructure, and build something that mattered. I've done all three.
-
-But the real lesson isn't about Kubernetes or Raspberry Pis or any specific technology. It's about this:
-
-**You can build infrastructure that works.** Not perfect infrastructure—that doesn't exist. But infrastructure that's good enough, resilient enough, automated enough to actually be useful.
-
-You don't need a massive data center. You don't need enterprise hardware. You don't need a team. You need clear goals, solid fundamentals, willingness to debug failures, and patience to iterate.
-
-Three Raspberry Pis can run production applications. They can serve real users. They can survive node failures and recover automatically. They can deploy updates via GitOps without manual intervention.
-
-Is it AWS-scale? No. But it's my-scale. And it works.
-
-## The Reflection
-
-Every time I open the Control Center and see all nodes green, all pods running, all applications healthy, there's a specific feeling. Not pride, exactly. More like: satisfaction. The kind that comes from building something, learning from failures, iterating, and ending up with a system that just works.
-
-The cluster isn't perfect. Node-1 still hangs sometimes (though the watchdog catches it now). Resource limits are still too tight for some apps. The documentation could be better.
-
-But it runs. It serves applications. It survives failures. It's infrastructure I trust.
-
-And seven months ago, I had three Raspberry Pis in boxes and a vague idea that "it might be cool to run Kubernetes at home."
-
-Look at how far we've come.
-
-The infrastructure is solid. The automation works. The monitoring catches issues. The deployments are seamless. The platform enables applications.
-
-Now it's time to build on it.
-
-The cluster is ready. The platform is ready. The next chapter is: what will we build?
-
-That's the exciting part. The foundation is done. The infrastructure works. Now we get to actually use it.
-
-**What's next?**
-
-Everything.
+That is the ending I trust more than “everything works now.” There is a platform here, and there is more work to do with it. The next chapter can start from both facts.
 
 ---
 
-*Epilogue: This is the end of the infrastructure journey, but the beginning of the application journey. The cluster is a platform now. Time to build things that matter.*
-
-*Thank you for reading. If you found this useful, consider building your own homelab. Start small. Learn deeply. Iterate constantly. You'll surprise yourself with what you can build.*
-
-*— Rafael, June 2026*
+*— Rafael. First drafted June 2026; revised November 2026.*
