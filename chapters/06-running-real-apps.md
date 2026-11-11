@@ -79,16 +79,17 @@ That is useful on constrained hardware, but it still needs checking under load. 
 
 By mid-2026, the cluster's application configuration had grown well beyond the first SwimTO deployment:
 
-**SwimTO** — Toronto pool schedules (frontend, API, PostgreSQL, Redis)  
-**OpenClaw** — AI assistant with Telegram bot integration (Gemini, Groq, Ollama)  
-**Pitanga** — Pitanga LLC website (static site)  
-**Eldertree Docs** — [Operational runbook](https://docs.eldertree.xyz/) (VitePress)  
+**SwimTO** — Toronto pool schedules (frontend, API, PostgreSQL, Redis)
+**OpenClaw** — AI assistant with Telegram bot integration (Gemini, Groq, Ollama)
+**Pitanga** — Pitanga LLC website (static site)
+**Eldertree Docs** — [Operational runbook](https://docs.eldertree.xyz/) (VitePress)
 
 **Canopy** — Personal finance dashboard, with public tunnel routing committed in February 2026 and further deployment work in June. It was not an app that had never reached the cluster. In the November 10 check, its API, frontend, and Redis Deployments were present but scaled to zero; PostgreSQL was Ready. That is a dated observation of a scaled-down application, not a claim that the complete app was serving traffic.
 
 Other projects stayed disabled in the cluster configuration:
 
-**Journey** — AI career pathfinder  
+**Journey** — AI career pathfinder
+
 **NIMA** — LLM training project
 
 The pattern for each app is consistent:
