@@ -59,13 +59,13 @@ I called it Eldertree. I wanted something that sounded like it had been around a
 
 ## How it actually went
 
-Six months on, the timeline turned out far less tidy than the goals were:
+Looking back, the timeline turned out far less tidy than the goals were:
 
 - **October 2025** — one Pi, one app (the US Law Severity Map). Barely a "cluster."
-- **November 2025** — K3s, Terraform, FluxCD. The boring, load-bearing layer.
-- **December 2025** — Vault, monitoring, DNS, and a long stretch of tightening screws.
-- **January 2026** — three nodes for real HA, plus Tailscale so I could reach it from anywhere.
-- **February 2026** — pulled Longhorn back out (too heavy for 8GB Pis) and finally centralized the CI/CD I'd been copy-pasting between repos.
+- **November 2025** — K3s, Terraform, FluxCD, and the first Vault, monitoring, and DNS configuration. The boring, load-bearing layer.
+- **December 2025** — more node setup and storage work, and a long stretch of tightening screws.
+- **January 2026** — a three-node control plane, Vault Raft replication, and work on the network paths those depended on. Tailscale let me reach the cluster remotely.
+- **Late January–February 2026** — pulled Longhorn back out (too heavy for 8GB Pis) and began centralizing the CI/CD I'd been copy-pasting between repos.
 - **March–June 2026** — production apps, the Control Center, and a few incidents I'd rather not relive but learned the most from.
 
 None of that was planned in advance. Each piece showed up because the one before it broke or fell short, which I've come to think is just what building looks like when you're honest about it.
@@ -76,7 +76,7 @@ A few things stuck.
 
 Start small and let it grow. My instinct was to architect the full multi-node, HA, fully-monitored thing on day one. Good thing I didn't, or I'd have been debugging five abstractions at once instead of one. One node, then two, then the hard parts.
 
-The breakages were the curriculum. I've got something north of 90 documented issues now, and nearly everything I actually understand traces back to one of them. The runbook at docs.eldertree.xyz is mostly just me refusing to solve the same problem twice.
+The breakages were the curriculum. Nearly everything I actually understand traces back to a problem I had to write down. The runbook at docs.eldertree.xyz is mostly just me refusing to solve the same problem twice.
 
 Write it down or relive it. Every time I skipped the note, I paid for it later, usually at a worse hour.
 
@@ -96,4 +96,4 @@ The rest of this blog is that: the decisions, the war stories, the late nights, 
 
 ---
 
-*Next: [Chapter 2: First Boot](/chapters/02-first-boot) — the first time I ran `kubectl get nodes` and watched all three come up ready.*
+*Next: [Chapter 2: First Boot](/chapters/02-first-boot) — the first working node, and the setup that grew around it.*
