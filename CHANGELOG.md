@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## [Unreleased]
 
+### Fixed
+
+- Correct the published build chronology, Vault/ESO and tunnel descriptions, reusable-workflow history, application ownership and scaling claims. Distinguish configured recovery from verified results and historical deployment from current serving state. Keep the November story's one-second comparison tied to run creation timestamps.
+- Use the confirmed public Grafana entry point where dashboard access is relevant.
+
 ### Added
 
 - Link the cluster banner to the confirmed public Grafana sign-in page.
