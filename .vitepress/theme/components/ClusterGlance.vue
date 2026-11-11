@@ -21,7 +21,7 @@ const readinessLabels = {
 const secondaryLinks = [
   { label: "Runbook", href: "https://docs.eldertree.xyz/runbook/" },
   { label: "Project docs", href: "https://docs.eldertree.xyz/project" },
-  { label: "Grafana (LAN)", href: "https://grafana.eldertree.local/d/eldertree-ops-home" },
+  { label: "Grafana", href: "https://grafana.eldertree.xyz/" },
 ] as const;
 </script>
 
@@ -124,12 +124,7 @@ const secondaryLinks = [
             <ExternalLink class="cluster-banner__cta-icon" aria-hidden="true" />
           </a>
 
-          <p class="cluster-banner__cta-hint">
-            Public URL · LAN mirror at
-            <a href="https://control.eldertree.local" target="_blank" rel="noopener noreferrer"
-              >control.eldertree.local</a
-            >
-          </p>
+
 
           <div class="cluster-banner__links">
             <a
