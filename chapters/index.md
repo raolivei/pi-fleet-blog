@@ -1,6 +1,6 @@
 # Chapters
 
-Welcome to the Building Eldertree blog. The old technical chapter series was consolidated into a story-driven rewrite (archived in the repo under `.archive/chapters/`). Published chapters:
+The build diary follows the decisions and investigations behind Eldertree. Operational procedures live in the [runbook](https://docs.eldertree.xyz/).
 
 ## The Journey
 
@@ -10,17 +10,24 @@ Welcome to the Building Eldertree blog. The old technical chapter series was con
 - [Chapter 4: Keeping Secrets](/chapters/04-keeping-secrets)
 - [Chapter 5: Scaling Decisions, Not YAML](/chapters/05-scaling-decisions-not-yaml)
 - [Chapter 6: Running Real Apps](/chapters/06-running-real-apps)
-- [Chapter 14: The Ticket Was Real. The CI Failure Wasn't.](/chapters/14-the-ticket-was-real) — November 2026 issue audit; cancelled CI, evidence, and deciding when to close a ticket
+- [Chapter 14: The Ticket Was Real. The CI Failure Wasn't.](/chapters/14-the-ticket-was-real)
+
+## Chapters in review
+
+These chapter numbers remain reserved while their drafts are reviewed:
+
+- [Chapter 7: Watching It All](https://github.com/raolivei/pi-fleet-blog/pull/24)
+- [Chapter 8: The Great Deployment Disaster](https://github.com/raolivei/pi-fleet-blog/pull/25)
+- [Chapter 9: The Tailscale Treachery](https://github.com/raolivei/pi-fleet-blog/pull/26)
+- [Chapter 10: Building Ollie](https://github.com/raolivei/pi-fleet-blog/pull/27)
+- [Chapter 11: The Control Center](https://github.com/raolivei/pi-fleet-blog/pull/28)
+- [Chapter 12: The Tuesday Night Apocalypse](https://github.com/raolivei/pi-fleet-blog/pull/29)
+- [Chapter 13: What's Next](https://github.com/raolivei/pi-fleet-blog/pull/30)
 
 ## Interludes
 
-Side stories off the main timeline (ops updates, cutovers, lessons that don’t fit a single build chapter):
+- [Why We Dropped Pi-hole for BIND9](/chapters/interlude-why-we-dropped-pihole-for-bind9) — the June 2026 DNS cutover
 
-- [Interlude: Why We Dropped Pi-hole for BIND9](/chapters/interlude-why-we-dropped-pihole-for-bind9) — June 2026 DNS cutover; kube-vip, ServiceLB, same VIP `192.168.2.201`
+## Legacy deep links
 
-
-Chapter numbers are reserved for the existing series. Chapters 7–13 are drafted in open PRs ([#24](https://github.com/raolivei/pi-fleet-blog/pull/24)–[#30](https://github.com/raolivei/pi-fleet-blog/pull/30)). For operational procedures, see the [Eldertree runbook](https://docs.eldertree.xyz/runbook/).
-
-## Legacy deep links (not in sidebar)
-
-- [Chapter 18: The Great CI/CD Consolidation](/chapters/18-reusable-workflows) — kept for shared URLs (e.g. LinkedIn)
+- [Chapter 18: The Great CI/CD Consolidation](/chapters/18-reusable-workflows) — historical chapter retained for shared URLs
