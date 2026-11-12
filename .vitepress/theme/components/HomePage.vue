@@ -30,7 +30,7 @@ const startCards = [
         </p>
         <div class="home-hero__actions">
           <a class="home-btn home-btn--brand" href="/chapters/01-the-moment-i-decided-to-own-my-infrastructure">Start reading</a>
-          <a class="home-btn home-btn--ghost" href="/chapters/02-first-boot">Chapter 2</a>
+          <a class="home-btn home-btn--ghost" href="/chapters/">Browse chapters</a>
           <a class="home-btn home-btn--ghost" href="https://control.eldertree.xyz" target="_blank" rel="noopener noreferrer">Control Center</a>
         </div>
       </div>
