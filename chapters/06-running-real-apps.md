@@ -167,4 +167,4 @@ That's pretty cool.
 
 ---
 
-*Next: [Chapter 7: Watching It All](https://github.com/raolivei/pi-fleet-blog/pull/24) - The night metrics saved me, and why observability is not optional.*
+*Next: [Chapter 7: Watching It All](/chapters/07-watching-it-all) — checking what the monitoring actually covered, and where I still needed better evidence.*

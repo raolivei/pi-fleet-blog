@@ -43,6 +43,10 @@ export function sidebar() {
             link: "/chapters/06-running-real-apps",
           },
           {
+            text: "Chapter 7: Watching It All",
+            link: "/chapters/07-watching-it-all",
+          },
+          {
             text: "Chapter 14: The Ticket Was Real. The CI Failure Wasn't.",
             link: "/chapters/14-the-ticket-was-real",
           },

@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## [Unreleased]
 
+### Changed
+
+- **Chapter 7: Watching It All** — Correct the story against dated implementation and incident evidence; preserve the documented experience without unsupported scenes, guarantees, or recovery claims.
+
 ### Fixed
 
 - Correct the published build chronology, Vault/ESO and tunnel descriptions, reusable-workflow history, application ownership and scaling claims. Distinguish configured recovery from verified results and historical deployment from current serving state. Keep the November story's one-second comparison tied to run creation timestamps.
