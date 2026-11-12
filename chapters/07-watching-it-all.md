@@ -1,3 +1,20 @@
+---
+description: "Checking what Eldertree monitoring actually covered: scrape gaps, URL probes, dashboards, logs and the limits of green status."
+head:
+  - - meta
+    - property: og:title
+      content: "Watching It All"
+  - - meta
+    - property: og:description
+      content: "Checking what Eldertree monitoring actually covered: scrape gaps, URL probes, dashboards, logs and the limits of green status."
+  - - meta
+    - property: og:type
+      content: "article"
+  - - meta
+    - property: og:url
+      content: "https://blog.eldertree.xyz/chapters/07-watching-it-all"
+---
+
 # Chapter 7: Watching It All
 
 A working application is a surprisingly poor way to tell whether you have working infrastructure.
