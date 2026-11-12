@@ -1,3 +1,20 @@
+---
+description: "A November GitHub Issues audit: a cancelled CI run, expected inactivity, real failures and the gap between merging and deployment verification."
+head:
+  - - meta
+    - property: og:title
+      content: "The Ticket Was Real. The CI Failure Wasn't."
+  - - meta
+    - property: og:description
+      content: "A November GitHub Issues audit: a cancelled CI run, expected inactivity, real failures and the gap between merging and deployment verification."
+  - - meta
+    - property: og:type
+      content: "article"
+  - - meta
+    - property: og:url
+      content: "https://blog.eldertree.xyz/chapters/14-the-ticket-was-real"
+---
+
 # Chapter 14: The Ticket Was Real. The CI Failure Wasn't.
 
 I managed to put a working CI pipeline on my fix list.

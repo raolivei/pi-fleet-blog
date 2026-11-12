@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## [Unreleased]
 
+### Added
+
+- Reviewable editorial release queue, two LinkedIn drafts and a manual measurement worksheet, excluded from the public site.
+
+### Fixed
+
+- Give Chapters 7 and 14 article-specific social titles, descriptions and canonical sharing URLs.
+
 ### Changed
 
 - **Chapter 7: Watching It All** — Correct the story against dated implementation and incident evidence; preserve the documented experience without unsupported scenes, guarantees, or recovery claims.
