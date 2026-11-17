@@ -18,6 +18,7 @@ The build diary follows the decisions and investigations behind Eldertree. Opera
 
 These chapter numbers remain reserved while their drafts are reviewed:
 
+- [Chapter 8: The Great Deployment Disaster](https://github.com/raolivei/pi-fleet-blog/pull/25)
 - [Chapter 9: The Tailscale Treachery](https://github.com/raolivei/pi-fleet-blog/pull/26)
 - [Chapter 10: Building Ollie](https://github.com/raolivei/pi-fleet-blog/pull/27)
 - [Chapter 11: The Control Center](https://github.com/raolivei/pi-fleet-blog/pull/28)
