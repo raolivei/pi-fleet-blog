@@ -55,6 +55,10 @@ export function sidebar() {
             link: "/chapters/09-tailscale-treachery",
           },
           {
+            text: "Chapter 10: Building Ollie",
+            link: "/chapters/10-building-ollie",
+          },
+          {
             text: "Chapter 14: The Ticket Was Real. The CI Failure Wasn't.",
             link: "/chapters/14-the-ticket-was-real",
           },

@@ -13,13 +13,13 @@ The build diary follows the decisions and investigations behind Eldertree. Opera
 - [Chapter 7: Watching It All](/chapters/07-watching-it-all)
 - [Chapter 8: The Great Deployment Disaster](/chapters/08-deployment-disaster)
 - [Chapter 9: The Tailscale Treachery](/chapters/09-tailscale-treachery)
+- [Chapter 10: Building Ollie](/chapters/10-building-ollie)
 - [Chapter 14: The Ticket Was Real. The CI Failure Wasn't.](/chapters/14-the-ticket-was-real)
 
 ## Chapters in review
 
 These chapter numbers remain reserved while their drafts are reviewed:
 
-- [Chapter 10: Building Ollie](https://github.com/raolivei/pi-fleet-blog/pull/27)
 - [Chapter 11: The Control Center](https://github.com/raolivei/pi-fleet-blog/pull/28)
 - [Chapter 12: The Tuesday Night Apocalypse](https://github.com/raolivei/pi-fleet-blog/pull/29)
 - [Chapter 13: What's Next](https://github.com/raolivei/pi-fleet-blog/pull/30)

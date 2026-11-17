@@ -98,4 +98,4 @@ What I want from the next investigation is the same useful distinction that star
 
 ---
 
-*Next: [Chapter 10: Building Ollie](https://github.com/raolivei/pi-fleet-blog/pull/27) — finding the documentation again when the details stop fitting in my head.*
+*Next: [Chapter 10: Building Ollie](/chapters/10-building-ollie) — finding the documentation again when the details stop fitting in my head.*
