@@ -85,4 +85,4 @@ The commits are mostly a few lines each. Reading them together makes the work lo
 
 ---
 
-*Next: [Chapter 9: The Tailscale Treachery](https://github.com/raolivei/pi-fleet-blog/pull/26) — when reaching the database depended on which node the application landed on.*
+*Next: [Chapter 9: The Tailscale Treachery](/chapters/09-tailscale-treachery) — when reaching the database depended on which node the application landed on.*
