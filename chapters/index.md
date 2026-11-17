@@ -11,6 +11,7 @@ The build diary follows the decisions and investigations behind Eldertree. Opera
 - [Chapter 5: Scaling Decisions, Not YAML](/chapters/05-scaling-decisions-not-yaml)
 - [Chapter 6: Running Real Apps](/chapters/06-running-real-apps)
 - [Chapter 7: Watching It All](/chapters/07-watching-it-all)
+- [Chapter 8: The Great Deployment Disaster](/chapters/08-deployment-disaster)
 - [Chapter 14: The Ticket Was Real. The CI Failure Wasn't.](/chapters/14-the-ticket-was-real)
 
 ## Chapters in review
