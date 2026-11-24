@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## [Unreleased]
 
+### Changed
+
+- Refresh the public cluster banner every 30 seconds and on request; prevent overlapping polls.
+
 ### Added
 
 - Verify the deployed revision and launch pages after publication.
