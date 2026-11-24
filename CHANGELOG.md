@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 ### Added
 
 - **Chapter 12: The Tuesday Night Apocalypse** — Preserve the reviewed story as a focused change against current main, with chapter navigation and valid draft references.
+- Verify the deployed revision and launch pages after publication.
 
 ### Added
 
