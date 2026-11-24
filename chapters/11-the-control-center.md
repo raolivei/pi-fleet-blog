@@ -85,4 +85,4 @@ For now, I have somewhere to begin. I can inspect what Kubernetes reports, see w
 
 ---
 
-*Next: [Chapter 12: The Tuesday Night Apocalypse](https://github.com/raolivei/pi-fleet-blog/pull/29) — two node hangs, a watchdog investigation, and what the surviving evidence could tell me.*
+*Next: [Chapter 12: The Tuesday Night Apocalypse](/chapters/12-tuesday-night-apocalypse) — two node hangs, a watchdog investigation, and what the surviving evidence could tell me.*
