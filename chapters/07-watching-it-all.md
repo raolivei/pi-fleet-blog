@@ -1,5 +1,7 @@
 ---
 description: "Checking what Eldertree monitoring actually covered: scrape gaps, URL probes, dashboards, logs and the limits of green status."
+portfolio: 5
+tags: ["Monitoring", "Prometheus", "Grafana"]
 head:
   - - meta
     - property: og:title

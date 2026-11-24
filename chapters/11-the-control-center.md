@@ -25,6 +25,8 @@ head:
   - - meta
     - property: og:image:height
       content: "1219"
+portfolio: 3
+tags: ["Observability", "Kubernetes", "React"]
 ---
 
 # Chapter 11: The Control Center

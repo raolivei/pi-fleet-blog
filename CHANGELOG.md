@@ -16,6 +16,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ### Added
 
+- Publish `stories.json`, a feed of chapters marked with `portfolio: <rank>`, so raolivei.me can list stories without its own copy. Add reviewed descriptions for Chapters 1, 2, 8, 10, 11 and the BIND9 interlude; the post-deploy check verifies the feed revision (#63).
 - **Chapter 12: The Tuesday Night Apocalypse** — Preserve the reviewed watchdog investigation, evidence limits and chapter navigation.
 - **Chapter 11: The Control Center** — Preserve the reviewed story as a focused change against current main, with chapter navigation and valid draft references.
 - Verify the deployed revision and launch pages after publication.
