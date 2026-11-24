@@ -5,6 +5,7 @@ import "./style.css";
 import HomePage from "./components/HomePage.vue";
 import ChapterLog from "./components/ChapterLog.vue";
 import ChapterMeta from "./components/ChapterMeta.vue";
+import ChapterPager from "./components/ChapterPager.vue";
 import RecordPanel from "./components/RecordPanel.vue";
 import StatusBar from "./components/StatusBar.vue";
 import SiteFooter from "./components/SiteFooter.vue";
@@ -15,6 +16,7 @@ export default {
     h(DefaultTheme.Layout, null, {
       "layout-top": () => h(StatusBar),
       "doc-before": () => h(ChapterMeta),
+      "doc-footer-before": () => h(ChapterPager),
       "layout-bottom": () => h(SiteFooter),
     }),
   enhanceApp({ app }) {

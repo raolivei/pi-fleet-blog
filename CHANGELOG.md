@@ -12,11 +12,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 - **Status bar** above the nav from the existing cluster status data; says `checking…`, `live`, `cached <date>` or `status unavailable` rather than implying live data.
 - **Chapter log** on the home page and `/chapters/`, generated from chapter headings and frontmatter (`kind`, reading time) by `.vitepress/theme/chapters.data.ts`.
 - **Featured stories** from `portfolio:` rank 1–3, the same source as `stories.json`.
+- **Chapter pager** (prev/next by chapter number) generated from the same data, replacing VitePress's sidebar-based pager.
 - **Chapter meta row** (kind, number, reading time, tags) and an optional **record panel** (`record:` frontmatter + `<RecordPanel />`), first used in Chapters 12 and 14.
 
 ### Changed
 
-- Chapters read as articles: the docs-style sidebar is gone; prev/next, "On this page" and the chapter log replace it. Fonts drop from four families to two; no gradient headings.
+- Chapters read as articles: the docs-style sidebar is gone; the generated pager, "On this page" and the chapter log replace it. Fonts drop from four families to two; no gradient headings.
 - New optional frontmatter: `kind` (incident · audit · build · decision) on published chapters.
 
 ### Removed
