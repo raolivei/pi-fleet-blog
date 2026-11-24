@@ -1,3 +1,32 @@
+---
+description: "Building a React Control Center backed by Elder\u2019s Kubernetes health API, with topology, readiness checks and links into operational documentation."
+head:
+  - - meta
+    - property: og:title
+      content: "The Control Center \u2014 Building Eldertree"
+  - - meta
+    - property: og:description
+      content: "Building a React Control Center backed by Elder\u2019s Kubernetes health API, with topology, readiness checks and links into operational documentation."
+  - - meta
+    - property: og:type
+      content: "article"
+  - - meta
+    - property: og:url
+      content: "https://blog.eldertree.xyz/chapters/11-the-control-center"
+  - - meta
+    - property: og:image
+      content: "https://blog.eldertree.xyz/control-center-2026-11-24.png"
+  - - meta
+    - property: og:image:alt
+      content: "Eldertree Control Center topology and incident feed captured November 24, 2026."
+  - - meta
+    - property: og:image:width
+      content: "1385"
+  - - meta
+    - property: og:image:height
+      content: "1219"
+---
+
 # Chapter 11: The Control Center
 
 I didn't need another place to draw graphs. Grafana already did that. I wanted somewhere to start when I needed to check the cluster and didn't yet know which graph to open.
