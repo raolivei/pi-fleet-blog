@@ -6,17 +6,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## [Unreleased]
 
-### Changed
+### Added
 
-- **Chapter 13: What's Next** — Correct the story against dated implementation and incident evidence; preserve the documented experience without unsupported scenes, guarantees, or recovery claims.
+- **Chapter 13: What's Next** — Preserve the reviewed story as a focused change against current main, with chapter navigation and valid draft references.
 
-### Changed
+### Added
 
-- **Chapter 12: The Tuesday Night Apocalypse** — Correct the story against dated implementation and incident evidence; preserve the documented experience without unsupported scenes, guarantees, or recovery claims.
+- Reviewable editorial release queue, two LinkedIn drafts and a manual measurement worksheet, excluded from the public site.
 
-### Changed
+### Fixed
 
-- **Chapter 11: The Control Center** — Correct the story against dated implementation and incident evidence; preserve the documented experience without unsupported scenes, guarantees, or recovery claims.
+- Give Chapters 7 and 14 article-specific social titles, descriptions and canonical sharing URLs.
 
 ### Changed
 
