@@ -27,6 +27,7 @@ jobs:
       - run: npm ci
       - run: bash scripts/sync-cluster-status.sh
       - run: npm run build
+      - run: node scripts/verify-publication.mjs --write-manifest
       - uses: actions/upload-pages-artifact@v3
         with:
           path: .vitepress/dist
@@ -40,3 +41,14 @@ jobs:
     steps:
       - uses: actions/deploy-pages@v4
         id: deployment
+
+  verify-publication:
+    needs: deploy
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - name: Verify deployed revision and launch pages
+        run: node scripts/verify-publication.mjs --expected-revision "$GITHUB_SHA" --attempts 6
