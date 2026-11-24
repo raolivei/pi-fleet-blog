@@ -8,6 +8,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ### Added
 
+- Verify the deployed revision and launch pages after publication.
+
+### Added
+
 - Reviewable editorial release queue, two LinkedIn drafts and a manual measurement worksheet, excluded from the public site.
 
 ### Fixed
