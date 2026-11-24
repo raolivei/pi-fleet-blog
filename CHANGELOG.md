@@ -8,7 +8,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ### Added
 
-- **Interlude: The Bot Replied. The Work Wasn't Done.** — A dated OpenClaw recovery and local model evaluation, followed by the failed coding turn that exposed the limits of reply-level checks. Includes navigation and article-specific social metadata.
+- **The Bot Replied. The Work Wasn't Done.** — Preserve the reviewed story as a focused change against current main, with chapter navigation and valid draft references.
+
+### Added
+
+- Reviewable editorial release queue, two LinkedIn drafts and a manual measurement worksheet, excluded from the public site.
+
+### Fixed
+
+- Give Chapters 7 and 14 article-specific social titles, descriptions and canonical sharing URLs.
 
 ### Changed
 
