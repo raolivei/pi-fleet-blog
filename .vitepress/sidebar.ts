@@ -58,6 +58,7 @@ export function sidebar() {
             text: "Chapter 10: Building Ollie",
             link: "/chapters/10-building-ollie",
           },
+          { text: "Chapter 11: The Control Center", link: "/chapters/11-the-control-center" },
           { text: "Chapter 12: The Tuesday Night Apocalypse", link: "/chapters/12-tuesday-night-apocalypse" },
           {
             text: "Chapter 14: The Ticket Was Real. The CI Failure Wasn't.",
