@@ -1,3 +1,7 @@
+---
+kind: build
+---
+
 # Chapter 6: Running Real Apps
 
 There's a specific moment when a homelab stops being a hobby and becomes infrastructure. It's not when you get Kubernetes running. It's not when you deploy monitoring. It's not even when you achieve high availability.

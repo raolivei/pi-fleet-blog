@@ -27,6 +27,7 @@ head:
       content: "1219"
 portfolio: 3
 tags: ["Observability", "Kubernetes", "React"]
+kind: build
 ---
 
 # Chapter 11: The Control Center

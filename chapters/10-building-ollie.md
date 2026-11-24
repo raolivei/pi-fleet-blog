@@ -2,6 +2,7 @@
 description: "Building an assistant to find my own documentation and carry context between Cursor and Claude Code sessions, and why a shared note still needs its date and evidence checked."
 portfolio: 6
 tags: ["AI", "RAG", "Developer Tools"]
+kind: build
 ---
 
 # Chapter 10: Building Ollie

@@ -1,3 +1,7 @@
+---
+kind: decision
+---
+
 # Chapter 5: Scaling Decisions, Not YAML
 
 By January 2026 I had a tell: I'd open a new repo, create `.github/workflows/build-and-push.yml`, and then go hunting through four other repos trying to remember which one had the version of that file I actually liked. Not the oldest one. Not the one with the bug in the tag logic. The good one.

@@ -2,6 +2,7 @@
 description: "A January deployment that broke in several small places at once: a dispatch payload sent as a string, an incomplete StorageClass definition and an nginx container with nowhere to write."
 portfolio: 4
 tags: ["CI/CD", "GitOps", "Debugging"]
+kind: incident
 ---
 
 # Chapter 8: The Great Deployment Disaster

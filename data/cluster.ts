@@ -1,6 +1,6 @@
 /** Static Eldertree cluster manifest — source: pi-fleet/docs/ELDERTREE.md
  *
- * ClusterGlance (see useClusterNodeStatus.ts):
+ * StatusBar (see useClusterNodeStatus.ts):
  * - Node list comes from the Control Center / K8s API when live or cached — new cluster nodes appear automatically.
  * - Entries here enrich known nodes (IPs, roles); unknown ids still render id + Ready badge only.
  * - Offline fallback: manifest nodes with "Unknown" readiness.

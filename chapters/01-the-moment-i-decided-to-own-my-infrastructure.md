@@ -2,6 +2,7 @@
 description: "Why I moved my side projects from the cloud to three Raspberry Pi 5s running K3s, and the trade I accepted: less convenience for understanding the whole stack."
 portfolio: 7
 tags: ["Origin Story", "Self-hosting"]
+kind: decision
 ---
 
 # Chapter 1: The Moment I Decided to Own My Infrastructure

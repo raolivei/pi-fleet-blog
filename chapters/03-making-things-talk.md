@@ -1,3 +1,7 @@
+---
+kind: build
+---
+
 # Chapter 3: Making Things Talk
 
 Kubernetes is great at running containers. DNS is great at finding services. Networking is great at routing traffic.

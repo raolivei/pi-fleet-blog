@@ -2,6 +2,7 @@
 description: "Why I replaced a three-container Pi-hole stack with a single BIND9 container in June 2026 without changing the DNS address the LAN used."
 portfolio: 8
 tags: ["DNS", "Simplification"]
+kind: decision
 ---
 
 # Interlude: Why We Dropped Pi-hole for BIND9

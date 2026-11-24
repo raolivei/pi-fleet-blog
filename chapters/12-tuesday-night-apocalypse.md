@@ -15,9 +15,19 @@ head:
   - - meta
     - property: og:url
       content: "https://blog.eldertree.xyz/chapters/12-tuesday-night-apocalypse"
+kind: incident
+record:
+  observed: "node-1 answered ping, SSH failed and Kubernetes couldn't rely on it. It hung twice on May 26 and needed a manual reboot both times."
+  confirmed: "A Raspberry Pi OS drop-in, 40-rpi-enable-watchdog.conf, let systemd claim /dev/watchdog before the watchdog daemon. The follow-up found it on all three nodes."
+  changed: "Disabled the drop-in, added health checks for k3s, kubelet and the API port, and pointed pings at peers (pi-fleet#184)."
+  verified: "The playbook and verification script passed on all three nodes, followed by rolling reboots of node-3 and node-2."
+  not_demonstrated: "Recovery from a real hang with the new checks in place."
+  unknown: "Why the watchdog didn't reset node-1 during the second hang. The journal from that boot wasn't retained."
 ---
 
 # Chapter 12: The Tuesday Night Apocalypse
+
+<RecordPanel />
 
 On Tuesday, May 26, 2026, node-1 hung. It answered pings, but SSH connections failed and Kubernetes couldn't rely on it. A manual reboot brought it back.
 
