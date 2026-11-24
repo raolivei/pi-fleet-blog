@@ -8,7 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ### Changed
 
-- Update Chapter 11 with the supplied November 24 Control Center screenshot, descriptive alt text and a dated status caption. Explain the React → backend health API → Kubernetes flow without requiring readers to learn an internal service name.
+- Update Chapter 11 with the supplied November 24 Control Center screenshot, descriptive alt text and a dated status caption. Explain the React → backend health API → Kubernetes flow and introduce Elder as the backend API that serves the Control Center.
 
 ### Added
 

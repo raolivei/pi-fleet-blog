@@ -18,19 +18,19 @@ That distinction is easy to lose when a dashboard looks reassuring. I need it wr
 
 ## What the browser asks for
 
-The React frontend is served by a backend running in the cluster. Rather than connecting directly to Kubernetes, the browser polls the backend's health endpoint every 30 seconds:
+The React frontend is served by Elder, the backend API running in the cluster. Elder reads cluster state from Kubernetes so the browser doesn't need to connect to Kubernetes directly. The browser polls Elder's health endpoint every 30 seconds:
 
 ```text
 GET /api/public/cluster/health
 ```
 
-The backend collects the result from the Kubernetes API. It reads node conditions, readiness for the catalogued Deployments, StatefulSets and DaemonSets, and Flux reconciliation status. The frontend turns those results into the topology and incident list.
+The response includes node conditions, readiness for the catalogued Deployments, StatefulSets and DaemonSets, and Flux reconciliation status. The frontend turns those results into the topology and incident list.
 
 Prometheus isn't in that request path. Neither is Ollie.
 
 I liked that separation. I didn't need to query a metrics system just to find the readiness value Kubernetes already held. It also meant a Prometheus problem didn't have to prevent me from checking the Prometheus workload on this page.
 
-There are still dependencies. The backend has to run, the Kubernetes API server has to answer, and my browser has to reach the service. The page isn't an independent external monitor just because it doesn't query Grafana. If the request fails, unavailable or stale information needs to look unavailable or stale.
+There are still dependencies. Elder has to run, the Kubernetes API server has to answer, and my browser has to reach the service. The page isn't an independent external monitor just because it doesn't query Grafana. If the request fails, unavailable or stale information needs to look unavailable or stale.
 
 The public entry point is now [Control Center](https://control.eldertree.xyz/). The earlier LAN access described how I reached it during the build; it isn't the only access path anymore.
 
