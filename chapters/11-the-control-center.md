@@ -4,7 +4,7 @@ I didn't need another place to draw graphs. Grafana already did that. I wanted s
 
 By then, the answers were spread around. Prometheus had metrics and alert rules. Grafana had dashboards. Loki had logs. Flux had reconciliation status. The runbook had the fixes I'd already worked out. Ollie could help me find the documentation, but that didn't tell me whether a workload was ready right now.
 
-The Control Center was my attempt to give those tools a front door. The first React SPA landed in the Elder repository on June 1, 2026. Its job was deliberately small: show the cluster's reported state, let me inspect a component, and point me toward the next useful check.
+The Control Center was my attempt to give those tools a front door. The first React interface was committed on June 1, 2026. Its job was deliberately small: show the cluster's reported state, let me inspect a component, and point me toward the next useful check.
 
 ## Start with the question I can actually answer
 
@@ -18,19 +18,19 @@ That distinction is easy to lose when a dashboard looks reassuring. I need it wr
 
 ## What the browser asks for
 
-The frontend is React, served by Elder, which runs alongside OpenClaw's infrastructure in the `openclaw` namespace. The browser polls this route every 30 seconds:
+The React frontend is served by a backend running in the cluster. Rather than connecting directly to Kubernetes, the browser polls the backend's health endpoint every 30 seconds:
 
 ```text
 GET /api/public/cluster/health
 ```
 
-Elder collects the result from the Kubernetes API. It reads node conditions, readiness for the catalogued Deployments, StatefulSets and DaemonSets, and Flux reconciliation status. The frontend turns those results into the topology and incident list.
+The backend collects the result from the Kubernetes API. It reads node conditions, readiness for the catalogued Deployments, StatefulSets and DaemonSets, and Flux reconciliation status. The frontend turns those results into the topology and incident list.
 
 Prometheus isn't in that request path. Neither is Ollie.
 
 I liked that separation. I didn't need to query a metrics system just to find the readiness value Kubernetes already held. It also meant a Prometheus problem didn't have to prevent me from checking the Prometheus workload on this page.
 
-There are still dependencies. Elder has to run, the API server has to answer, and my browser has to reach the service. The page isn't an independent external monitor just because it doesn't query Grafana. If the request fails, unavailable or stale information needs to look unavailable or stale.
+There are still dependencies. The backend has to run, the Kubernetes API server has to answer, and my browser has to reach the service. The page isn't an independent external monitor just because it doesn't query Grafana. If the request fails, unavailable or stale information needs to look unavailable or stale.
 
 The public entry point is now [Control Center](https://control.eldertree.xyz/). The earlier LAN access described how I reached it during the build; it isn't the only access path anymore.
 
