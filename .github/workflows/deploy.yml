@@ -28,6 +28,7 @@ jobs:
       - run: bash scripts/sync-cluster-status.sh
       - run: npm run build
       - run: node scripts/verify-publication.mjs --write-manifest
+      - run: node scripts/export-stories.mjs
       - uses: actions/upload-pages-artifact@v3
         with:
           path: .vitepress/dist

@@ -1,5 +1,7 @@
 ---
 description: "A November GitHub Issues audit: a cancelled CI run, expected inactivity, real failures and the gap between merging and deployment verification."
+portfolio: 2
+tags: ["GitHub Issues", "CI", "Process"]
 head:
   - - meta
     - property: og:title

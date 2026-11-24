@@ -1,3 +1,9 @@
+---
+description: "Building a front door for checking the cluster: what the Control Center reads from Kubernetes, what green actually means, and where Grafana and the runbook still fit."
+portfolio: 3
+tags: ["Observability", "Kubernetes", "React"]
+---
+
 # Chapter 11: The Control Center
 
 I didn't need another place to draw graphs. Grafana already did that. I wanted somewhere to start when I needed to check the cluster and didn't yet know which graph to open.

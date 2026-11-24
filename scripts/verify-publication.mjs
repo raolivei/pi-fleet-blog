@@ -25,6 +25,13 @@ if (args.includes('--write-manifest')) {
   async function verify() {
     const deployed = JSON.parse(await get('publication.json'));
     assert(deployed.revision === revision, `Expected ${revision}; deployed ${deployed.revision}`);
+    const feed = JSON.parse(await get('stories.json'));
+    assert(feed.revision === revision, `stories.json: expected ${revision}; deployed ${feed.revision}`);
+    assert(Array.isArray(feed.stories) && feed.stories.length > 0, 'stories.json: no stories');
+    for (const story of feed.stories) {
+      assert(story.url?.startsWith('https://blog.eldertree.xyz/chapters/') && story.description, `stories.json: incomplete entry ${story.slug}`);
+    }
+    console.log(`Verified stories.json (${feed.stories.length} stories)`);
     for (const [slug, title] of pages) {
       const path = `chapters/${slug}`;
       const html = await get(path);
