@@ -8,7 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ### Added
 
-- Verify the deployed commit, launch-page content, sharing metadata and social images after Pages deployment; fail clearly when an older release is served.
+- Verify the deployed revision and launch pages after publication.
 
 ### Added
 
@@ -17,6 +17,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 ### Fixed
 
 - Give Chapters 7 and 14 article-specific social titles, descriptions and canonical sharing URLs.
+
+### Changed
+
+- **Chapter 10: Building Ollie** — Correct the story against dated implementation and incident evidence; preserve the documented experience without unsupported scenes, guarantees, or recovery claims.
+
+### Changed
+
+- **Chapter 9: The Tailscale Treachery** — Correct the story against dated implementation and incident evidence; preserve the documented experience without unsupported scenes, guarantees, or recovery claims.
+
+### Changed
+
+- **Chapter 8: The Great Deployment Disaster** — Correct the story against dated implementation and incident evidence; preserve the documented experience without unsupported scenes, guarantees, or recovery claims.
 
 ### Changed
 

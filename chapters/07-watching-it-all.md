@@ -75,4 +75,4 @@ That was enough progress to matter. When the next deployment misbehaved, there w
 
 ---
 
-*Next: [Chapter 8: The Great Deployment Disaster](https://github.com/raolivei/pi-fleet-blog/pull/25) — the deployment problems that made those extra signals worth having.*
+*Next: [Chapter 8: The Great Deployment Disaster](/chapters/08-deployment-disaster) — the deployment problems that made those extra signals worth having.*
