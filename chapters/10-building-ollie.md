@@ -1,3 +1,9 @@
+---
+description: "Building an assistant to find my own documentation and carry context between Cursor and Claude Code sessions, and why a shared note still needs its date and evidence checked."
+portfolio: 6
+tags: ["AI", "RAG", "Developer Tools"]
+---
+
 # Chapter 10: Building Ollie
 
 I had written down a lot of Eldertree by the time I started building an assistant for it. There were runbooks, project READMEs, changelogs, and notes about decisions I didn't want to make twice. Finding the right piece still meant remembering which repository I'd put it in.

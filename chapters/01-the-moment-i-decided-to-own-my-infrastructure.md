@@ -1,3 +1,9 @@
+---
+description: "Why I moved my side projects from the cloud to three Raspberry Pi 5s running K3s, and the trade I accepted: less convenience for understanding the whole stack."
+portfolio: 7
+tags: ["Origin Story", "Self-hosting"]
+---
+
 # Chapter 1: The Moment I Decided to Own My Infrastructure
 
 It started with an AWS bill. Not a scary one — double digits that month — but I'd gotten into the habit of opening the billing console the way you poke a bruise. My personal finance dashboard was running there. So were a couple of half-finished side projects and a pile of experiments I kept meaning to clean up. None of it made money. All of it charged me rent.

@@ -1,5 +1,7 @@
 ---
 description: "Why an active watchdog service didn't recover a hung Raspberry Pi node: a systemd device conflict, a second hang, a missing journal and the limits of verification."
+portfolio: 1
+tags: ["Reliability", "Incident", "Raspberry Pi"]
 head:
   - - meta
     - property: og:title

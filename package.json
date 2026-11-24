@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vitepress dev .",
     "build": "vitepress build .",
-    "preview": "vitepress preview ."
+    "preview": "vitepress preview .",
+    "stories": "node scripts/export-stories.mjs"
   },
   "keywords": [
     "kubernetes",
