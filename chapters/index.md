@@ -15,6 +15,7 @@ The build diary follows the decisions and investigations behind Eldertree. Opera
 - [Chapter 9: The Tailscale Treachery](/chapters/09-tailscale-treachery)
 - [Chapter 10: Building Ollie](/chapters/10-building-ollie)
 - [Chapter 14: The Ticket Was Real. The CI Failure Wasn't.](/chapters/14-the-ticket-was-real)
+- [Chapter 15: Before the Code, an Issue](/chapters/15-before-the-code-an-issue)
 
 ## Chapters in review
 
