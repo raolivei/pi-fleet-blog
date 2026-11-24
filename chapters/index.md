@@ -14,15 +14,11 @@ The build diary follows the decisions and investigations behind Eldertree. Opera
 - [Chapter 8: The Great Deployment Disaster](/chapters/08-deployment-disaster)
 - [Chapter 9: The Tailscale Treachery](/chapters/09-tailscale-treachery)
 - [Chapter 10: Building Ollie](/chapters/10-building-ollie)
+- [Chapter 11: The Control Center](/chapters/11-the-control-center)
+- [Chapter 12: The Tuesday Night Apocalypse](/chapters/12-tuesday-night-apocalypse)
 - [Chapter 13: What's Next](/chapters/13-whats-next)
 - [Chapter 14: The Ticket Was Real. The CI Failure Wasn't.](/chapters/14-the-ticket-was-real)
 
-## Chapters in review
-
-These chapter numbers remain reserved while their drafts are reviewed:
-
-- [Chapter 11: The Control Center](https://github.com/raolivei/pi-fleet-blog/pull/28)
-- [Chapter 12: The Tuesday Night Apocalypse](https://github.com/raolivei/pi-fleet-blog/pull/29)
 
 ## Interludes
 
