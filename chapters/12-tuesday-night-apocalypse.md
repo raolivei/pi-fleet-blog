@@ -1,3 +1,20 @@
+---
+description: "Why an active watchdog service didn't recover a hung Raspberry Pi node: a systemd device conflict, a second hang, a missing journal and the limits of verification."
+head:
+  - - meta
+    - property: og:title
+      content: "The Tuesday Night Apocalypse"
+  - - meta
+    - property: og:description
+      content: "Why an active watchdog service didn't recover a hung Raspberry Pi node: a systemd device conflict, a second hang, a missing journal and the limits of verification."
+  - - meta
+    - property: og:type
+      content: "article"
+  - - meta
+    - property: og:url
+      content: "https://blog.eldertree.xyz/chapters/12-tuesday-night-apocalypse"
+---
+
 # Chapter 12: The Tuesday Night Apocalypse
 
 On Tuesday, May 26, 2026, node-1 hung. It answered pings, but SSH connections failed and Kubernetes couldn't rely on it. A manual reboot brought it back.
