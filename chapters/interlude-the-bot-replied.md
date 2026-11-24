@@ -110,3 +110,5 @@ The larger correction was to my definition of success. For a coding task, I need
 [Chapter 14](/chapters/14-the-ticket-was-real) was about checking whether a repair was needed before asking for one. This time the work was real, the assistant could describe it, and the implementation still didn't happen.
 
 The bot replying was progress. The missing PR was the more useful test.
+
+For the earlier step—turning a goal into bounded issues and linking the implementation—see [Chapter 15: Before the Code, an Issue, in review](https://github.com/raolivei/pi-fleet-blog/pull/59). This interlude follows the separate question of whether the assistant completed that agreed work.
