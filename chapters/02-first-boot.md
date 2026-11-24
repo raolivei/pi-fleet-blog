@@ -2,6 +2,7 @@
 description: "Moving from SD cards to NVMe boot, recovering a node stuck in emergency mode after a bad fstab entry, and the first kubectl get nodes."
 portfolio: 9
 tags: ["Raspberry Pi", "Kubernetes", "Infrastructure"]
+kind: build
 ---
 
 # Chapter 2: First Boot

@@ -1,3 +1,7 @@
+---
+kind: incident
+---
+
 # Chapter 9: The Tailscale Treachery
 
 The most useful detail in the January 20 troubleshooting notes is where the application worked.

@@ -94,6 +94,8 @@ export function useClusterNodeStatus() {
   const remoteNodes = ref<RemoteNode[] | null>(null);
   const healthyApps = ref<number | null>(null);
   const totalApps = ref<number | null>(null);
+  /** False until the first refresh finishes, so callers can show "checking". */
+  const checked = ref(false);
 
   const displayNodes = computed<ClusterNodeView[]>(() => {
     if (remoteNodes.value?.length) {
@@ -142,6 +144,14 @@ export function useClusterNodeStatus() {
   }
 
   async function refresh() {
+    try {
+      await load();
+    } finally {
+      checked.value = true;
+    }
+  }
+
+  async function load() {
     for (const url of HEALTH_URLS) {
       const data = await fetchJson<HealthPayload>(url);
       if (data?.nodes?.length) {
@@ -181,6 +191,7 @@ export function useClusterNodeStatus() {
     displayNodes,
     source,
     lastUpdated,
+    checked,
     refresh,
     readyNodeCount,
     totalNodeCount,

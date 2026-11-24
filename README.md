@@ -7,7 +7,7 @@ Written chapters and war stories from the Eldertree build diary. Operational run
 ## Stack
 
 - [VitePress](https://vitepress.dev/) 1.x
-- Vue 3 home components (`ClusterGlance`, `FeaturedStories`)
+- "Ops Console" theme (#67): `StatusBar`, `ChapterLog`, `ChapterMeta`, `RecordPanel`, with the chapter index built from frontmatter by `.vitepress/theme/chapters.data.ts`
 - GitHub Pages + custom domain (`public/CNAME`)
 
 ## Development

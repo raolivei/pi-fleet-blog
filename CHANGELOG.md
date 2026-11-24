@@ -6,6 +6,23 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## [Unreleased]
 
+### Added
+
+- **Ops Console theme** (#67): JetBrains Mono + Inter, dark by default with a light palette, green accent. Sister theme to docs.eldertree.xyz (amber).
+- **Status bar** above the nav from the existing cluster status data; says `checking…`, `live`, `cached <date>` or `status unavailable` rather than implying live data.
+- **Chapter log** on the home page and `/chapters/`, generated from chapter headings and frontmatter (`kind`, reading time) by `.vitepress/theme/chapters.data.ts`.
+- **Featured stories** from `portfolio:` rank 1–3, the same source as `stories.json`.
+- **Chapter meta row** (kind, number, reading time, tags) and an optional **record panel** (`record:` frontmatter + `<RecordPanel />`), first used in Chapters 12 and 14.
+
+### Changed
+
+- Chapters read as articles: the docs-style sidebar is gone; prev/next, "On this page" and the chapter log replace it. Fonts drop from four families to two; no gradient headings.
+- New optional frontmatter: `kind` (incident · audit · build · decision) on published chapters.
+
+### Removed
+
+- `ClusterGlance`, `FeaturedStories` (hand-kept list), `HomeNarrative` and `.vitepress/sidebar.ts`.
+
 ### Fixed
 
 - Use the supplied Control Center screenshot and article-specific metadata for Chapter 11 link previews.

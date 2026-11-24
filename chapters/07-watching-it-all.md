@@ -15,6 +15,7 @@ head:
   - - meta
     - property: og:url
       content: "https://blog.eldertree.xyz/chapters/07-watching-it-all"
+kind: audit
 ---
 
 # Chapter 7: Watching It All

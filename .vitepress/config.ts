@@ -1,5 +1,4 @@
 import { defineConfig } from "vitepress";
-import { sidebar } from "./sidebar";
 
 // Base path is always "/" since we use custom domain blog.eldertree.xyz
 // The CNAME file in public/ tells GitHub Pages to serve from the custom domain
@@ -11,6 +10,7 @@ export default defineConfig({
   description:
     "The documented journey of running a highly available K3s cluster on Raspberry Pi — chapters and war stories from the build diary.",
   cleanUrls: true,
+  appearance: "dark",
   lastUpdated: true,
 
   head: [
@@ -46,7 +46,10 @@ export default defineConfig({
       { text: "pi-fleet", link: "https://github.com/raolivei/pi-fleet" },
     ],
 
-    sidebar: sidebar(),
+    // Chapters read as articles: no docs sidebar. The chapter log on / and /chapters/ is the index.
+    sidebar: {},
+
+    outline: { level: [2, 2], label: "On this page" },
 
     socialLinks: [
       { icon: "github", link: "https://github.com/raolivei" },
