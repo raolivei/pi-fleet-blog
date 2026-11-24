@@ -41,8 +41,8 @@ The map groups components into physical, network, ingress, security, and applica
 The useful part is seeing the names together: the Pis, DNS, ingress, certificate management, Vault, Flux, observability, and the applications. They stop being a list of namespaces I have to reconstruct in my head.
 
 <figure>
-  <img src="/control-center-topology-grid.png" alt="Control Center topology in the three-column grid layout" />
-  <figcaption>One of the topology layouts. This screenshot shows the interface, not the cluster's current health.</figcaption>
+  <img src="/control-center-2026-11-24.png" alt="Control Center topology and incident feed captured on November 24, 2026, reporting node-1 not ready and Vault with two of three replicas ready" />
+  <figcaption>Control Center captured on November 24, 2026: node-1 is reported not ready and Vault has two of three replicas ready. This is a recorded view, not a live status display.</figcaption>
 </figure>
 
 The lines need a little care too. Each line takes the worse status of its two endpoints. If one end is down, the line can show that. The code doesn't walk the graph and simulate every downstream failure.

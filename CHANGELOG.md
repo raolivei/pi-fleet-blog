@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## [Unreleased]
 
+### Changed
+
+- Update Chapter 11 with the supplied November 24 Control Center screenshot, descriptive alt text and a dated status caption.
+
 ### Added
 
 - **Chapter 12: The Tuesday Night Apocalypse** — Preserve the reviewed watchdog investigation, evidence limits and chapter navigation.
