@@ -67,6 +67,8 @@ export function sidebar() {
       {
         text: "Interludes",
         items: [
+          { text: "The Bot Replied. The Work Wasn't Done.", link: "/chapters/interlude-the-bot-replied" },
+
           {
             text: "Why We Dropped Pi-hole for BIND9",
             link: "/chapters/interlude-why-we-dropped-pihole-for-bind9",
