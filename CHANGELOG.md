@@ -18,6 +18,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ### Fixed
 
+- Give Chapter 12 an article-specific social title, description and canonical sharing URL so shared links no longer preview as the blog homepage (#61).
 - Give Chapters 7 and 14 article-specific social titles, descriptions and canonical sharing URLs.
 
 ### Changed
