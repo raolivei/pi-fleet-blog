@@ -26,6 +26,7 @@ These chapter numbers remain reserved while their drafts are reviewed:
 
 ## Interludes
 
+- [The Bot Replied. The Work Wasn't Done.](/chapters/interlude-the-bot-replied) — OpenClaw, local model tests, and an approved task that never became a PR
 - [Why We Dropped Pi-hole for BIND9](/chapters/interlude-why-we-dropped-pihole-for-bind9) — the June 2026 DNS cutover
 
 ## Legacy deep links

@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## [Unreleased]
 
+### Added
+
+- **Interlude: The Bot Replied. The Work Wasn't Done.** — A dated OpenClaw recovery and local model evaluation, followed by the failed coding turn that exposed the limits of reply-level checks. Includes navigation and article-specific social metadata.
+
 ### Changed
 
 - **Chapter 10: Building Ollie** — Correct the story against dated implementation and incident evidence; preserve the documented experience without unsupported scenes, guarantees, or recovery claims.
