@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ### Added
 
+- **Chapter 11: The Control Center** — Preserve the reviewed story as a focused change against current main, with chapter navigation and valid draft references.
 - Verify the deployed revision and launch pages after publication.
 
 ### Added
