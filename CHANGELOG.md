@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## [Unreleased]
 
+### Fixed
+
+- Use the supplied Control Center screenshot and article-specific metadata for Chapter 11 link previews.
+
+### Changed
+
+- Update Chapter 11 with the supplied November 24 Control Center screenshot, descriptive alt text and a dated status caption. Explain the React → backend health API → Kubernetes flow and introduce Elder as the backend API that serves the Control Center.
+
 ### Added
 
 - Publish `stories.json`, a feed of chapters marked with `portfolio: <rank>`, so raolivei.me can list stories without its own copy. Add reviewed descriptions for Chapters 1, 2, 8, 10, 11 and the BIND9 interlude; the post-deploy check verifies the feed revision (#63).
