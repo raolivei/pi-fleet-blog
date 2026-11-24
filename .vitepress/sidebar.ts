@@ -63,6 +63,7 @@ export function sidebar() {
             link: "/chapters/14-the-ticket-was-real",
           },
           { text: "Chapter 15: Before the Code, an Issue", link: "/chapters/15-before-the-code-an-issue" },
+
         ],
       },
       {

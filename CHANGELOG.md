@@ -8,7 +8,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ### Added
 
-- Chapter 15: trace a SwimTO epic through a discovery issue and linked PR, distinguishing a closed slice, an open epic and outstanding verification.
+- **Chapter 15: Before the Code, an Issue** — Preserve the reviewed story as a focused change against current main, with chapter navigation and valid draft references.
+
+### Added
+
+- Reviewable editorial release queue, two LinkedIn drafts and a manual measurement worksheet, excluded from the public site.
+
+### Fixed
+
+- Give Chapters 7 and 14 article-specific social titles, descriptions and canonical sharing URLs.
 
 ### Changed
 
