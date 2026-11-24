@@ -1,5 +1,18 @@
 ---
 description: How a SwimTO epic, a discovery issue and a merged PR preserve the scope and limits of a larger engineering change.
+head:
+  - - meta
+    - property: og:title
+      content: "Before the Code, an Issue"
+  - - meta
+    - property: og:description
+      content: "Following a SwimTO epic into a discovery issue and linked PR, including the verification still outstanding."
+  - - meta
+    - property: og:type
+      content: article
+  - - meta
+    - property: og:url
+      content: https://blog.eldertree.xyz/chapters/15-before-the-code-an-issue
 ---
 
 # Chapter 15: Before the Code, an Issue
@@ -75,3 +88,5 @@ For this blog, the same discipline starts before a new story. I want a clear que
 The useful outcome is a trail I can continue: why the work exists, which part this change addresses, and what remains to be demonstrated. That is more valuable than a backlog full of confident titles.
 
 *Written November 2026, revisiting the June 2026 SwimTO work. Operational procedures live in the [runbook](https://docs.eldertree.xyz/).*
+
+Related: [The Bot Replied. The Work Wasn’t Done. — interlude in review](https://github.com/raolivei/pi-fleet-blog/pull/60) follows what happened when an assistant could describe a task but did not deliver its PR.
