@@ -78,4 +78,4 @@ I wanted less repeated explanation. The better result is having somewhere durabl
 
 ---
 
-*Next: [Chapter 11: The Control Center](/chapters/11-the-control-center) — a place to start checking the cluster, with clear limits on what its health signals establish.*
+*Next: [Chapter 11: The Control Center](https://github.com/raolivei/pi-fleet-blog/pull/28) — a place to start checking the cluster, with clear limits on what its health signals establish.*
