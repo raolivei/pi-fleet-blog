@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## [Unreleased]
 
+### Added
+
+- Chapter 15: trace a SwimTO epic through a discovery issue and linked PR, distinguishing a closed slice, an open epic and outstanding verification.
+
 ### Changed
 
 - **Chapter 10: Building Ollie** — Correct the story against dated implementation and incident evidence; preserve the documented experience without unsupported scenes, guarantees, or recovery claims.
