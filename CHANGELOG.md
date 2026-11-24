@@ -12,6 +12,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ### Changed
 
+- Give the build diary a Cluster Notebook homepage and coordinate the light and dark palettes across chapters.
+
 - Update Chapter 11 with the supplied November 24 Control Center screenshot, descriptive alt text and a dated status caption. Explain the React → backend health API → Kubernetes flow and introduce Elder as the backend API that serves the Control Center.
 
 ### Added

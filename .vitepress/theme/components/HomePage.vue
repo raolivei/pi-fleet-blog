@@ -1,65 +1,46 @@
 <script setup lang="ts">
 import HomeNarrative from "./HomeNarrative.vue";
+import { cluster } from "../../../data/cluster";
 
-const startCards = [
-  {
-    href: "/chapters/01-the-moment-i-decided-to-own-my-infrastructure",
-    label: "Start the journey",
-    title: "The Moment I Decided to Own My Infrastructure",
-    desc: "Why self-host on ARM, what ownership means, and how Eldertree started.",
-  },
-  {
-    href: "/chapters/interlude-why-we-dropped-pihole-for-bind9",
-    label: "Interlude",
-    title: "Why we dropped Pi-hole for BIND9",
-    desc: "June 2026 DNS cutover — kube-vip, ServiceLB, and the VIP story.",
-  },
-] as const;
+const chapters = [
+  { number: "01", title: "The Moment I Decided to Own My Infrastructure", slug: "01-the-moment-i-decided-to-own-my-infrastructure" },
+  { number: "11", title: "The Control Center", slug: "11-the-control-center" },
+  { number: "12", title: "The Tuesday Night Apocalypse", slug: "12-tuesday-night-apocalypse" },
+  { number: "14", title: "The Ticket Was Real", slug: "14-the-ticket-was-real" },
+];
 </script>
 
 <template>
   <div class="eldertree-home">
     <header class="home-hero">
-      <div class="home-hero__copy">
-        <p class="home-hero__eyebrow">Build diary</p>
-        <h1 class="home-hero__title">Building Eldertree</h1>
-        <p class="home-hero__subtitle">A Raspberry Pi Kubernetes journey</p>
-        <p class="home-hero__tagline">
-          I was paying monthly rent for my own data — so I bought three Raspberry Pi&nbsp;5s and
-          built Kubernetes in my living room. This is the story of choosing ownership over convenience.
-        </p>
-        <div class="home-hero__actions">
-          <a class="home-btn home-btn--brand" href="/chapters/01-the-moment-i-decided-to-own-my-infrastructure">Start reading</a>
-          <a class="home-btn home-btn--ghost" href="/chapters/">Browse chapters</a>
-          <a class="home-btn home-btn--ghost" href="https://control.eldertree.xyz" target="_blank" rel="noopener noreferrer">Control Center</a>
-        </div>
+      <div>
+        <p class="notebook-label">Build diary / Rafael Oliveira</p>
+        <h1>Building <span>Eldertree</span></h1>
+        <p class="home-hero__tagline">I was paying monthly rent for my own data. So I bought three Raspberry Pi 5s and built Kubernetes in my living room.</p>
+        <a class="notebook-link" :href="`/chapters/${chapters[0].slug}`">Start with chapter 1 →</a>
       </div>
-      <div class="home-hero__mark" aria-hidden="true">
-        <img
-          class="home-hero__logo"
-          src="/logo-full.png"
-          width="320"
-          height="320"
-          alt="eldertree — circuit tree with three cluster nodes"
-        />
-      </div>
+      <figure class="pi-rack">
+        <figcaption class="notebook-label">Raspberry Pi 5 · cluster layout</figcaption>
+        <ul>
+          <li v-for="node in cluster.nodes" :key="node.id"><i aria-hidden="true" />{{ node.id }}</li>
+        </ul>
+      </figure>
     </header>
 
-    <section class="home-section" aria-labelledby="start-heading">
-      <h2 id="start-heading" class="home-section__title">Start here</h2>
-      <div class="start-here">
-        <a
-          v-for="card in startCards"
-          :key="card.href"
-          class="start-card"
-          :href="card.href"
-          :target="card.external ? '_blank' : undefined"
-          :rel="card.external ? 'noopener noreferrer' : undefined"
-        >
-          <span class="start-card__label">{{ card.label }}</span>
-          <span class="start-card__title">{{ card.title }}</span>
-          <span class="start-card__desc">{{ card.desc }}</span>
-        </a>
+    <section class="notebook-index" aria-label="From the build diary">
+      <div class="notebook-pick">
+        <p class="notebook-label">Chapter 11</p>
+        <h2>The Control Center</h2>
+        <p>Grafana had the graphs. I wanted somewhere to start when I didn’t know which graph to open.</p>
+        <a class="notebook-link" href="/chapters/11-the-control-center">Read the chapter →</a>
+      </div>
+      <div>
+        <ul class="notebook-chapters">
+          <li v-for="chapter in chapters" :key="chapter.slug">
+            <a :href="`/chapters/${chapter.slug}`"><span class="notebook-label">{{ chapter.number }}</span>{{ chapter.title }}<span aria-hidden="true">→</span></a>
+          </li>
+        </ul>
+        <a class="notebook-link" href="/chapters/">Browse all chapters →</a>
       </div>
     </section>
 
