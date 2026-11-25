@@ -107,4 +107,4 @@ Node-1 answered a ping while the services I needed were unavailable. Later, a se
 
 ---
 
-*Next: [Chapter 13: What's Next](https://github.com/raolivei/pi-fleet-blog/pull/30) — what I want from the platform now, and what still needs evidence.*
+*Next: [Chapter 13: What's Next](/chapters/13-whats-next) — what I want from the platform now, and what still needs evidence.*

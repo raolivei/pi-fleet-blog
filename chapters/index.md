@@ -8,12 +8,6 @@ Newest first. The kind tells you what sort of story it is: an incident, an audit
 
 <ChapterLog />
 
-## Chapters in review
-
-These chapter numbers remain reserved while their drafts are reviewed:
-
-- [Chapter 13: What's Next](https://github.com/raolivei/pi-fleet-blog/pull/30)
-
 ## Legacy deep links
 
 - [Chapter 18: The Great CI/CD Consolidation](/chapters/18-reusable-workflows) — historical chapter retained for shared URLs
