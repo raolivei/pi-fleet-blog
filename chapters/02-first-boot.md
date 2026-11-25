@@ -1,3 +1,10 @@
+---
+description: "Moving from SD cards to NVMe boot, recovering a node stuck in emergency mode after a bad fstab entry, and the first kubectl get nodes."
+portfolio: 9
+tags: ["Raspberry Pi", "Kubernetes", "Infrastructure"]
+kind: build
+---
+
 # Chapter 2: First Boot
 
 The moment between "I've decided to build this" and "it's actually working" is filled with a particular kind of nervous energy. You've read the docs, planned the steps, maybe even rehearsed the commands in your head. But until you see those green "Ready" statuses, you don't really know if it's going to work.

@@ -1,3 +1,7 @@
+---
+kind: decision
+---
+
 # Chapter 13: What's Next
 
 I first drafted this chapter in June 2026, about seven months after the first Eldertree setup. I was trying to take stock: three Raspberry Pis, applications, deployment automation, monitoring, and a growing collection of notes about what had broken.

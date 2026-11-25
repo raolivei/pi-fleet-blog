@@ -1,3 +1,7 @@
+---
+kind: build
+---
+
 # Chapter 4: Keeping Secrets
 
 I wanted credentials out of Git. That sounds like a small requirement until several applications need them, deployments need to refresh them, and I need a way to change one without hunting through copies of a config file.

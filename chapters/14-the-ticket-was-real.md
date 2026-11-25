@@ -1,5 +1,7 @@
 ---
 description: "A November GitHub Issues audit: a cancelled CI run, expected inactivity, real failures and the gap between merging and deployment verification."
+portfolio: 2
+tags: ["GitHub Issues", "CI", "Process"]
 head:
   - - meta
     - property: og:title
@@ -13,9 +15,19 @@ head:
   - - meta
     - property: og:url
       content: "https://blog.eldertree.xyz/chapters/14-the-ticket-was-real"
+kind: audit
+record:
+  observed: "A summary said four of the last five pi-fleet runs had passed, and it became an issue asking me to fix a CI failure."
+  confirmed: "The fifth run was cancelled before validation ran. A run on the same commit, created one second later, passed."
+  changed: "Closed the pi-fleet and Canopy investigations with run links and explanations. No PR. SwimTO's failures stayed open."
+  verified: "Opened the runs themselves: four successes, one cancellation, and no failure in that sample."
+  not_demonstrated: "Whether Canopy's workflows would still run on a new push in November."
+  unknown: "The exact reason for the cancellation. The concurrency settings fit the timing, but I couldn't prove it."
 ---
 
 # Chapter 14: The Ticket Was Real. The CI Failure Wasn't.
+
+<RecordPanel />
 
 I managed to put a working CI pipeline on my fix list.
 

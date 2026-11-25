@@ -1,50 +1,84 @@
 /**
- * Color system variables for Building Eldertree blog
- * A dark, sophisticated theme inspired by terminal aesthetics and forest depths
+ * Building Eldertree — "Ops Console" tokens.
+ *
+ * Dark is the default (appearance: "dark" in config.ts); light keeps the same
+ * structure with readable contrast. Sister palette: eldertree-docs uses the same
+ * neutrals with an amber accent; the blog's accent is green.
  */
 
 :root {
-  /* Base gray scale - slate tones */
-  --vp-c-default-1: var(--vp-c-gray-1);
-  --vp-c-default-2: var(--vp-c-gray-2);
-  --vp-c-default-3: var(--vp-c-gray-3);
-  --vp-c-default-soft: var(--vp-c-gray-soft);
+  --et-ground: #f6f7f9;
+  --et-surface: #ffffff;
+  --et-surface-2: #eef1f4;
+  --et-border: #d6dce3;
+  --et-border-soft: #e5e9ee;
+  --et-text: #11161c;
+  --et-text-2: #3d4753;
+  --et-text-3: #56616d;
+  --et-accent: #0b7a52;
+  --et-accent-strong: #08623f;
+  --et-accent-soft: rgba(11, 122, 82, 0.1);
+  --et-incident: #9a5b00;
+  --et-audit: #6d3fc0;
+  --et-build: #0b7a52;
+  --et-decision: #1f5fb4;
+  --et-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --et-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
 
-  /* Brand colors - Emerald/Teal gradient inspired by old-growth forests */
-  --vp-c-brand-1: #14b8a6;
-  --vp-c-brand-2: #0d9488;
-  --vp-c-brand-3: #0f766e;
-  --vp-c-brand-soft: rgba(20, 184, 166, 0.16);
+  --vp-font-family-base: var(--et-sans);
+  --vp-font-family-mono: var(--et-mono);
 
-  /* Accent colors */
-  --eldertree-accent-gold: #fbbf24;
-  --eldertree-accent-amber: #f59e0b;
-  --eldertree-accent-rose: #f43f5e;
-  --eldertree-accent-violet: #8b5cf6;
+  --vp-c-bg: var(--et-ground);
+  --vp-c-bg-alt: var(--et-surface-2);
+  --vp-c-bg-elv: var(--et-surface);
+  --vp-c-bg-soft: var(--et-surface-2);
+  --vp-c-divider: var(--et-border-soft);
+  --vp-c-border: var(--et-border);
+  --vp-c-gutter: var(--et-border-soft);
+  --vp-c-text-1: var(--et-text);
+  --vp-c-text-2: var(--et-text-2);
+  --vp-c-text-3: var(--et-text-3);
 
-  /* Tips use brand colors */
+  --vp-c-brand-1: var(--et-accent);
+  --vp-c-brand-2: var(--et-accent-strong);
+  --vp-c-brand-3: var(--et-accent-strong);
+  --vp-c-brand-soft: var(--et-accent-soft);
+
   --vp-c-tip-1: var(--vp-c-brand-1);
   --vp-c-tip-2: var(--vp-c-brand-2);
   --vp-c-tip-3: var(--vp-c-brand-3);
   --vp-c-tip-soft: var(--vp-c-brand-soft);
 
-  /* Warning colors - amber tones */
-  --vp-c-warning-1: var(--vp-c-yellow-1);
-  --vp-c-warning-2: var(--vp-c-yellow-2);
-  --vp-c-warning-3: var(--vp-c-yellow-3);
-  --vp-c-warning-soft: var(--vp-c-yellow-soft);
+  --vp-button-brand-border: transparent;
+  --vp-button-brand-text: #ffffff;
+  --vp-button-brand-bg: var(--et-accent);
+  --vp-button-brand-hover-border: transparent;
+  --vp-button-brand-hover-text: #ffffff;
+  --vp-button-brand-hover-bg: var(--et-accent-strong);
+  --vp-button-brand-active-bg: var(--et-accent-strong);
 
-  /* Danger colors */
-  --vp-c-danger-1: var(--vp-c-red-1);
-  --vp-c-danger-2: var(--vp-c-red-2);
-  --vp-c-danger-3: var(--vp-c-red-3);
-  --vp-c-danger-soft: var(--vp-c-red-soft);
+  --vp-code-block-bg: var(--et-surface);
+  --vp-code-bg: var(--et-surface-2);
+  --vp-layout-top-height: 32px;
 }
 
-/* Dark mode specific overrides */
 .dark {
-  --vp-c-brand-1: #2dd4bf;
-  --vp-c-brand-2: #14b8a6;
-  --vp-c-brand-3: #0d9488;
-  --vp-c-brand-soft: rgba(45, 212, 191, 0.16);
+  --et-ground: #07090c;
+  --et-surface: #0b0e12;
+  --et-surface-2: #10151b;
+  --et-border: #1f2731;
+  --et-border-soft: #161c24;
+  --et-text: #e8edf2;
+  --et-text-2: #b3bdc8;
+  --et-text-3: #8b96a3;
+  --et-accent: #3ecf8e;
+  --et-accent-strong: #7ee2b8;
+  --et-accent-soft: rgba(62, 207, 142, 0.12);
+  --et-incident: #f5a524;
+  --et-audit: #c4a1ff;
+  --et-build: #7ee2b8;
+  --et-decision: #79b8ff;
+
+  --vp-button-brand-text: #03140c;
+  --vp-button-brand-hover-text: #03140c;
 }

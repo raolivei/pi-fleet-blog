@@ -1,5 +1,7 @@
 ---
 description: "Checking what Eldertree monitoring actually covered: scrape gaps, URL probes, dashboards, logs and the limits of green status."
+portfolio: 5
+tags: ["Monitoring", "Prometheus", "Grafana"]
 head:
   - - meta
     - property: og:title
@@ -13,6 +15,7 @@ head:
   - - meta
     - property: og:url
       content: "https://blog.eldertree.xyz/chapters/07-watching-it-all"
+kind: audit
 ---
 
 # Chapter 7: Watching It All

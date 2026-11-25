@@ -8,7 +8,35 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ### Added
 
-- **Chapter 13: What's Next** — Preserve the dated reflection, evidence limits and chapter navigation.
+- **Chapter 13: What's Next** — A June reflection revisited in November after the watchdog and logging investigations.
+
+- **Ops Console theme** (#67): JetBrains Mono + Inter, dark by default with a light palette, green accent. Sister theme to docs.eldertree.xyz (amber).
+- **Status bar** above the nav from the existing cluster status data; says `checking…`, `live`, `cached <date>` or `status unavailable` rather than implying live data.
+- **Chapter log** on the home page and `/chapters/`, generated from chapter headings and frontmatter (`kind`, reading time) by `.vitepress/theme/chapters.data.ts`.
+- **Featured stories** from `portfolio:` rank 1–3, the same source as `stories.json`.
+- **Chapter pager** (prev/next by chapter number) generated from the same data, replacing VitePress's sidebar-based pager.
+- **Chapter meta row** (kind, number, reading time, tags) and an optional **record panel** (`record:` frontmatter + `<RecordPanel />`), first used in Chapters 12 and 14.
+
+### Changed
+
+- Chapters read as articles: the docs-style sidebar is gone; the generated pager, "On this page" and the chapter log replace it. Fonts drop from four families to two; no gradient headings.
+- New optional frontmatter: `kind` (incident · audit · build · decision) on published chapters.
+
+### Removed
+
+- `ClusterGlance`, `FeaturedStories` (hand-kept list), `HomeNarrative` and `.vitepress/sidebar.ts`.
+
+### Fixed
+
+- Use the supplied Control Center screenshot and article-specific metadata for Chapter 11 link previews.
+
+### Changed
+
+- Update Chapter 11 with the supplied November 24 Control Center screenshot, descriptive alt text and a dated status caption. Explain the React → backend health API → Kubernetes flow and introduce Elder as the backend API that serves the Control Center.
+
+### Added
+
+- Publish `stories.json`, a feed of chapters marked with `portfolio: <rank>`, so raolivei.me can list stories without its own copy. Add reviewed descriptions for Chapters 1, 2, 8, 10, 11 and the BIND9 interlude; the post-deploy check verifies the feed revision (#63).
 - **Chapter 12: The Tuesday Night Apocalypse** — Preserve the reviewed watchdog investigation, evidence limits and chapter navigation.
 - **Chapter 11: The Control Center** — Preserve the reviewed story as a focused change against current main, with chapter navigation and valid draft references.
 - Verify the deployed revision and launch pages after publication.
@@ -19,6 +47,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ### Fixed
 
+- Give Chapter 12 an article-specific social title, description and canonical sharing URL so shared links no longer preview as the blog homepage (#61).
 - Give Chapters 7 and 14 article-specific social titles, descriptions and canonical sharing URLs.
 
 ### Changed
